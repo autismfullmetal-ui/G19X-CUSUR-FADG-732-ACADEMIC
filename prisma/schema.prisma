@@ -1,0 +1,204 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Roles: ADMIN | RH | SUPERVISOR | EMPLEADO
+model User {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  passwordHash String
+  name         String
+  role         String
+  employee     Employee?
+  evaluations  Evaluation[]
+  createdOpportunities Opportunity[]
+  reviewedRecommendations Recommendation[]
+  plansCreated  DevelopmentPlan[] @relation("PlanCreator")
+  plansApproved  DevelopmentPlan[] @relation("PlanApprover")
+}
+
+model Department {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  employees Employee[]
+}
+
+model Position {
+  id        Int        @id @default(autoincrement())
+  title     String     @unique
+  employees Employee[]
+}
+
+model Employee {
+  id            Int       @id @default(autoincrement())
+  firstName     String
+  lastName      String
+  email         String    @unique
+  status        String    @default("ACTIVO") // ACTIVO | INACTIVO
+  createdAt     DateTime  @default(now())
+  departmentId  Int
+  department    Department @relation(fields: [departmentId], references: [id])
+  positionId    Int
+  position      Position  @relation(fields: [positionId], references: [id])
+  supervisorId  Int?
+  supervisor    Employee?  @relation("Supervision", fields: [supervisorId], references: [id])
+  subordinates  Employee[] @relation("Supervision")
+  userId        Int?       @unique
+  user          User?      @relation(fields: [userId], references: [id])
+  evaluations   Evaluation[]
+  competencies  EmployeeCompetency[]
+  applications  Application[]
+  plans         DevelopmentPlan[]
+}
+
+model Competency {
+  id          Int                  @id @default(autoincrement())
+  name        String               @unique
+  description String
+  type        String               // TECNICA | BLANDA
+  status      String               @default("ACTIVA") // ACTIVA | INACTIVA
+  scores      EvaluationScore[]
+  requirements OpportunityRequirement[]
+  employeeLevels EmployeeCompetency[]
+}
+
+model Evaluation {
+  id          Int               @id @default(autoincrement())
+  employeeId  Int
+  employee    Employee          @relation(fields: [employeeId], references: [id])
+  evaluatorId Int
+  evaluator   User              @relation(fields: [evaluatorId], references: [id])
+  type        String            @default("INICIAL") // INICIAL | POST_CAPACITACION
+  status      String            @default("BORRADOR") // BORRADOR | FINALIZADA
+  comment     String?
+  createdAt   DateTime          @default(now())
+  finalizedAt DateTime?
+  scores      EvaluationScore[]
+}
+
+model EvaluationScore {
+  id           Int        @id @default(autoincrement())
+  evaluationId Int
+  evaluation   Evaluation @relation(fields: [evaluationId], references: [id])
+  competencyId Int
+  competency   Competency @relation(fields: [competencyId], references: [id])
+  level        Int // 1..5
+  comment      String?
+
+  @@unique([evaluationId, competencyId])
+}
+
+// Nivel vigente por empleado y competencia (RF-036)
+model EmployeeCompetency {
+  id           Int        @id @default(autoincrement())
+  employeeId   Int
+  employee     Employee   @relation(fields: [employeeId], references: [id])
+  competencyId Int
+  competency   Competency @relation(fields: [competencyId], references: [id])
+  level        Int
+  updatedAt    DateTime   @updatedAt
+
+  @@unique([employeeId, competencyId])
+}
+
+model Opportunity {
+  id           Int                      @id @default(autoincrement())
+  title        String
+  description  String
+  type         String // PUESTO | PROYECTO | DESARROLLO
+  status       String                   @default("BORRADOR") // BORRADOR | PUBLICADA | CERRADA
+  createdById  Int
+  createdBy    User                     @relation(fields: [createdById], references: [id])
+  createdAt    DateTime                 @default(now())
+  requirements OpportunityRequirement[]
+  applications Application[]
+}
+
+model OpportunityRequirement {
+  id             Int          @id @default(autoincrement())
+  opportunityId  Int
+  opportunity    Opportunity  @relation(fields: [opportunityId], references: [id])
+  competencyId   Int
+  competency     Competency   @relation(fields: [competencyId], references: [id])
+  requiredLevel  Int
+  weight         Int          @default(1)
+  mandatory      Boolean      @default(false)
+  gaps           Gap[]
+
+  @@unique([opportunityId, competencyId])
+}
+
+model Application {
+  id            Int              @id @default(autoincrement())
+  opportunityId Int
+  opportunity   Opportunity      @relation(fields: [opportunityId], references: [id])
+  employeeId    Int
+  employee      Employee         @relation(fields: [employeeId], references: [id])
+  status        String           @default("ACTIVA") // ACTIVA | ACEPTADA | RECHAZADA | NO_PROCEDE
+  compatibility Int?             // 0..100
+  createdAt     DateTime         @default(now())
+  gaps          Gap[]
+  recommendation Recommendation?
+  plan          DevelopmentPlan?
+
+  @@unique([opportunityId, employeeId])
+}
+
+model Gap {
+  id            Int                    @id @default(autoincrement())
+  applicationId Int
+  application   Application            @relation(fields: [applicationId], references: [id])
+  requirementId Int
+  requirement   OpportunityRequirement @relation(fields: [requirementId], references: [id])
+  currentLevel  Int
+  requiredLevel Int
+  status        String                 @default("ABIERTA") // ABIERTA | SUPERADA | EN_DESARROLLO
+
+  @@unique([applicationId, requirementId])
+}
+
+model Recommendation {
+  id            Int             @id @default(autoincrement())
+  applicationId Int             @unique
+  application   Application     @relation(fields: [applicationId], references: [id])
+  text          String
+  modelVersion  String?
+  status        String          @default("PROPUESTA") // PROPUESTA | APROBADA | RECHAZADA
+  reviewedById  Int?
+  reviewedBy    User?           @relation(fields: [reviewedById], references: [id])
+  createdAt     DateTime        @default(now())
+}
+
+model DevelopmentPlan {
+  id            Int            @id @default(autoincrement())
+  employeeId    Int
+  employee      Employee       @relation(fields: [employeeId], references: [id])
+  applicationId Int?           @unique
+  application   Application?   @relation(fields: [applicationId], references: [id])
+  title         String
+  objective     String
+  status        String         @default("BORRADOR") // BORRADOR | PROPUESTO | APROBADO | EN_PROGRESO | COMPLETADO
+  createdById   Int
+  createdBy     User           @relation("PlanCreator", fields: [createdById], references: [id])
+  approvedById  Int?
+  approvedBy    User?          @relation("PlanApprover", fields: [approvedById], references: [id])
+  createdAt     DateTime       @default(now())
+  activities    PlanActivity[]
+}
+
+model PlanActivity {
+  id          Int             @id @default(autoincrement())
+  planId      Int
+  plan        DevelopmentPlan @relation(fields: [planId], references: [id])
+  description String
+  order       Int
+  status      String          @default("PENDIENTE") // PENDIENTE | EN_PROGRESO | COMPLETADA | NO_COMPLETADA | CANCELADA
+}

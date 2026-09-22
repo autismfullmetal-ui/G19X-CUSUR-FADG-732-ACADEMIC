@@ -2,7 +2,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { requireSession } from "@/lib/session";
-import { createPlan, approvePlan, setPlanActivityStatus } from "@/app/actions";
+import {
+  approvePlan,
+  setPlanActivityStatus,
+  generateRecommendation,
+  approveRecommendation,
+} from "@/app/actions";
+import PlanForm from "@/components/PlanForm";
 
 const ACTIVITY_STATES = ["PENDIENTE", "EN_PROGRESO", "COMPLETADA", "NO_COMPLETADA", "CANCELADA"];
 
@@ -38,6 +44,22 @@ export default async function PostulacionDetailPage({
 
   const puedeGestionar = ["ADMIN", "RH", "SUPERVISOR"].includes(session.user.role);
   const esPropietario = app.employee.userId === Number(session.user.id);
+
+  let actividadesSugeridas: string | undefined;
+  if (app.recommendation?.activities) {
+    try {
+      const arr = JSON.parse(app.recommendation.activities) as {
+        descripcion: string;
+      }[];
+      actividadesSugeridas = arr.map((a) => a.descripcion).join("\n");
+    } catch {
+      actividadesSugeridas = undefined;
+    }
+  }
+  const usarSugeridas =
+    actividadesSugeridas && app.recommendation?.status === "APROBADA"
+      ? actividadesSugeridas
+      : undefined;
 
   return (
     <div>
@@ -109,23 +131,72 @@ export default async function PostulacionDetailPage({
       </div>
 
       <h2 className="mt-8 text-lg font-semibold text-zinc-900">
-        Recomendación de IA (Fase 4)
+        Recomendación de desarrollo (Fase 4)
       </h2>
       <div className="mt-3 rounded-xl border border-zinc-200 bg-white p-5">
         {app.recommendation ? (
           <div>
             <p className="text-sm text-zinc-700">{app.recommendation.text}</p>
-            <p className="mt-2 text-xs text-zinc-400">
-              Estado: {app.recommendation.status}
-              {app.recommendation.modelVersion
-                ? ` · modelo ${app.recommendation.modelVersion}`
-                : ""}
-            </p>
+            {app.recommendation.activities && (
+              <ol className="mt-3 list-inside list-decimal space-y-1 text-sm text-zinc-600">
+                {(
+                  JSON.parse(app.recommendation.activities) as {
+                    descripcion: string;
+                    orden: number;
+                  }[]
+                )
+                  .sort((a, b) => a.orden - b.orden)
+                  .map((a) => (
+                    <li key={a.orden}>{a.descripcion}</li>
+                  ))}
+              </ol>
+            )}
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              <p className="text-xs text-zinc-400">
+                Estado: {app.recommendation.status}
+                {app.recommendation.modelVersion
+                  ? ` · origen: ${app.recommendation.modelVersion}`
+                  : ""}
+              </p>
+              {puedeGestionar && app.recommendation.status === "PROPUESTA" && (
+                <form action={approveRecommendation}>
+                  <input
+                    type="hidden"
+                    name="recommendationId"
+                    value={app.recommendation.id}
+                  />
+                  <input type="hidden" name="applicationId" value={app.id} />
+                  <button className="rounded-lg bg-green-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-500">
+                    Aprobar recomendación
+                  </button>
+                </form>
+              )}
+              {puedeGestionar && (
+                <form action={generateRecommendation}>
+                  <input type="hidden" name="applicationId" value={app.id} />
+                  <button className="rounded-lg border border-zinc-300 px-3 py-1.5 text-xs hover:bg-zinc-50">
+                    {app.recommendation.status === "APROBADA"
+                      ? "Regenerar"
+                      : "Regenerar recomendación"}
+                  </button>
+                </form>
+              )}
+            </div>
           </div>
         ) : (
-          <p className="text-sm text-zinc-400">
-            Aún no hay recomendación generada para esta postulación.
-          </p>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-zinc-400">
+              Aún no hay recomendación generada para esta postulación.
+            </p>
+            {puedeGestionar && (
+              <form action={generateRecommendation}>
+                <input type="hidden" name="applicationId" value={app.id} />
+                <button className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-700">
+                  Generar recomendación con IA
+                </button>
+              </form>
+            )}
+          </div>
         )}
       </div>
 
@@ -134,36 +205,14 @@ export default async function PostulacionDetailPage({
       </h2>
 
       {!app.plan && puedeGestionar && (
-        <form
-          action={createPlan}
-          className="mt-3 space-y-3 rounded-xl border border-zinc-200 bg-white p-5"
-        >
-          <input type="hidden" name="applicationId" value={app.id} />
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <input
-              name="title"
-              placeholder="Título del plan"
-              required
-              className="rounded-lg border border-zinc-300 px-3 py-2 text-sm"
-            />
-            <input
-              name="objective"
-              placeholder="Objetivo: cerrar las brechas detectadas"
-              required
-              className="rounded-lg border border-zinc-300 px-3 py-2 text-sm"
-            />
-          </div>
-          <textarea
-            name="activities"
-            rows={4}
-            required
-            placeholder={"Una actividad por línea, por ejemplo:\nCurso de Python intermedio\nProyecto práctico de datos\nReevaluación de competencias"}
-            className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm"
-          />
-          <button className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-700">
-            Crear plan (PROPUESTO)
-          </button>
-        </form>
+        <div className="mt-3">
+          <PlanForm applicationId={app.id} defaultActivities={usarSugeridas} />
+          {usarSugeridas && (
+            <p className="mt-2 text-xs text-zinc-400">
+              Las actividades de la recomendación aprobada vienen precargadas.
+            </p>
+          )}
+        </div>
       )}
 
       {app.plan && (

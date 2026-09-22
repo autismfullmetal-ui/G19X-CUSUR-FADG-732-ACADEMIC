@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 import { db, ROLES } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { calcCompatibility } from "@/lib/compatibility";
+import { generateAiRecommendation } from "@/lib/ai";
 
 const DEFAULT_PASSWORD = "Demo1234!";
 
@@ -285,6 +286,70 @@ export async function applyToOpportunity(formData: FormData) {
 }
 
 /* ============ PLANES DE DESARROLLO ============ */
+
+export async function generateRecommendation(formData: FormData) {
+  const session = await requireRole([
+    ROLES.ADMIN,
+    ROLES.RH,
+    ROLES.SUPERVISOR,
+  ]);
+  const applicationId = num(formData.get("applicationId"));
+
+  const app = await db.application.findUnique({
+    where: { id: applicationId },
+    include: {
+      employee: true,
+      opportunity: true,
+      gaps: { include: { requirement: { include: { competency: true } } } },
+    },
+  });
+  if (!app) redirect("/postulaciones");
+
+  const recommendation = await generateAiRecommendation({
+    employee: `${app.employee.firstName} ${app.employee.lastName}`,
+    opportunity: app.opportunity.title,
+    gaps: app.gaps.map((g) => ({
+      competency: g.requirement.competency.name,
+      currentLevel: g.currentLevel,
+      requiredLevel: g.requiredLevel,
+      mandatory: g.requirement.mandatory,
+    })),
+  });
+
+  await db.recommendation.upsert({
+    where: { applicationId },
+    update: {
+      text: recommendation.text,
+      activities: JSON.stringify(recommendation.activities),
+      modelVersion: recommendation.modelVersion,
+      status: "PROPUESTA",
+      reviewedById: null,
+    },
+    create: {
+      applicationId,
+      text: recommendation.text,
+      activities: JSON.stringify(recommendation.activities),
+      modelVersion: recommendation.modelVersion,
+    },
+  });
+
+  // RN-010: queda como PROPUESTA hasta que un usuario autorizado la revise
+  console.log(
+    `[IA] recomendación generada por ${session.user.email} (origen: ${recommendation.source})`
+  );
+  revalidatePath(`/postulaciones/${applicationId}`);
+}
+
+export async function approveRecommendation(formData: FormData) {
+  await requireRole([ROLES.ADMIN, ROLES.RH, ROLES.SUPERVISOR]);
+  const recommendationId = num(formData.get("recommendationId"));
+  const applicationId = num(formData.get("applicationId"));
+  await db.recommendation.update({
+    where: { id: recommendationId },
+    data: { status: "APROBADA", reviewedById: Number((await auth())!.user!.id) },
+  });
+  revalidatePath(`/postulaciones/${applicationId}`);
+}
 
 export async function createPlan(formData: FormData) {
   const session = await requireRole([

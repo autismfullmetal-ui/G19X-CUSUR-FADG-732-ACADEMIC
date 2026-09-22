@@ -170,6 +170,7 @@ model Recommendation {
   applicationId Int             @unique
   application   Application     @relation(fields: [applicationId], references: [id])
   text          String
+  activities    String?         // JSON: [{descripcion, orden}]
   modelVersion  String?
   status        String          @default("PROPUESTA") // PROPUESTA | APROBADA | RECHAZADA
   reviewedById  Int?

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { db } from "@/lib/db";
 import { requireSession } from "@/lib/session";
 
@@ -25,6 +26,7 @@ export default async function PostulacionesPage() {
               <th className="px-4 py-3">Oportunidad</th>
               <th className="px-4 py-3">Compatibilidad</th>
               <th className="px-4 py-3">Estado</th>
+              <th className="px-4 py-3"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-100">
@@ -38,11 +40,16 @@ export default async function PostulacionesPage() {
                   {p.compatibility !== null ? `${p.compatibility}%` : "—"}
                 </td>
                 <td className="px-4 py-3">{p.status}</td>
+                <td className="px-4 py-3">
+                  <Link href={`/postulaciones/${p.id}`} className="text-xs text-zinc-500 underline hover:text-zinc-900">
+                    Ver detalle
+                  </Link>
+                </td>
               </tr>
             ))}
             {postulaciones.length === 0 && (
               <tr>
-                <td colSpan={4} className="px-4 py-8 text-center text-zinc-400">
+                <td colSpan={5} className="px-4 py-8 text-center text-zinc-400">
                   Sin postulaciones
                 </td>
               </tr>

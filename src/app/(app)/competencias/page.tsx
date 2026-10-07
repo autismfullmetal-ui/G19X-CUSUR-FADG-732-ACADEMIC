@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { db } from "@/lib/db";
 import { requireSession } from "@/lib/session";
 import { toggleCompetency } from "@/app/actions";
@@ -18,7 +19,17 @@ export default async function CompetenciasPage({
     <div>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-zinc-900">Competencias</h1>
-        {puedeGestionar && <CompetenciaForm />}
+        {puedeGestionar && (
+          <div className="flex items-center gap-2">
+            <Link
+              href="/importacion"
+              className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 transition shadow-2xs"
+            >
+              📥 Importar CSV
+            </Link>
+            <CompetenciaForm />
+          </div>
+        )}
       </div>
 
       {error === "datos" && (

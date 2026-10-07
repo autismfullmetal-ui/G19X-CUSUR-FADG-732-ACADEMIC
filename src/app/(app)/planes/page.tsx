@@ -1,51 +1,59 @@
+import Link from "next/link";
 import { db } from "@/lib/db";
 import { requireSession } from "@/lib/session";
+import PlanesList from "@/components/PlanesList";
 
 export default async function PlanesPage() {
   const session = await requireSession();
   const soyEmpleado = session.user.role === "EMPLEADO";
+  const puedeGestionar = ["ADMIN", "RH", "SUPERVISOR"].includes(session.user.role);
   const yo = await db.employee.findUnique({
     where: { userId: Number(session.user.id) },
   });
+
   const planes = await db.developmentPlan.findMany({
     where: soyEmpleado && yo ? { employeeId: yo.id } : {},
-    include: { employee: true, activities: { orderBy: { order: "asc" } } },
+    include: {
+      employee: { include: { department: true } },
+      application: { include: { opportunity: true } },
+      activities: { orderBy: { order: "asc" } },
+    },
     orderBy: { createdAt: "desc" },
   });
+
   return (
     <div>
-      <h1 className="text-2xl font-bold text-zinc-900">
-        {soyEmpleado ? "Mi plan de desarrollo" : "Planes de desarrollo"}
-      </h1>
-      <div className="mt-6 space-y-4">
-        {planes.map((p) => (
-          <div
-            key={p.id}
-            className="rounded-xl border border-zinc-200 bg-white p-5"
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-zinc-100 flex items-center gap-2">
+            <span>📝</span>
+            <span>{soyEmpleado ? "Mi plan de desarrollo" : "Planes de desarrollo"}</span>
+          </h1>
+          <p className="mt-1 text-xs text-zinc-400">
+            {soyEmpleado
+              ? "Ejecuta tus actividades, entrega evidencias o proyectos y recibe retroalimentación de tu supervisor."
+              : session.user.role === "RH"
+                ? "Monitorea el progreso de los planes, entregables y retroalimentación emitida por los supervisores."
+                : "Revisa entregables, asigna retroalimentación y evalúa el progreso de las actividades de tus colaboradores."}
+          </p>
+        </div>
+        {puedeGestionar && (
+          <Link
+            href="/evaluaciones"
+            className="rounded-xl border border-zinc-700/80 bg-zinc-900/80 px-3.5 py-2 text-xs font-semibold text-zinc-200 hover:text-white hover:bg-zinc-800 transition shadow-2xs"
           >
-            <div className="flex items-center justify-between">
-              <h2 className="font-semibold text-zinc-900">{p.title}</h2>
-              <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600">
-                {p.status}
-              </span>
-            </div>
-            <p className="mt-1 text-sm text-zinc-500">{p.objective}</p>
-            <p className="mt-1 text-xs text-zinc-400">
-              {p.employee.firstName} {p.employee.lastName}
-            </p>
-            <ol className="mt-3 list-inside list-decimal space-y-1 text-sm text-zinc-600">
-              {p.activities.map((a) => (
-                <li key={a.id}>
-                  {a.description}{" "}
-                  <span className="text-xs text-zinc-400">({a.status})</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-        ))}
-        {planes.length === 0 && (
-          <p className="text-sm text-zinc-400">Sin planes de desarrollo</p>
+            📋 Registrar Evaluación
+          </Link>
         )}
+      </div>
+
+      <div className="mt-6">
+        <PlanesList
+          planes={planes}
+          soyEmpleado={soyEmpleado}
+          puedeGestionar={puedeGestionar}
+          userRole={session.user.role}
+        />
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
-# Plataforma de Desarrollo Profesional (PDP)
+# G19X-CUSUR-FADG-732-ACADEMIC: Proyecto Académico TODO Academy
+## Plataforma de Desarrollo Profesional (PDP)
 
 Sistema integral de gestión de talento, diagnóstico de competencias, convocatorias internas, evaluación de desempeño y generación asistida por IA de planes de desarrollo profesional (70-20-10).
 
@@ -170,3 +171,4 @@ Todas las cuentas vienen preconfiguradas con la contraseña universal: **`Demo12
 ## 📖 Puesta en Marcha
 
 Para consultar las instrucciones detalladas de instalación, comandos de migración de base de datos y configuración del motor de IA, consulta la **[Guía de Instalación (SETUP.md)](SETUP.md)**.
+

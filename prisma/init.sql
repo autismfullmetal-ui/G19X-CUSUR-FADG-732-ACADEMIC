@@ -89,6 +89,9 @@ CREATE TABLE "Opportunity" (
     "description" TEXT NOT NULL,
     "type" TEXT NOT NULL,
     "status" TEXT NOT NULL DEFAULT 'BORRADOR',
+    "vacancies" INTEGER NOT NULL DEFAULT 1,
+    "openDate" DATETIME,
+    "deadline" DATETIME,
     "createdById" INTEGER NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "Opportunity_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
@@ -150,6 +153,8 @@ CREATE TABLE "DevelopmentPlan" (
     "applicationId" INTEGER,
     "title" TEXT NOT NULL,
     "objective" TEXT NOT NULL,
+    "targetDate" DATETIME,
+    "postEvaluationId" INTEGER,
     "status" TEXT NOT NULL DEFAULT 'BORRADOR',
     "createdById" INTEGER NOT NULL,
     "approvedById" INTEGER,
@@ -166,6 +171,11 @@ CREATE TABLE "PlanActivity" (
     "planId" INTEGER NOT NULL,
     "description" TEXT NOT NULL,
     "order" INTEGER NOT NULL,
+    "deliverable" TEXT,
+    "evidenceUrl" TEXT,
+    "submittedAt" DATETIME,
+    "feedback" TEXT,
+    "reviewedAt" DATETIME,
     "status" TEXT NOT NULL DEFAULT 'PENDIENTE',
     CONSTRAINT "PlanActivity_planId_fkey" FOREIGN KEY ("planId") REFERENCES "DevelopmentPlan" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );

@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  color-scheme: light;
+  --background: #09090b;
+  --foreground: #f4f4f5;
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -11,23 +11,265 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Paleta de Rojo Carmesí / Borgoña Menos Intenso */
+  --color-red-50: #fbf5f5;
+  --color-red-100: #f5e3e5;
+  --color-red-200: #ecc9ce;
+  --color-red-300: #dea3ac;
+  --color-red-400: #c87582;
+  --color-red-500: #ad4251;
+  --color-red-600: #8c2534;
+  --color-red-700: #751c2a;
+  --color-red-800: #5f1622;
+  --color-red-900: #4e131d;
+  --color-red-950: #2b090f;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
 }
 
-/* Forzar tema claro en formularios, independiente del modo oscuro del sistema */
-input,
-select,
-textarea {
-  background-color: #ffffff;
-  color: #18181b;
+/* Glassmorphism para Login */
+.glass-input {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-input::placeholder,
-textarea::placeholder {
-  color: #a1a1aa;
+.glass-input::placeholder {
+  color: rgba(255, 255, 255, 0.55) !important;
 }
+
+.glass-input:focus {
+  background-color: rgba(255, 255, 255, 0.18) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ========================================================================= */
+/* TEMA NEGRO, ROJO Y MATICES DE GRIS (APP DARK THEME)                      */
+/* ========================================================================= */
+
+.app-dark-layout {
+  background-color: #09090b;
+  color: #f4f4f5;
+}
+
+/* Superficies y Tarjetas */
+.app-dark-layout .bg-white {
+  background-color: #121217 !important;
+  color: #f4f4f5 !important;
+}
+
+.app-dark-layout .bg-zinc-50,
+.app-dark-layout .bg-zinc-50\/50,
+.app-dark-layout .bg-zinc-50\/60,
+.app-dark-layout .bg-zinc-50\/70,
+.app-dark-layout .bg-zinc-50\/80 {
+  background-color: #181820 !important;
+}
+
+.app-dark-layout .bg-zinc-100 {
+  background-color: #1f1f28 !important;
+  color: #e4e4e7 !important;
+}
+
+/* Bordes en matices de gris */
+.app-dark-layout .border-zinc-100,
+.app-dark-layout .border-zinc-200,
+.app-dark-layout .border-zinc-300 {
+  border-color: #272732 !important;
+}
+
+.app-dark-layout .divide-zinc-100 > :not([hidden]) ~ :not([hidden]),
+.app-dark-layout .divide-zinc-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #22222c !important;
+}
+
+/* Tipografía de Alto Contraste */
+.app-dark-layout .text-zinc-900 {
+  color: #ffffff !important;
+}
+
+.app-dark-layout .text-zinc-800 {
+  color: #f4f4f5 !important;
+}
+
+.app-dark-layout .text-zinc-700 {
+  color: #e4e4e7 !important;
+}
+
+.app-dark-layout .text-zinc-600 {
+  color: #a1a1aa !important;
+}
+
+.app-dark-layout .text-zinc-500 {
+  color: #8c8c9a !important;
+}
+
+.app-dark-layout .text-zinc-400 {
+  color: #71717a !important;
+}
+
+/* Botones Principales con Acento Carmesí Suave (Menos Intenso) */
+.app-dark-layout button.bg-zinc-900,
+.app-dark-layout button.bg-red-600 {
+  background: linear-gradient(135deg, #8c2534 0%, #751c2a 100%) !important;
+  color: #ffffff !important;
+  border-color: rgba(140, 37, 52, 0.4) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 0 8px rgba(140, 37, 52, 0.2) !important;
+}
+
+.app-dark-layout button.bg-zinc-900:hover,
+.app-dark-layout button.bg-red-600:hover {
+  background: linear-gradient(135deg, #9d2c3c 0%, #82202f 100%) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), 0 0 12px rgba(157, 44, 60, 0.25) !important;
+}
+
+.app-dark-layout button:disabled,
+.app-dark-layout button[disabled] {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+
+/* Formularios, Inputs, Selects y Textareas */
+.app-dark-layout input:not(.glass-input),
+.app-dark-layout select:not(.glass-input),
+.app-dark-layout textarea:not(.glass-input) {
+  background: #15151e !important;
+  background-color: #15151e !important;
+  background-image: none !important;
+  border: 1px solid #2b2b38 !important;
+  border-color: #2b2b38 !important;
+  color: #f4f4f5 !important;
+}
+
+.app-dark-layout input:not(.glass-input)::placeholder,
+.app-dark-layout textarea:not(.glass-input)::placeholder {
+  color: #636372 !important;
+}
+
+.app-dark-layout input:not(.glass-input):focus,
+.app-dark-layout select:not(.glass-input):focus,
+.app-dark-layout textarea:not(.glass-input):focus {
+  border-color: #ad4251 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(173, 66, 81, 0.25) !important;
+}
+
+/* Tablas en Modo Oscuro */
+.app-dark-layout table {
+  color: #f4f4f5 !important;
+}
+
+.app-dark-layout thead,
+.app-dark-layout th {
+  background-color: #161622 !important;
+  color: #a1a1aa !important;
+  border-color: #272734 !important;
+}
+
+.app-dark-layout tr {
+  border-color: #1f1f2a !important;
+}
+
+.app-dark-layout tbody tr:hover,
+.app-dark-layout .hover\:bg-zinc-50:hover,
+.app-dark-layout .hover\:bg-zinc-50\/50:hover {
+  background-color: #191924 !important;
+}
+
+/* Gráficas Recharts en Tema Oscuro */
+.app-dark-layout .recharts-cartesian-grid-horizontal line,
+.app-dark-layout .recharts-cartesian-grid-vertical line {
+  stroke: #262633 !important;
+}
+
+.app-dark-layout .recharts-text,
+.app-dark-layout .recharts-cartesian-axis-tick-value {
+  fill: #a1a1aa !important;
+}
+
+.app-dark-layout .recharts-tooltip-wrapper {
+  color: #f4f4f5 !important;
+}
+
+.app-dark-layout .recharts-default-tooltip {
+  background-color: #121217 !important;
+  border-color: #2f2f40 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Scrollbars estilizadas */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0c0c11;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #272733;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8c2534;
+}
+
+/* ========================================================================= */
+/* ARMONIZACIÓN DE TONOS VERDES AL TEMA VINO, NEGRO Y ROJO                   */
+/* ========================================================================= */
+.app-dark-layout .bg-emerald-50,
+.app-dark-layout .bg-emerald-100,
+.app-dark-layout .bg-emerald-950\/30,
+.app-dark-layout .bg-emerald-950\/40,
+.app-dark-layout .bg-emerald-950\/50,
+.app-dark-layout .bg-emerald-950\/60,
+.app-dark-layout .bg-green-50,
+.app-dark-layout .bg-green-50\/20,
+.app-dark-layout .bg-green-100 {
+  background-color: rgba(43, 9, 15, 0.75) !important;
+  color: #dea3ac !important;
+  border-color: rgba(140, 37, 52, 0.5) !important;
+}
+
+.app-dark-layout .text-emerald-100,
+.app-dark-layout .text-emerald-200,
+.app-dark-layout .text-emerald-300,
+.app-dark-layout .text-emerald-600,
+.app-dark-layout .text-emerald-700,
+.app-dark-layout .text-emerald-800,
+.app-dark-layout .text-green-600,
+.app-dark-layout .text-green-700,
+.app-dark-layout .text-green-800 {
+  color: #dea3ac !important;
+}
+
+.app-dark-layout .border-emerald-100,
+.app-dark-layout .border-emerald-200,
+.app-dark-layout .border-emerald-300,
+.app-dark-layout .border-emerald-800\/40,
+.app-dark-layout .border-emerald-800\/50,
+.app-dark-layout .border-emerald-800\/60,
+.app-dark-layout .border-green-200,
+.app-dark-layout .border-green-300 {
+  border-color: rgba(140, 37, 52, 0.5) !important;
+}
+
+.app-dark-layout .bg-emerald-600,
+.app-dark-layout .bg-emerald-700,
+.app-dark-layout .bg-green-600,
+.app-dark-layout .bg-green-700 {
+  background: linear-gradient(135deg, #8c2534 0%, #751c2a 100%) !important;
+  color: #ffffff !important;
+  border-color: rgba(140, 37, 52, 0.5) !important;
+}
+

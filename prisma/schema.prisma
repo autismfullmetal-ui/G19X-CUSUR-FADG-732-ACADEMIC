@@ -23,12 +23,16 @@ model User {
   reviewedRecommendations Recommendation[]
   plansCreated  DevelopmentPlan[] @relation("PlanCreator")
   plansApproved  DevelopmentPlan[] @relation("PlanApprover")
+  createdObjectives OrganizationalObjective[] @relation("ObjectiveCreator")
+  notifications Notification[]
+  auditLogs     AuditLog[]
 }
 
 model Department {
   id        Int        @id @default(autoincrement())
   name      String     @unique
   employees Employee[]
+  objectives OrganizationalObjective[]
 }
 
 model Position {
@@ -82,6 +86,7 @@ model Evaluation {
   createdAt   DateTime          @default(now())
   finalizedAt DateTime?
   scores      EvaluationScore[]
+  objectiveScores ObjectiveEvaluation[]
 }
 
 model EvaluationScore {
@@ -115,9 +120,14 @@ model Opportunity {
   description  String
   type         String // PUESTO | PROYECTO | DESARROLLO
   status       String                   @default("BORRADOR") // BORRADOR | PUBLICADA | CERRADA
+  vacancies    Int                      @default(1)
+  openDate     DateTime?
+  deadline     DateTime?
   createdById  Int
   createdBy    User                     @relation(fields: [createdById], references: [id])
   createdAt    DateTime                 @default(now())
+  objectiveId  Int?
+  objective    OrganizationalObjective? @relation(fields: [objectiveId], references: [id])
   requirements OpportunityRequirement[]
   applications Application[]
 }
@@ -179,20 +189,24 @@ model Recommendation {
 }
 
 model DevelopmentPlan {
-  id            Int            @id @default(autoincrement())
-  employeeId    Int
-  employee      Employee       @relation(fields: [employeeId], references: [id])
-  applicationId Int?           @unique
-  application   Application?   @relation(fields: [applicationId], references: [id])
-  title         String
-  objective     String
-  status        String         @default("BORRADOR") // BORRADOR | PROPUESTO | APROBADO | EN_PROGRESO | COMPLETADO
-  createdById   Int
-  createdBy     User           @relation("PlanCreator", fields: [createdById], references: [id])
-  approvedById  Int?
-  approvedBy    User?          @relation("PlanApprover", fields: [approvedById], references: [id])
-  createdAt     DateTime       @default(now())
-  activities    PlanActivity[]
+  id               Int            @id @default(autoincrement())
+  employeeId       Int
+  employee         Employee       @relation(fields: [employeeId], references: [id])
+  applicationId    Int?           @unique
+  application      Application?   @relation(fields: [applicationId], references: [id])
+  title            String
+  objective        String
+  targetDate       DateTime?
+  postEvaluationId Int?
+  status           String         @default("BORRADOR") // BORRADOR | PROPUESTO | APROBADO | EN_PROGRESO | COMPLETADO
+  createdById      Int
+  createdBy        User           @relation("PlanCreator", fields: [createdById], references: [id])
+  approvedById     Int?
+  approvedBy       User?          @relation("PlanApprover", fields: [approvedById], references: [id])
+  strategicObjectiveId Int?
+  strategicObjective   OrganizationalObjective? @relation(fields: [strategicObjectiveId], references: [id])
+  createdAt        DateTime       @default(now())
+  activities       PlanActivity[]
 }
 
 model PlanActivity {
@@ -201,5 +215,86 @@ model PlanActivity {
   plan        DevelopmentPlan @relation(fields: [planId], references: [id])
   description String
   order       Int
-  status      String          @default("PENDIENTE") // PENDIENTE | EN_PROGRESO | COMPLETADA | NO_COMPLETADA | CANCELADA
+  deliverable String?
+  evidenceUrl String?
+  submittedAt DateTime?
+  feedback    String?
+  reviewedAt  DateTime?
+  status      String          @default("PENDIENTE") // PENDIENTE | EN_PROGRESO | ENTREGADA | COMPLETADA | NO_COMPLETADA | CANCELADA
 }
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String   @default("INFO") // INFO | SUCCESS | WARNING | ACTION_REQUIRED
+  linkUrl   String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, read])
+}
+
+// Registro de Auditoría y Trazabilidad (RF-026, OE-17)
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String   // CREAR_EMPLEADO | CAMBIAR_ESTADO_EMPLEADO | CREAR_COMPETENCIA | EVALUACION | OPORTUNIDAD | POSTULACION | PLAN | REVISION_ENTREGABLE
+  entity    String   // Empleado | Competencia | Evaluacion | Oportunidad | Postulacion | Plan | Actividad | Sistema
+  entityId  Int?
+  details   String?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([action])
+  @@index([entity])
+  @@index([createdAt])
+  @@index([userId])
+}
+
+// Objetivos Organizacionales y Evaluación de Desempeño (RF-007, OE-04)
+model OrganizationalObjective {
+  id              Int                   @id @default(autoincrement())
+  title           String
+  description     String?
+  targetPeriod    String                // ej. "2025 - Q1", "2025 - Anual", "Estratégico 2025"
+  category        String                @default("ESTRATEGICO") // ESTRATEGICO | OPERATIVO | INNOVACION | CALIDAD
+  targetValue     Float                 @default(100.0)
+  unit            String                @default("%")
+  weight          Int                   @default(1) // 1..5
+  status          String                @default("ACTIVO") // ACTIVO | PAUSADO | COMPLETADO | CANCELADO
+  departmentId    Int?
+  department      Department?           @relation(fields: [departmentId], references: [id])
+  createdById     Int
+  createdBy       User                  @relation("ObjectiveCreator", fields: [createdById], references: [id])
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  evaluations     ObjectiveEvaluation[]
+  developmentPlans DevelopmentPlan[]
+  opportunities   Opportunity[]
+
+  @@index([status])
+  @@index([departmentId])
+}
+
+model ObjectiveEvaluation {
+  id             Int                     @id @default(autoincrement())
+  evaluationId   Int
+  evaluation     Evaluation              @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  objectiveId    Int
+  objective      OrganizationalObjective @relation(fields: [objectiveId], references: [id])
+  currentValue   Float                   // Valor numérico alcanzado por el empleado
+  complianceRate Float                   // % de cumplimiento calculado (currentValue / targetValue * 100)
+  rating         Int                     @default(3) // 1..5
+  feedback       String?
+  createdAt      DateTime                @default(now())
+
+  @@unique([evaluationId, objectiveId])
+  @@index([objectiveId])
+}
+
+
+

@@ -26,9 +26,9 @@ function testEmpleadoFormCompetencySelection() {
   console.log(`✓ Prevención de duplicados con opciones deshabilitadas: ${hasDisabledDuplicate}`);
 
   if (!hasFirstUnusedAutoSelect && hasCompToAdd && hasDirectChips && hasBlankRowInit) {
-    console.log("\n🎉 ¡EL FORMULARIO AHORA PERMITE AGREGAR EXACTAMENTE LA COMPETENCIA SELECCIONADA!");
+    console.log("\n ¡EL FORMULARIO AHORA PERMITE AGREGAR EXACTAMENTE LA COMPETENCIA SELECCIONADA!");
   } else {
-    console.error("❌ Falló alguna verificación en el formulario.");
+    console.error("Falló alguna verificación en el formulario.");
     process.exit(1);
   }
 }

@@ -82,7 +82,7 @@ export default function PlanForm({
         />
         {useStructured && (
           <p className="mt-1 text-[11px] text-purple-700">
-            ✨ Las actividades desglosadas por la IA con sus fases, herramientas y <strong>entregables esperados</strong> se precargarán automáticamente en el plan del empleado. Si editas este cuadro, se guardará el texto manual.
+            Las actividades desglosadas por la IA con sus fases, herramientas y <strong>entregables esperados</strong> se precargarán automáticamente en el plan del empleado. Si editas este cuadro, se guardará el texto manual.
           </p>
         )}
       </div>

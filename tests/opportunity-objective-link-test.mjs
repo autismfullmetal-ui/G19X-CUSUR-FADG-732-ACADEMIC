@@ -60,7 +60,7 @@ async function testOpportunityObjectiveLink() {
   console.log(`✓ Vinculada a objetivo: ${opp.objective?.title} (ID: ${opp.objectiveId})`);
 
   if (opp.objectiveId !== obj.id) {
-    console.error("❌ Falló la vinculación entre oportunidad y objetivo.");
+    console.error("Falló la vinculación entre oportunidad y objetivo.");
     process.exit(1);
   }
 
@@ -111,7 +111,7 @@ async function testOpportunityObjectiveLink() {
   await db.opportunity.delete({ where: { id: opp.id } });
 
   console.log("✓ Limpieza de datos temporales de prueba exitosa.");
-  console.log("\n🎉 ¡EL ENLACE DE OPORTUNIDADES CON OBJETIVOS FUNCIONA AL 100%!");
+  console.log("\n ¡EL ENLACE DE OPORTUNIDADES CON OBJETIVOS FUNCIONA AL 100%!");
 
   await db.$disconnect();
 }

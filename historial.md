@@ -124,7 +124,7 @@
 3. **Plantilla Enriquecida de Contingencia:** Se actualizó `templateRecommendation` para generar exactamente el mismo desglose profundo, evitando respuestas genéricas incluso en modo sin conexión o con cuota agotada.
 4. **Tarjetas Visuales en Fase 4 ([postulaciones/[id]/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/postulaciones/[id]/page.tsx)):**
    * Reemplazo de la lista simple `<ol>` por tarjetas con diseño visual por bloques (azul para fase, gris para herramientas, lila para entregables y verde para criterios de validación).
-   * Indicador transparente de origen (`🤖 IA GLM` vs `⚠️ Plantilla estructurada por límite de cuota`).
+   * Indicador transparente de origen (`IA GLM` vs `Plantilla estructurada por límite de cuota`).
 5. **Precarga en Plan ([PlanForm.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/PlanForm.tsx) y [actions.ts](file:///f:/TO_DO%20PROYECTO/pdp/src/app/actions.ts)):**
    * `createPlan` ahora acepta `activitiesJson`. Al crear el plan, el `deliverable` esperado sugerido por la IA se inicializa directamente en `PlanActivity`, de modo que el empleado sabe qué debe construir desde el primer día.
 
@@ -256,7 +256,7 @@
    * **Para Empleado / Colaborador ([src/components/dashboard/EmployeeDashboard.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/dashboard/EmployeeDashboard.tsx)):**
      * Indicadores: Progreso de su plan activo con barra porcentual, brechas superadas vs abiertas, total postulaciones y promedio de dominio competencial (1 a 5).
      * Gráfica Recharts de **Mi Perfil de Competencias** (escala 1 a 5).
-     * Lista de **Próximas Actividades a Entregar** con botón directo `📤 Enviar entrega`.
+     * Lista de **Próximas Actividades a Entregar** con botón directo `Enviar entrega`.
      * Lista de mis postulaciones recientes y oportunidades abiertas recomendadas.
 
 ---
@@ -339,7 +339,7 @@
    * Formulario interactivo con categorías temáticas con íconos, meta numérica, unidad personalizada, ponderación de 1 a 5 y selector de alcance (Global empresarial vs Departamental).
 
 4. **Pestaña de Objetivos en Evaluaciones ([src/components/EvaluacionForm.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/EvaluacionForm.tsx)):**
-   * Integración de dos pestañas: `⭐ 1. Competencias (RF-006)` y `🎯 2. Objetivos de Desempeño (RF-007)`.
+   * Integración de dos pestañas: `1. Competencias (RF-006)` y `2. Objetivos de Desempeño (RF-007)`.
    * Permite al evaluador capturar el valor alcanzado, calificación de 1 a 5 y observaciones específicas por objetivo para el colaborador.
 
 5. **Módulo Completo de Objetivos ([src/app/(app)/objetivos/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/objetivos/page.tsx)):**
@@ -392,8 +392,8 @@
    * Alertas contextuales de éxito (conteo de registros creados vs omitidos) y de error (archivos vacíos o cabeceras no válidas).
 
 4. **Accesos Rápidos y Navegación:**
-   * Botón directo `📥 Importar CSV` integrado en el encabezado de [src/app/(app)/empleados/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/empleados/page.tsx).
-   * Botón directo `📥 Importar CSV` integrado en el encabezado de [src/app/(app)/competencias/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/competencias/page.tsx).
+   * Botón directo `Importar CSV` integrado en el encabezado de [src/app/(app)/empleados/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/empleados/page.tsx).
+   * Botón directo `Importar CSV` integrado en el encabezado de [src/app/(app)/competencias/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/competencias/page.tsx).
    * Enlace permanente en la barra superior de navegación ([src/app/(app)/layout.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/layout.tsx)) para administradores y RH.
 
 5. **Pruebas Automatizadas ([tests/importacion-csv-test.mjs](file:///f:/TO_DO%20PROYECTO/pdp/tests/importacion-csv-test.mjs)):**
@@ -437,7 +437,7 @@
    * Acción `Restablecer clave` incorporada directamente en la columna de acciones para que RH o Administradores puedan atender solicitudes de reseteo con un solo clic.
 
 4. **Acceso Rápido en Encabezado ([src/app/(app)/layout.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/layout.tsx)):**
-   * Avatar y botón interactivo `👤 [Nombre]` en la barra superior que enlaza directamente a `/perfil`.
+   * Avatar y botón interactivo `[Nombre]` en la barra superior que enlaza directamente a `/perfil`.
 
 5. **Pruebas Automatizadas ([tests/perfil-password-test.mjs](file:///f:/TO_DO%20PROYECTO/pdp/tests/perfil-password-test.mjs)):**
    * Verificación de acceso a `/perfil` con rol `EMPLEADO` (200 OK).
@@ -458,7 +458,7 @@
 
 1. **Nueva Barra Lateral Izquierda ([src/components/AppSidebar.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/AppSidebar.tsx)):**
    * Creación del componente cliente `AppSidebar` situado en la columna izquierda fija/adherida (`w-64 xl:w-72 border-r border-zinc-800/80 bg-[#0c0c11]`).
-   * Menú vertical completo con todos los accesos principales acompañados de íconos representativos (🏠 Inicio, 👥 Empleados, ⭐ Competencias, 📋 Evaluaciones, 🎯 Objetivos, 💼 Oportunidades, 📨 Postulaciones, 📝 Planes, 📥 Importación, 🛡️ Auditoría).
+   * Menú vertical completo con todos los accesos principales acompañados de íconos representativos ( Inicio, Empleados, Competencias, Evaluaciones, Objetivos, Oportunidades, Postulaciones, Planes, Importación, Auditoría).
    * Detección dinámica de ruta activa (`usePathname()`) con realce en rojo rubí degradado (`from-red-950/70 via-red-900/30`), borde indicador izquierdo (`border-l-3 border-red-500`) y punto resplandeciente.
    * Sección inferior con minitarjeta del usuario conectado, rol con badge estilizado, acceso directo a `Mi Perfil` y botón de `Salir` con acción de servidor segura.
    * Drawer responsivo para dispositivos móviles con botón hamburguesa y fondo con desenfoque.
@@ -632,7 +632,7 @@
 * **Solución Implementada:**
   * Creación de [src/components/PlanesList.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/PlanesList.tsx) e integración en [src/app/(app)/planes/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/planes/page.tsx).
   * **Tarjeta Ejecutiva Colapsada por Defecto:** Muestra título, colaborador con iniciales y departamento, oportunidad, fecha meta, badge de estado, objetivo resumido, barra de avance y pastillas con desglose de actividades completadas, en revisión, en progreso y pendientes.
-  * **Pestaña Desplegable:** Botón `[ 📑 Ver fases, entregables y retroalimentación ({total} actividades) ▼ ]` para abrir las actividades (`PlanActivityCard`), subir entregables, calificar y ver el hito de reevaluación.
+  * **Pestaña Desplegable:** Botón `[ Ver fases, entregables y retroalimentación ({total} actividades) ▼ ]` para abrir las actividades (`PlanActivityCard`), subir entregables, calificar y ver el hito de reevaluación.
   * Barra de herramientas superior con buscador en vivo, filtro por estado y botones de *Expandir todo* y *Colapsar todo*.
   * Pruebas automatizadas en [tests/planes-ui-test.mjs](file:///f:/TO_DO%20PROYECTO/pdp/tests/planes-ui-test.mjs).
 
@@ -672,7 +672,7 @@
 * **Solución Implementada:**
   * Creación del componente interactivo [src/components/PeriodDateRangePicker.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/PeriodDateRangePicker.tsx):
     * Tarjeta activadora que muestra el período formateado, duración en días y botón desplegable.
-    * Ventana flotante / Popover en la misma interfaz con navegación mensual interactiva (`◀` y `▶`) y cuadrícula visual de días.
+    * Ventana flotante / Popover en la misma interfaz con navegación mensual interactiva (`` y ``) y cuadrícula visual de días.
     * Selección en 2 clics (Fecha de Inicio y Fecha de Fin) con resaltado visual del rango en degradado vino/carmesí.
     * Selectores directos numéricos de fecha (`type="date"`) para inicio y fin.
     * Botones de atajos rápidos corporativos: Q1, Q2, Q3, Q4, Semestre 1, Semestre 2 y Anual.

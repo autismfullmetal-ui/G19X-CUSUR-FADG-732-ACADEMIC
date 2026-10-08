@@ -130,15 +130,12 @@ export default function PlanesList({
         <div className="flex flex-wrap items-center justify-between gap-3">
           {/* Buscador de planes */}
           <div className="flex-1 min-w-[240px] max-w-md relative flex items-center">
-            <span className="absolute left-3 text-zinc-500 pointer-events-none text-xs">
-              🔍
-            </span>
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar por colaborador, título u oportunidad..."
-              className="w-full rounded-xl border border-zinc-800 bg-[#161622] pl-8 pr-8 py-2 text-xs text-zinc-100 placeholder:text-zinc-500 focus:border-[#ad4251] focus:outline-none transition shadow-inner"
+              className="w-full rounded-xl border border-zinc-800 bg-[#161622] pl-3 pr-8 py-2 text-xs text-zinc-100 placeholder:text-zinc-500 focus:border-[#ad4251] focus:outline-none transition shadow-inner"
             />
             {searchQuery && (
               <button
@@ -160,10 +157,10 @@ export default function PlanesList({
               className="rounded-xl border border-zinc-800 bg-[#161622] px-3 py-2 text-xs text-zinc-100 focus:border-[#ad4251] focus:outline-none transition cursor-pointer"
             >
               <option value="TODOS">Todos los estados</option>
-              <option value="EN_PROGRESO">⚡ En progreso</option>
-              <option value="APROBADO">📝 Aprobado</option>
+              <option value="EN_PROGRESO">En progreso</option>
+              <option value="APROBADO">Aprobado</option>
               <option value="COMPLETADO">✓ Completado</option>
-              <option value="PROPUESTO">📋 Propuesto</option>
+              <option value="PROPUESTO">Propuesto</option>
             </select>
 
             <button
@@ -211,7 +208,6 @@ export default function PlanesList({
       <div className="space-y-4">
         {filteredPlanes.length === 0 ? (
           <div className="rounded-2xl border border-zinc-800/80 bg-[#121217] p-10 text-center shadow-xl">
-            <span className="text-3xl mb-2 block">📋</span>
             <h3 className="text-sm font-bold text-zinc-200">No se encontraron planes</h3>
             <p className="text-xs text-zinc-400 mt-1 max-w-sm mx-auto">
               No hay planes de desarrollo que coincidan con los filtros de búsqueda aplicados.
@@ -274,7 +270,7 @@ export default function PlanesList({
 
                         {p.employee.department && (
                           <span className="text-zinc-500">
-                            · 🏢 {p.employee.department.name}
+                            · {p.employee.department.name}
                           </span>
                         )}
 
@@ -282,7 +278,7 @@ export default function PlanesList({
                           <>
                             <span className="text-zinc-600">·</span>
                             <span className="text-zinc-300">
-                              💼 Oportunidad:{" "}
+                              Oportunidad:{" "}
                               <strong className="text-zinc-100 font-semibold">
                                 {p.application.opportunity.title}
                               </strong>
@@ -295,7 +291,7 @@ export default function PlanesList({
                     {/* Fecha Objetivo */}
                     {p.targetDate && (
                       <span className="inline-flex items-center gap-1 rounded-full bg-zinc-900 border border-zinc-800 px-3 py-1 text-xs text-zinc-300 shrink-0">
-                        <span>📅 Meta:</span>
+                        <span>Meta:</span>
                         <strong className="text-zinc-100 font-semibold">
                           {new Date(p.targetDate).toLocaleDateString("es-MX", {
                             day: "2-digit",
@@ -310,7 +306,7 @@ export default function PlanesList({
                   {/* Fila 2: Objetivo del Plan */}
                   <div className="rounded-xl border border-zinc-800/60 bg-[#161622]/80 p-3 text-xs text-zinc-300">
                     <strong className="text-zinc-400 block uppercase text-[10px] font-bold tracking-wider mb-0.5">
-                      🎯 Objetivo del Plan:
+                      Objetivo del Plan:
                     </strong>
                     <p className="line-clamp-2 leading-relaxed">{p.objective}</p>
                   </div>
@@ -345,17 +341,17 @@ export default function PlanesList({
                       )}
                       {submittedCount > 0 && (
                         <span className="rounded-md bg-red-950/60 border border-red-800/50 px-2 py-0.5 text-red-200 font-medium">
-                          📦 {submittedCount} en revisión
+                          {submittedCount} en revisión
                         </span>
                       )}
                       {inProgressCount > 0 && (
                         <span className="rounded-md bg-blue-950/50 border border-blue-800/40 px-2 py-0.5 text-blue-300 font-medium">
-                          ⚡ {inProgressCount} en progreso
+                          {inProgressCount} en progreso
                         </span>
                       )}
                       {pendingCount > 0 && (
                         <span className="rounded-md bg-zinc-800/60 border border-zinc-700/50 px-2 py-0.5 text-zinc-400 font-medium">
-                          ⏳ {pendingCount} pendiente{pendingCount > 1 ? "s" : ""}
+                          {pendingCount} pendiente{pendingCount > 1 ? "s" : ""}
                         </span>
                       )}
                     </div>
@@ -375,7 +371,7 @@ export default function PlanesList({
                           </span>
                         </div>
                       </div>
-                      {puedeGestionar && (
+                      {puedeCalificar && (
                         <Link
                           href={`/evaluaciones?empleado=${p.employee.id}&tipo=POST_CAPACITACION${
                             p.applicationId ? `&returnTo=/postulaciones/${p.applicationId}` : ""
@@ -400,7 +396,6 @@ export default function PlanesList({
                       }`}
                     >
                       <div className="flex items-center gap-2">
-                        <span>📑</span>
                         <span>
                           {isExpanded
                             ? "Ocultar fases y retroalimentación"
@@ -424,14 +419,14 @@ export default function PlanesList({
                       <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-red-900/60 bg-gradient-to-r from-red-950/40 via-[#181016] to-[#121217] p-3.5 text-xs text-rose-200 shadow-[0_0_15px_rgba(140,37,52,0.12)]">
                         <div>
                           <strong className="text-rose-200 font-bold block mb-0.5">
-                            🎯 Hito de Reevaluación Disponible:
+                            Hito de Reevaluación Disponible:
                           </strong>
                           <p className="text-zinc-300 leading-relaxed">
                             El plan tiene un avance del {percent}%. El supervisor puede registrar la
                             evaluación Post-Capacitación para verificar la superación de las brechas de competencias.
                           </p>
                         </div>
-                        {puedeGestionar && (
+                        {puedeCalificar && (
                           <Link
                             href={`/evaluaciones?empleado=${p.employee.id}&tipo=POST_CAPACITACION${
                               p.applicationId ? `&returnTo=/postulaciones/${p.applicationId}` : ""

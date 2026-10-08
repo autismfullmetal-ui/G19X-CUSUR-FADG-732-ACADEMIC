@@ -79,7 +79,7 @@ export default async function ImportacionPage({
 
       {error && (
         <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-xs font-medium text-rose-800">
-          <p className="font-bold text-sm">⚠️ No se pudo completar la importación</p>
+          <p className="font-bold text-sm">No se pudo completar la importación</p>
           <p className="mt-1">
             {error === "archivo_vacio" && "Debes seleccionar un archivo CSV válido y no vacío."}
             {error === "sin_datos" && "El archivo contiene cabeceras pero no incluye filas de datos a procesar."}
@@ -116,9 +116,6 @@ export default async function ImportacionPage({
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-xl border border-blue-100">
-                  👥
-                </span>
                 <div>
                   <h2 className="text-base font-bold text-zinc-900">Personal y Estructura Organizacional</h2>
                   <p className="text-xs text-zinc-500">Carga masiva de colaboradores, áreas y puestos</p>
@@ -152,7 +149,6 @@ export default async function ImportacionPage({
                 download="plantilla_empleados.csv"
                 className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-300 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 transition shadow-2xs"
               >
-                <span>📥</span>
                 <span>Descargar CSV Ejemplo</span>
               </a>
             </div>
@@ -185,9 +181,6 @@ export default async function ImportacionPage({
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-xl border border-emerald-100">
-                  ⭐
-                </span>
                 <div>
                   <h2 className="text-base font-bold text-zinc-900">Catálogo de Competencias</h2>
                   <p className="text-xs text-zinc-500">Carga masiva de habilidades técnicas y blandas</p>
@@ -218,7 +211,6 @@ export default async function ImportacionPage({
                 download="plantilla_competencias.csv"
                 className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-300 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 transition shadow-2xs"
               >
-                <span>📥</span>
                 <span>Descargar CSV Ejemplo</span>
               </a>
             </div>

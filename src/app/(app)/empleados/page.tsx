@@ -45,7 +45,6 @@ export default async function EmpleadosPage({
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-zinc-100 flex items-center gap-2">
-            <span>👥</span>
             <span>Empleados</span>
           </h1>
           <p className="text-sm text-zinc-400">
@@ -58,7 +57,7 @@ export default async function EmpleadosPage({
               href="/importacion"
               className="rounded-xl border border-zinc-700/80 bg-zinc-900/80 px-3.5 py-2 text-xs font-semibold text-zinc-200 hover:text-white hover:bg-zinc-800 transition shadow-2xs"
             >
-              📥 Importar CSV
+              Importar CSV
             </Link>
             <EmpleadoForm
               departments={departments}

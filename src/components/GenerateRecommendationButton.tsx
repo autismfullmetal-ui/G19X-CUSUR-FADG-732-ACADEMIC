@@ -73,7 +73,6 @@ export default function GenerateRecommendationButton({
             </>
           ) : (
             <>
-              <span>✨</span>
               <span>
                 {isRegenerate
                   ? "Regenerar recomendación"

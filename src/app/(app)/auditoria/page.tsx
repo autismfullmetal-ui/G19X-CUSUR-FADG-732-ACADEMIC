@@ -2,27 +2,27 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { requireSession } from "@/lib/session";
 
-const ACTION_LABELS: Record<string, { label: string; color: string; icon: string }> = {
-  CREAR_EMPLEADO: { label: "Alta Empleado", color: "bg-blue-50 text-blue-700 border-blue-200", icon: "👤" },
-  ACTUALIZAR_ESTADO_EMPLEADO: { label: "Estado Empleado", color: "bg-amber-50 text-amber-700 border-amber-200", icon: "🔄" },
-  CREAR_COMPETENCIA: { label: "Nueva Competencia", color: "bg-blue-50 text-blue-700 border-blue-200", icon: "⭐" },
-  CAMBIAR_ESTADO_COMPETENCIA: { label: "Estado Competencia", color: "bg-amber-50 text-amber-700 border-amber-200", icon: "⚡" },
-  EVALUACION_DIAGNOSTICA: { label: "Evaluación Inicial", color: "bg-purple-50 text-purple-700 border-purple-200", icon: "📋" },
-  EVALUACION_POST_CAPACITACION: { label: "Re-evaluación Post-Cap.", color: "bg-emerald-50 text-emerald-700 border-emerald-200", icon: "🎓" },
-  CREAR_OPORTUNIDAD: { label: "Nueva Oportunidad", color: "bg-blue-50 text-blue-700 border-blue-200", icon: "💼" },
-  PUBLICAR_OPORTUNIDAD: { label: "Publicación Vacante", color: "bg-emerald-50 text-emerald-700 border-emerald-200", icon: "📢" },
-  CERRAR_OPORTUNIDAD: { label: "Cierre Oportunidad", color: "bg-zinc-100 text-zinc-700 border-zinc-200", icon: "🔒" },
-  POSTULACION: { label: "Postulación", color: "bg-indigo-50 text-indigo-700 border-indigo-200", icon: "📨" },
-  CREAR_PLAN: { label: "Creación Plan", color: "bg-purple-50 text-purple-700 border-purple-200", icon: "📝" },
-  APROBAR_PLAN: { label: "Aprobación Plan", color: "bg-emerald-50 text-emerald-700 border-emerald-200", icon: "✓" },
-  ENTREGA_ACTIVIDAD: { label: "Envío Entregable", color: "bg-purple-50 text-purple-700 border-purple-200", icon: "📦" },
-  REVISION_ACTIVIDAD: { label: "Revisión Evaluador", color: "bg-teal-50 text-teal-700 border-teal-200", icon: "🔍" },
-  CREAR_OBJETIVO: { label: "Nuevo Objetivo Estratégico", color: "bg-emerald-50 text-emerald-700 border-emerald-200", icon: "🎯" },
-  ACTUALIZAR_OBJETIVO: { label: "Actualizar Objetivo", color: "bg-amber-50 text-amber-700 border-amber-200", icon: "🔄" },
-  EVALUAR_OBJETIVOS: { label: "Evaluación de Objetivos", color: "bg-indigo-50 text-indigo-700 border-indigo-200", icon: "📊" },
-  IMPORTACION_MASIVA: { label: "Carga Masiva de Datos", color: "bg-cyan-50 text-cyan-700 border-cyan-200", icon: "📥" },
-  CAMBIO_CONTRASENA: { label: "Cambio de Contraseña", color: "bg-emerald-50 text-emerald-700 border-emerald-200", icon: "🔑" },
-  RESTABLECER_CONTRASENA: { label: "Restablecimiento Clave", color: "bg-rose-50 text-rose-700 border-rose-200", icon: "🛡️" },
+const ACTION_LABELS: Record<string, { label: string; color: string }> = {
+  CREAR_EMPLEADO: { label: "Alta Empleado", color: "bg-blue-50 text-blue-700 border-blue-200" },
+  ACTUALIZAR_ESTADO_EMPLEADO: { label: "Estado Empleado", color: "bg-amber-50 text-amber-700 border-amber-200" },
+  CREAR_COMPETENCIA: { label: "Nueva Competencia", color: "bg-blue-50 text-blue-700 border-blue-200" },
+  CAMBIAR_ESTADO_COMPETENCIA: { label: "Estado Competencia", color: "bg-amber-50 text-amber-700 border-amber-200" },
+  EVALUACION_DIAGNOSTICA: { label: "Evaluación Inicial", color: "bg-purple-50 text-purple-700 border-purple-200" },
+  EVALUACION_POST_CAPACITACION: { label: "Re-evaluación Post-Cap.", color: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+  CREAR_OPORTUNIDAD: { label: "Nueva Oportunidad", color: "bg-blue-50 text-blue-700 border-blue-200" },
+  PUBLICAR_OPORTUNIDAD: { label: "Publicación Vacante", color: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+  CERRAR_OPORTUNIDAD: { label: "Cierre Oportunidad", color: "bg-zinc-100 text-zinc-700 border-zinc-200" },
+  POSTULACION: { label: "Postulación", color: "bg-indigo-50 text-indigo-700 border-indigo-200" },
+  CREAR_PLAN: { label: "Creación Plan", color: "bg-purple-50 text-purple-700 border-purple-200" },
+  APROBAR_PLAN: { label: "Aprobación Plan", color: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+  ENTREGA_ACTIVIDAD: { label: "Envío Entregable", color: "bg-purple-50 text-purple-700 border-purple-200" },
+  REVISION_ACTIVIDAD: { label: "Revisión Evaluador", color: "bg-teal-50 text-teal-700 border-teal-200" },
+  CREAR_OBJETIVO: { label: "Nuevo Objetivo Estratégico", color: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+  ACTUALIZAR_OBJETIVO: { label: "Actualizar Objetivo", color: "bg-amber-50 text-amber-700 border-amber-200" },
+  EVALUAR_OBJETIVOS: { label: "Evaluación de Objetivos", color: "bg-indigo-50 text-indigo-700 border-indigo-200" },
+  IMPORTACION_MASIVA: { label: "Carga Masiva de Datos", color: "bg-cyan-50 text-cyan-700 border-cyan-200" },
+  CAMBIO_CONTRASENA: { label: "Cambio de Contraseña", color: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+  RESTABLECER_CONTRASENA: { label: "Restablecimiento Clave", color: "bg-rose-50 text-rose-700 border-rose-200" },
 };
 
 export default async function AuditoriaPage({
@@ -146,7 +146,7 @@ export default async function AuditoriaPage({
               <option value="">Todas las acciones</option>
               {Object.entries(ACTION_LABELS).map(([key, data]) => (
                 <option key={key} value={key}>
-                  {data.icon} {data.label}
+                  {data.label}
                 </option>
               ))}
             </select>
@@ -202,7 +202,6 @@ export default async function AuditoriaPage({
               const meta = ACTION_LABELS[log.action] ?? {
                 label: log.action,
                 color: "bg-zinc-100 text-zinc-700 border-zinc-200",
-                icon: "📌",
               };
               return (
                 <div
@@ -211,10 +210,8 @@ export default async function AuditoriaPage({
                 >
                   <div className="flex items-start gap-3">
                     <span
-                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border text-sm shadow-2xs ${meta.color}`}
-                    >
-                      {meta.icon}
-                    </span>
+                      className={`mt-1 h-3 w-3 shrink-0 rounded-full border shadow-2xs ${meta.color}`}
+                    />
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="font-semibold text-xs text-zinc-900">

@@ -70,10 +70,10 @@ export default async function PerfilPage({
 
       {error && (
         <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-xs font-semibold text-rose-800">
-          {error === "actual_incorrecta" && "⚠️ La contraseña actual ingresada es incorrecta."}
-          {error === "longitud_minima" && "⚠️ La nueva contraseña debe tener al menos 6 caracteres."}
-          {error === "coincidencia" && "⚠️ La confirmación de contraseña no coincide con la nueva clave."}
-          {error === "campos_requeridos" && "⚠️ Debes completar todos los campos del formulario."}
+          {error === "actual_incorrecta" && "La contraseña actual ingresada es incorrecta."}
+          {error === "longitud_minima" && "La nueva contraseña debe tener al menos 6 caracteres."}
+          {error === "coincidencia" && "La confirmación de contraseña no coincide con la nueva clave."}
+          {error === "campos_requeridos" && "Debes completar todos los campos del formulario."}
         </div>
       )}
 
@@ -144,7 +144,6 @@ export default async function PerfilPage({
           <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-xs space-y-4">
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-lg">🔑</span>
                 <h3 className="text-base font-bold text-zinc-900">Cambiar Contraseña de Acceso</h3>
               </div>
               <p className="text-xs text-zinc-500 mt-0.5">
@@ -213,7 +212,6 @@ export default async function PerfilPage({
             <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-xs space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-lg">⭐</span>
                   <h3 className="text-base font-bold text-zinc-900">Mis Competencias Vigentes</h3>
                 </div>
                 <span className="text-xs text-zinc-400">Escala de 1 a 5</span>

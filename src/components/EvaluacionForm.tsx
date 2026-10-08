@@ -125,7 +125,6 @@ export default function EvaluacionForm({
         {evaluationType === "POST_CAPACITACION" && (
           <div className="rounded-xl border border-red-900/60 bg-gradient-to-r from-red-950/40 via-[#181116] to-[#121118] px-4 py-3 text-xs text-rose-200">
             <div className="flex items-center gap-2 font-bold text-rose-100">
-              <span>🎯</span>
               <span>Re-evaluación Post-Capacitación (Hito Final de Certificación)</span>
             </div>
             <p className="mt-1 text-zinc-300 leading-relaxed">
@@ -145,7 +144,7 @@ export default function EvaluacionForm({
                 : "border-transparent text-zinc-400 hover:text-zinc-600"
             }`}
           >
-            ⭐ 1. Competencias (RF-006) ({competencies.length})
+            1. Competencias (RF-006) ({competencies.length})
           </button>
           <button
             type="button"
@@ -156,7 +155,7 @@ export default function EvaluacionForm({
                 : "border-transparent text-zinc-400 hover:text-zinc-600"
             }`}
           >
-            🎯 2. Objetivos de Desempeño (RF-007) ({applicableObjectives.length})
+            2. Objetivos de Desempeño (RF-007) ({applicableObjectives.length})
           </button>
         </div>
 

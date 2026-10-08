@@ -5,7 +5,7 @@ Sistema integral de gestión de talento, diagnóstico de competencias, convocato
 
 ---
 
-## 🚀 Características y Módulos Principales
+## Características y Módulos Principales
 
 | Módulo / Funcionalidad | Descripción | Referencia PRD |
 | :--- | :--- | :--- |
@@ -26,7 +26,7 @@ Sistema integral de gestión de talento, diagnóstico de competencias, convocato
 
 ---
 
-## 🔄 Flujo de Trabajo Integral
+## Flujo de Trabajo Integral
 
 ```
    [1. Convocatoria Publicada] (Con fecha límite y requisitos ponderados)
@@ -46,27 +46,27 @@ Sistema integral de gestión de talento, diagnóstico de competencias, convocato
 
 ---
 
-## 👥 Matriz de Roles y Permisos
+## Matriz de Roles y Permisos
 
 | Módulo / Acción | ADMIN | RH | SUPERVISOR | EMPLEADO |
 | :--- | :---: | :---: | :---: | :---: |
-| **Ver Dashboard Especializado** | ✅ (Global) | ✅ (Global) | ✅ (Equipo) | ✅ (Personal) |
-| **Gestión de Empleados y Nómina** | ✅ | ✅ | ❌ | ❌ |
-| **Catálogo de Competencias** | ✅ | ✅ | ❌ | ❌ |
-| **Definir Objetivos Organizacionales** | ✅ | ✅ | ❌ | ❌ |
-| **Realizar Evaluaciones de Desempeño** | ✅ | ✅ | ✅ | ❌ |
-| **Crear y Publicar Oportunidades** | ✅ | ✅ | ❌ | ❌ |
-| **Postularse a Convocatorias** | ❌ | ❌ | ❌ | ✅ |
-| **Generar y Aprobar Recomendaciones** | ✅ | ✅ | ✅ | ❌ |
-| **Aprobar Planes y Calificar Entregables**| ✅ | ✅ | ✅ | ❌ |
-| **Enviar Evidencias y Completar Plan** | ❌ | ❌ | ❌ | ✅ |
-| **Carga Masiva por CSV** | ✅ | ✅ | ❌ | ❌ |
-| **Panel de Auditoría Inmutable** | ✅ | ✅ | ❌ | ❌ |
-| **Mi Perfil y Cambio de Contraseña** | ✅ | ✅ | ✅ | ✅ |
+| **Ver Dashboard Especializado** | Sí (Global) | Sí (Global) | Sí (Equipo) | Sí (Personal) |
+| **Gestión de Empleados y Nómina** | Sí | Sí | No | No |
+| **Catálogo de Competencias** | Sí | Sí | No | No |
+| **Definir Objetivos Organizacionales** | Sí | Sí | No | No |
+| **Realizar Evaluaciones de Desempeño (inicial y post-capacitación)** | Sí | No (solo consulta) | Sí | No |
+| **Crear y Publicar Oportunidades** | Sí | Sí | No | No |
+| **Postularse a Convocatorias** | No | No | No | Sí |
+| **Generar y Aprobar Recomendaciones** | Sí | Sí | Sí | No |
+| **Aprobar Planes y Calificar Entregables**| Sí | Sí | Sí | No |
+| **Enviar Evidencias y Completar Plan** | No | No | No | Sí |
+| **Carga Masiva por CSV** | Sí | Sí | No | No |
+| **Panel de Auditoría Inmutable** | Sí | Sí | No | No |
+| **Mi Perfil y Cambio de Contraseña** | Sí | Sí | Sí | Sí |
 
 ---
 
-## 🛠️ Stack Tecnológico
+## Stack Tecnológico
 
 | Capa | Tecnología | Función |
 | :--- | :--- | :--- |
@@ -81,7 +81,7 @@ Sistema integral de gestión de talento, diagnóstico de competencias, convocato
 
 ---
 
-## 🏛️ Paradigma Arquitectónico: Enfoque Híbrido
+## Paradigma Arquitectónico: Enfoque Híbrido
 
 El sistema implementa una arquitectura híbrida moderna que combina lo mejor de ambos mundos:
 * **Programación Basada en Objetos (POO):**
@@ -96,7 +96,7 @@ El sistema implementa una arquitectura híbrida moderna que combina lo mejor de 
 
 ---
 
-## 📂 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 pdp/
@@ -155,20 +155,20 @@ pdp/
 
 ---
 
-## 🔑 Credenciales de Demostración
+## Credenciales de Demostración
 
 Todas las cuentas vienen preconfiguradas con la contraseña universal: **`Demo1234!`**
 
 | Correo Electrónico | Rol | Función en el Sistema |
 | :--- | :---: | :--- |
 | `admin@demo.mx` | **ADMIN** | Control total del sistema, auditoría y configuración |
-| `rh@demo.mx` | **RH** | Gestión de talento, vacantes, evaluaciones e importación CSV |
+| `rh@demo.mx` | **RH** | Gestión de talento, vacantes, consulta de evaluaciones e importación CSV |
 | `supervisor@demo.mx` | **SUPERVISOR** | Monitoreo de equipo, revisión de entregables y evaluaciones |
 | `empleado@demo.mx` | **EMPLEADO** | Postulación a vacantes, envío de evidencias y seguimiento de plan |
 
 ---
 
-## 📖 Puesta en Marcha
+## Puesta en Marcha
 
 Para consultar las instrucciones detalladas de instalación, comandos de migración de base de datos y configuración del motor de IA, consulta la **[Guía de Instalación (SETUP.md)](SETUP.md)**.
 

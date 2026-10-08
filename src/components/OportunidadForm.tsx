@@ -96,7 +96,7 @@ export default function OportunidadForm({
       {/* Enlace con Objetivo Organizacional (RF-007) */}
       <div className="rounded-lg border border-zinc-700 bg-[#181820] p-3 space-y-1">
         <label className="block text-xs font-bold text-zinc-200">
-          🎯 Objetivo organizacional estratégico vinculado (Opcional)
+          Objetivo organizacional estratégico vinculado (Opcional)
         </label>
         <select
           name="objectiveId"
@@ -105,7 +105,7 @@ export default function OportunidadForm({
           <option value="">Ninguno / Convocatoria general independiente</option>
           {objectives.map((obj) => (
             <option key={obj.id} value={obj.id}>
-              🎯 {obj.title} {obj.targetPeriod ? `(${obj.targetPeriod})` : ""} {obj.category ? `· [${obj.category}]` : ""}
+              {obj.title} {obj.targetPeriod ? `(${obj.targetPeriod})` : ""} {obj.category ? `· [${obj.category}]` : ""}
             </option>
           ))}
         </select>
@@ -165,7 +165,7 @@ export default function OportunidadForm({
 
         {rows.length === 0 && (
           <p className="mt-2 text-xs text-amber-300 bg-amber-950/40 border border-amber-800/60 rounded-lg p-2.5">
-            ⚠️ Agrega al menos un requisito de competencia para poder publicar esta oportunidad.
+            Agrega al menos un requisito de competencia para poder publicar esta oportunidad.
           </p>
         )}
 

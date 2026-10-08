@@ -7,10 +7,10 @@ import PeriodDateRangePicker from "@/components/PeriodDateRangePicker";
 type Department = { id: number; name: string };
 
 const CATEGORIES = [
-  { value: "ESTRATEGICO", label: "Estratégico", icon: "🎯" },
-  { value: "INNOVACION", label: "Innovación y Tecnología", icon: "💡" },
-  { value: "CALIDAD", label: "Calidad y Excelencia", icon: "✨" },
-  { value: "OPERATIVO", label: "Operativo y Eficiencia", icon: "⚙️" },
+  { value: "ESTRATEGICO", label: "Estratégico" },
+  { value: "INNOVACION", label: "Innovación y Tecnología" },
+  { value: "CALIDAD", label: "Calidad y Excelencia" },
+  { value: "OPERATIVO", label: "Operativo y Eficiencia" },
 ];
 
 export default function ObjetivoForm({
@@ -37,7 +37,6 @@ export default function ObjetivoForm({
       <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80 mb-4">
         <div>
           <h2 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
-            <span>🎯</span>
             <span>Definir Nuevo Objetivo Organizacional</span>
           </h2>
           <p className="text-xs text-zinc-400 mt-0.5">
@@ -90,7 +89,7 @@ export default function ObjetivoForm({
             >
               {CATEGORIES.map((c) => (
                 <option key={c.value} value={c.value}>
-                  {c.icon} {c.label}
+                  {c.label}
                 </option>
               ))}
             </select>
@@ -162,10 +161,10 @@ export default function ObjetivoForm({
                 defaultValue="todos"
                 className="w-full rounded-xl border border-zinc-800 bg-[#161622] px-3 py-2 text-xs text-zinc-100 focus:border-[#ad4251] focus:outline-none transition cursor-pointer"
               >
-                <option value="todos">🌐 Toda la organización (Global)</option>
+                <option value="todos">Toda la organización (Global)</option>
                 {departments.map((d) => (
                   <option key={d.id} value={d.id}>
-                    🏢 {d.name}
+                    {d.name}
                   </option>
                 ))}
               </select>

@@ -118,7 +118,7 @@ async function testImportacionCsv() {
   // Limpiar auditoría de test
   await db.auditLog.delete({ where: { id: auditRes.id } });
 
-  console.log("\n🎉 ¡TODAS LAS PRUEBAS DE BLOQUE 5 PASARON EXITOSAMENTE!");
+  console.log("\n ¡TODAS LAS PRUEBAS DE BLOQUE 5 PASARON EXITOSAMENTE!");
 }
 
 testImportacionCsv()

@@ -7,6 +7,7 @@ export default async function PlanesPage() {
   const session = await requireSession();
   const soyEmpleado = session.user.role === "EMPLEADO";
   const puedeGestionar = ["ADMIN", "RH", "SUPERVISOR"].includes(session.user.role);
+  const puedeEvaluar = ["ADMIN", "SUPERVISOR"].includes(session.user.role);
   const yo = await db.employee.findUnique({
     where: { userId: Number(session.user.id) },
   });
@@ -26,7 +27,6 @@ export default async function PlanesPage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-zinc-100 flex items-center gap-2">
-            <span>📝</span>
             <span>{soyEmpleado ? "Mi plan de desarrollo" : "Planes de desarrollo"}</span>
           </h1>
           <p className="mt-1 text-xs text-zinc-400">
@@ -37,12 +37,12 @@ export default async function PlanesPage() {
                 : "Revisa entregables, asigna retroalimentación y evalúa el progreso de las actividades de tus colaboradores."}
           </p>
         </div>
-        {puedeGestionar && (
+        {puedeEvaluar && (
           <Link
             href="/evaluaciones"
             className="rounded-xl border border-zinc-700/80 bg-zinc-900/80 px-3.5 py-2 text-xs font-semibold text-zinc-200 hover:text-white hover:bg-zinc-800 transition shadow-2xs"
           >
-            📋 Registrar Evaluación
+            Registrar Evaluación
           </Link>
         )}
       </div>

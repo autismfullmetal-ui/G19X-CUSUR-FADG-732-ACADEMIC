@@ -4,20 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const NAV_ICONS: Record<string, string> = {
-  "/dashboard": "🏠",
-  "/empleados": "👥",
-  "/competencias": "⭐",
-  "/evaluaciones": "📋",
-  "/objetivos": "🎯",
-  "/oportunidades": "💼",
-  "/postulaciones": "📨",
-  "/planes": "📝",
-  "/importacion": "📥",
-  "/auditoria": "🛡️",
-  "/perfil": "👤",
-};
-
 export type NavItem = {
   href: string;
   label: string;
@@ -134,7 +120,6 @@ export default function AppSidebar({
             <nav className="space-y-1">
               {nav.map((item) => {
                 const active = isItemActive(item.href);
-                const icon = NAV_ICONS[item.href] ?? "📌";
 
                 return (
                   <Link
@@ -148,13 +133,6 @@ export default function AppSidebar({
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <span
-                        className={`text-base transition-transform group-hover:scale-110 ${
-                          active ? "text-red-400" : "text-zinc-400"
-                        }`}
-                      >
-                        {icon}
-                      </span>
                       <span>{item.label}</span>
                     </div>
 
@@ -207,7 +185,6 @@ export default function AppSidebar({
               className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 px-3 py-1.5 text-[11px] font-medium text-zinc-300 hover:text-white transition"
               title="Ajustes de Perfil y Contraseña"
             >
-              <span>⚙️</span>
               <span>Mi Perfil</span>
             </Link>
 

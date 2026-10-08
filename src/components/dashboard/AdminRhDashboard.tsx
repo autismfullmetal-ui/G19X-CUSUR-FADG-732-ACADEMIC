@@ -110,9 +110,6 @@ export default function AdminRhDashboard({
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-xs">
           <div className="flex items-center justify-between text-zinc-500 text-xs font-medium">
             <span>Cobertura de Evaluaciones</span>
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-blue-600 text-sm">
-              📊
-            </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-3xl font-bold text-zinc-900">
@@ -135,9 +132,6 @@ export default function AdminRhDashboard({
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-xs">
           <div className="flex items-center justify-between text-zinc-500 text-xs font-medium">
             <span>Tasa de Cierre de Brechas</span>
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 text-sm">
-              🎯
-            </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-3xl font-bold text-emerald-600">
@@ -160,9 +154,6 @@ export default function AdminRhDashboard({
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-xs">
           <div className="flex items-center justify-between text-zinc-500 text-xs font-medium">
             <span>Adopción de Planes</span>
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-50 text-purple-600 text-sm">
-              🚀
-            </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-3xl font-bold text-purple-600">
@@ -185,9 +176,6 @@ export default function AdminRhDashboard({
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-xs">
           <div className="flex items-center justify-between text-zinc-500 text-xs font-medium">
             <span>Oportunidades y Plantilla</span>
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-50 text-amber-600 text-sm">
-              🏢
-            </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-3xl font-bold text-zinc-900">

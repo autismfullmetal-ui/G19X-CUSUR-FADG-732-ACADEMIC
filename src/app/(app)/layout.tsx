@@ -95,7 +95,6 @@ export default async function AppLayout({
               title="Mi Perfil y Seguridad"
               className="flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900/90 hover:bg-zinc-800 hover:border-zinc-700 px-3 py-1.5 text-xs font-semibold text-zinc-200 hover:text-white transition shadow-2xs"
             >
-              <span className="text-sm">👤</span>
               <span>{session.user.name}</span>
             </Link>
           </div>

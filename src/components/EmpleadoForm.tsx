@@ -264,7 +264,7 @@ export default function EmpleadoForm({
         {competencies.length > 0 && (
           <div className="rounded-lg border border-zinc-700 bg-[#121217] p-3 space-y-2">
             <span className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400">
-              ➕ Selecciona la competencia que deseas agregar:
+              Selecciona la competencia que deseas agregar:
             </span>
             <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
               <div className="flex-1">
@@ -446,7 +446,7 @@ export default function EmpleadoForm({
       </div>
 
       <div className="rounded-lg bg-zinc-900/60 p-3 text-xs text-zinc-400 border border-zinc-800">
-        🔐 Se creará acceso al sistema con la contraseña temporal <strong>Demo1234!</strong> y rol <strong>Empleado</strong>.
+        Se creará acceso al sistema con la contraseña temporal <strong>Demo1234!</strong> y rol <strong>Empleado</strong>.
       </div>
 
       <div className="flex gap-2 pt-2">

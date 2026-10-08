@@ -125,15 +125,12 @@ export default function EmpleadosDirectory({
               Buscar por nombre
             </label>
             <div className="relative flex items-center">
-              <span className="absolute left-3 text-zinc-500 pointer-events-none text-xs">
-                🔍
-              </span>
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Nombre o apellido..."
-                className="w-full rounded-xl border border-zinc-800 bg-[#161622] pl-8 pr-8 py-2 text-xs text-zinc-100 placeholder:text-zinc-500 focus:border-[#ad4251] focus:outline-none transition shadow-inner"
+                className="w-full rounded-xl border border-zinc-800 bg-[#161622] pl-3 pr-8 py-2 text-xs text-zinc-100 placeholder:text-zinc-500 focus:border-[#ad4251] focus:outline-none transition shadow-inner"
               />
               {searchQuery && (
                 <button
@@ -158,7 +155,7 @@ export default function EmpleadosDirectory({
               onChange={(e) => setSelectedDepartment(e.target.value)}
               className="w-full rounded-xl border border-zinc-800 bg-[#161622] px-3 py-2 text-xs text-zinc-100 focus:border-[#ad4251] focus:outline-none transition cursor-pointer"
             >
-              <option value="">🏢 Todos los departamentos</option>
+              <option value="">Todos los departamentos</option>
               {departments.map((d) => (
                 <option key={d.id} value={d.id}>
                   {d.name}
@@ -177,7 +174,7 @@ export default function EmpleadosDirectory({
               onChange={(e) => setSelectedPosition(e.target.value)}
               className="w-full rounded-xl border border-zinc-800 bg-[#161622] px-3 py-2 text-xs text-zinc-100 focus:border-[#ad4251] focus:outline-none transition cursor-pointer"
             >
-              <option value="">💼 Todos los puestos</option>
+              <option value="">Todos los puestos</option>
               {positions.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.title}
@@ -196,7 +193,7 @@ export default function EmpleadosDirectory({
               onChange={(e) => setSelectedCompetency(e.target.value)}
               className="w-full rounded-xl border border-zinc-800 bg-[#161622] px-3 py-2 text-xs text-zinc-100 focus:border-[#ad4251] focus:outline-none transition cursor-pointer"
             >
-              <option value="">⭐ Todas las competencias</option>
+              <option value="">Todas las competencias</option>
               {competencies.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name} ({c.type === "TECNICA" ? "Técnica" : "Blanda"})
@@ -231,7 +228,7 @@ export default function EmpleadosDirectory({
 
             {selectedDeptName && (
               <span className="inline-flex items-center gap-1 rounded-full bg-red-950/60 border border-red-800/50 px-2 py-0.5 text-[11px] text-red-200">
-                <span>🏢 {selectedDeptName}</span>
+                <span>{selectedDeptName}</span>
                 <button
                   type="button"
                   onClick={() => setSelectedDepartment("")}
@@ -245,7 +242,7 @@ export default function EmpleadosDirectory({
 
             {selectedPosName && (
               <span className="inline-flex items-center gap-1 rounded-full bg-red-950/60 border border-red-800/50 px-2 py-0.5 text-[11px] text-red-200">
-                <span>💼 {selectedPosName}</span>
+                <span>{selectedPosName}</span>
                 <button
                   type="button"
                   onClick={() => setSelectedPosition("")}
@@ -259,7 +256,7 @@ export default function EmpleadosDirectory({
 
             {selectedCompName && (
               <span className="inline-flex items-center gap-1 rounded-full bg-red-950/60 border border-red-800/50 px-2 py-0.5 text-[11px] text-red-200">
-                <span>⭐ {selectedCompName}</span>
+                <span>{selectedCompName}</span>
                 <button
                   type="button"
                   onClick={() => setSelectedCompetency("")}
@@ -304,7 +301,6 @@ export default function EmpleadosDirectory({
               <tr>
                 <td colSpan={puedeGestionar ? 7 : 6} className="px-4 py-12 text-center">
                   <div className="flex flex-col items-center justify-center max-w-sm mx-auto space-y-2">
-                    <span className="text-3xl">🔍</span>
                     <h3 className="text-sm font-bold text-zinc-200">
                       No se encontraron empleados
                     </h3>

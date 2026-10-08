@@ -123,7 +123,7 @@ async function testPerfilYContrasenas() {
   console.log("Status login tras restablecimiento:", resetLoginRes.status, "(esperado: 302)");
   console.log("✓ Login exitoso con contraseña restablecida:", resetLoginRes.status === 302);
 
-  console.log("\n🎉 ¡TODAS LAS PRUEBAS DE BLOQUE 6 PASARON EXITOSAMENTE!");
+  console.log("\n ¡TODAS LAS PRUEBAS DE BLOQUE 6 PASARON EXITOSAMENTE!");
 }
 
 testPerfilYContrasenas()

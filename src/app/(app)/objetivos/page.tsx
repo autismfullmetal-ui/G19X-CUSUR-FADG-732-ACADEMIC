@@ -4,11 +4,11 @@ import { requireSession } from "@/lib/session";
 import ObjetivoForm from "@/components/ObjetivoForm";
 import { updateObjectiveStatus } from "@/app/actions";
 
-const CATEGORY_STYLES: Record<string, { label: string; badge: string; icon: string }> = {
-  ESTRATEGICO: { label: "Estratégico", badge: "bg-blue-50 text-blue-700 border-blue-200", icon: "🎯" },
-  INNOVACION: { label: "Innovación", badge: "bg-purple-50 text-purple-700 border-purple-200", icon: "💡" },
-  CALIDAD: { label: "Calidad", badge: "bg-emerald-50 text-emerald-700 border-emerald-200", icon: "✨" },
-  OPERATIVO: { label: "Operativo", badge: "bg-amber-50 text-amber-700 border-amber-200", icon: "⚙️" },
+const CATEGORY_STYLES: Record<string, { label: string; badge: string }> = {
+  ESTRATEGICO: { label: "Estratégico", badge: "bg-blue-50 text-blue-700 border-blue-200" },
+  INNOVACION: { label: "Innovación", badge: "bg-purple-50 text-purple-700 border-purple-200" },
+  CALIDAD: { label: "Calidad", badge: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+  OPERATIVO: { label: "Operativo", badge: "bg-amber-50 text-amber-700 border-amber-200" },
 };
 
 export default async function ObjetivosPage({
@@ -138,10 +138,10 @@ export default async function ObjetivosPage({
               defaultValue={dept ?? "todos"}
               className="rounded-lg border border-zinc-300 px-3 py-1.5 text-xs text-zinc-800 bg-white"
             >
-              <option value="todos">🌐 Todos los departamentos</option>
+              <option value="todos">Todos los departamentos</option>
               {departments.map((d) => (
                 <option key={d.id} value={d.id}>
-                  🏢 {d.name}
+                  {d.name}
                 </option>
               ))}
             </select>
@@ -193,7 +193,6 @@ export default async function ObjetivosPage({
             const cat = CATEGORY_STYLES[obj.category] ?? {
               label: obj.category,
               badge: "bg-zinc-100 text-zinc-700 border-zinc-200",
-              icon: "📌",
             };
 
             // Cálculo de avance promedio de este objetivo
@@ -214,16 +213,15 @@ export default async function ObjetivosPage({
                       <span
                         className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold ${cat.badge}`}
                       >
-                        <span>{cat.icon}</span>
                         <span>{cat.label}</span>
                       </span>
 
                       <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[11px] font-medium text-zinc-600">
-                        {obj.department ? `🏢 ${obj.department.name}` : "🌐 Toda la Empresa"}
+                        {obj.department ? obj.department.name : "Toda la Empresa"}
                       </span>
 
                       <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[11px] font-medium text-zinc-600">
-                        📅 {obj.targetPeriod}
+                        {obj.targetPeriod}
                       </span>
 
                       <span

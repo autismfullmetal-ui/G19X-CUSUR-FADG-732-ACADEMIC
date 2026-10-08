@@ -15,7 +15,7 @@ async function testCompetencyTooltips() {
   });
 
   if (!employeeWithCompetencies) {
-    console.error("❌ No se encontró ningún empleado con competencias asignadas.");
+    console.error("No se encontró ningún empleado con competencias asignadas.");
     process.exit(1);
   }
 
@@ -54,9 +54,9 @@ async function testCompetencyTooltips() {
   console.log(`✓ No contiene enlaces ni redirecciones (solo hover in-situ): ${hasNoLinks}`);
 
   if (hasPython && hasLiderazgo && hasPortal && hasNoLinks) {
-    console.log("\n🎉 ¡EL COMPONENTE DE LEYENDA POR HOVER FUNCIONA CORRECTAMENTE!");
+    console.log("\n ¡EL COMPONENTE DE LEYENDA POR HOVER FUNCIONA CORRECTAMENTE!");
   } else {
-    console.error("❌ Alguna validación falló.");
+    console.error("Alguna validación falló.");
     process.exit(1);
   }
 

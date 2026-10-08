@@ -86,7 +86,7 @@ async function testObjetivosYDesempeno() {
   const filterText = await filterRes.text();
   console.log("✓ Filtro departamento funcional:", filterText.includes("Sistemas"));
 
-  console.log("\n🎉 ¡TODAS LAS PRUEBAS DE BLOQUE 4 PASARON EXITOSAMENTE!");
+  console.log("\n ¡TODAS LAS PRUEBAS DE BLOQUE 4 PASARON EXITOSAMENTE!");
 }
 
 testObjetivosYDesempeno().catch(err => {

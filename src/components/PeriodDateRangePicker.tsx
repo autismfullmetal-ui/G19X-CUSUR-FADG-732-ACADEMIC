@@ -228,9 +228,6 @@ export default function PeriodDateRangePicker({
         }`}
       >
         <div className="flex items-center gap-2.5 min-w-0">
-          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-zinc-800 border border-zinc-700/80 text-xs">
-            📅
-          </span>
           <div className="flex flex-col text-left truncate">
             <span className="font-semibold text-zinc-100 truncate text-xs">
               {periodValue}
@@ -253,7 +250,6 @@ export default function PeriodDateRangePicker({
           <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2.5">
             <div>
               <h4 className="text-xs font-bold text-zinc-100 flex items-center gap-1.5">
-                <span>📆</span>
                 <span>Seleccionar Fechas del Período</span>
               </h4>
               <p className="text-[10px] text-zinc-400">
@@ -381,7 +377,7 @@ export default function PeriodDateRangePicker({
                 className="rounded-lg border border-zinc-800 bg-[#161622] hover:bg-zinc-800 px-2.5 py-1 text-xs text-zinc-300 hover:text-white transition cursor-pointer"
                 title="Mes anterior"
               >
-                ◀
+                ‹
               </button>
 
               <div className="flex items-center gap-1.5 text-xs font-bold text-zinc-100">
@@ -395,7 +391,7 @@ export default function PeriodDateRangePicker({
                 className="rounded-lg border border-zinc-800 bg-[#161622] hover:bg-zinc-800 px-2.5 py-1 text-xs text-zinc-300 hover:text-white transition cursor-pointer"
                 title="Mes siguiente"
               >
-                ▶
+                ›
               </button>
             </div>
 

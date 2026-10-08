@@ -73,7 +73,7 @@ El flujo completo del empleado a través de la plataforma consta de 8 fases cone
 
 ### Fase 1: Perfil y Evaluación Inicial de Competencias
 * **Alta por RH con Selección Personalizada:** Al registrar a un nuevo empleado, Recursos Humanos o Admin puede elegir de forma específica y voluntaria qué competencias asignarle (sin preselección obligada de ninguna en particular) y con qué nivel inicial (1 al 5), usando el selector desplegable o los chips rápidos. El sistema registra tanto su perfil vigente en `EmployeeCompetency` como una evaluación diagnóstica de tipo `INICIAL` para auditoría y trazabilidad.
-* **Evaluación posterior:** Si un empleado fue creado sin competencias, el supervisor, RH o Admin puede evaluarlo en cualquier momento desde el módulo de Evaluaciones en competencias clave (escala 1 a 5).
+* **Evaluación posterior:** Si un empleado fue creado sin competencias, el supervisor (o Admin) puede evaluarlo en cualquier momento desde el módulo de Evaluaciones en competencias clave (escala 1 a 5).
 * Se establece el perfil base del colaborador en la tabla `EmployeeCompetency`.
 
 ### Fase 2: Configuración de Oportunidades
@@ -103,7 +103,7 @@ El flujo completo del empleado a través de la plataforma consta de 8 fases cone
 * El empleado visualiza su plan en **/planes**.
 * Para cada actividad:
   1. La marca `EN_PROGRESO` al comenzar a trabajar en ella.
-  2. Al concluir, hace clic en `📤 Enviar entregable` e ingresa:
+  2. Al concluir, hace clic en `Enviar entregable` e ingresa:
      * Resumen de la solución o trabajo ejecutado.
      * Enlace web directo a la evidencia (GitHub, Figma, Google Drive, demo desplegada).
   3. El estado de la actividad pasa a `ENTREGADA` y se registra la fecha de envío (`submittedAt`).
@@ -149,7 +149,7 @@ Para asegurar alta disponibilidad y resiliencia ante límites de cuota (como el 
 * **Ranura 2 (`AI_API_KEY_2`):** Proveedor secundario / respaldo (segunda clave de GLM Coding Pro, OpenRouter, OpenAI o DeepSeek).
 * **Mecanismo:** Si el Proveedor 1 falla por cuota, error de red o timeout, el sistema pasa **automáticamente y sin interrupción** a consultar al Proveedor 2.
 * **Plantilla de Alta Precisión:** Si ambos proveedores fallan o no hay conectividad, entra en acción `templateRecommendation`, que genera el mismo desglose riguroso por competencias sin degradar la experiencia de usuario.
-* **Transparencia:** La interfaz muestra insignias claras informando el origen exacto (`🤖 IA GLM` vs `⚠️ Plantilla estructurada con motivo del fallo`).
+* **Transparencia:** La interfaz muestra insignias claras informando el origen exacto (`IA GLM` vs `Plantilla estructurada con motivo del fallo`).
 
 ---
 
@@ -193,7 +193,7 @@ Para asegurar alta disponibilidad y resiliencia ante límites de cuota (como el 
 * Registro de metas estratégicas, de innovación, calidad y operativas vinculadas a departamentos o transversales a la organización.
 * **Cálculo del "Cumplimiento Registrado":**
   * Se alimenta a través del módulo de **Evaluaciones** (`/evaluaciones` -> `+ Nueva evaluación`), en la pestaña **2. Objetivos de Desempeño (RF-007)**.
-  * El evaluador (Supervisor, RH o Admin) registra el **Valor Alcanzado** real frente a la **Meta Cuantitativa** (ej. meta 100%, alcanzado 92%).
+  * El evaluador (Supervisor o Admin; RH solo consulta) registra el **Valor Alcanzado** real frente a la **Meta Cuantitativa** (ej. meta 100%, alcanzado 92%).
   * El sistema calcula individualmente:
     $$\text{Tasa de Cumplimiento} = \left(\frac{\text{Valor Alcanzado}}{\text{Meta Objetivo}}\right) \times 100$$
   * En la vista de **/objetivos**, la barra de progreso de cada meta promedia automáticamente todas las evaluaciones realizadas por los supervisores:
@@ -248,7 +248,7 @@ Para asegurar alta disponibilidad y resiliencia ante límites de cuota (como el 
 
 ### 5.14. Resumen Ejecutivo y Acordeón Desplegable en Planes (`PlanesList.tsx`)
 * **Vista Compacta por Defecto:** Para evitar el scroll excesivo y vistas abrumadoras, cada plan de desarrollo se presenta colapsado con su información ejecutiva esencial: título, colaborador, departamento, oportunidad vinculada, fecha meta, badge de estado, objetivo resumido, barra de avance porcentual y desglose numérico de actividades.
-* **Acordeón Desplegable:** Pestaña `[ 📑 Ver fases, entregables y retroalimentación ]` que permite al usuario inspeccionar únicamente el plan deseado, desplegando las tarjetas de actividades individuales (`PlanActivityCard`), enlaces de evidencia, retroalimentación del supervisor y el banner de hito de reevaluación.
+* **Acordeón Desplegable:** Pestaña `[ Ver fases, entregables y retroalimentación ]` que permite al usuario inspeccionar únicamente el plan deseado, desplegando las tarjetas de actividades individuales (`PlanActivityCard`), enlaces de evidencia, retroalimentación del supervisor y el banner de hito de reevaluación.
 * **Herramientas Globales:** Buscador integrado por colaborador, plan u oportunidad, filtro por estado (`EN_PROGRESO`, `APROBADO`, `COMPLETADO`, `PROPUESTO`) y controles rápidos de *"Expandir todo"* y *"Colapsar todo"*.
 
 ---

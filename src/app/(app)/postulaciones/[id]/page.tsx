@@ -49,6 +49,8 @@ export default async function PostulacionDetailPage({
   }
 
   const puedeGestionar = ["ADMIN", "RH", "SUPERVISOR"].includes(session.user.role);
+  // La evaluación post-capacitación es tarea del supervisor (RH no evalúa)
+  const puedeEvaluar = ["ADMIN", "SUPERVISOR"].includes(session.user.role);
   const esPropietario = app.employee.userId === Number(session.user.id);
 
   let actividadesSugeridas: string | undefined;
@@ -106,7 +108,7 @@ export default async function PostulacionDetailPage({
 
       {app.opportunity.status === "CERRADA" && (
         <div className="mt-3 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-xs text-blue-800">
-          ℹ️ <strong>Oportunidad cerrada:</strong> La convocatoria para esta vacante ha finalizado. Sin embargo, el <strong>plan de desarrollo del colaborador continúa 100% activo y vigente</strong> para seguir avanzando y registrando el cumplimiento de sus actividades.
+          <strong>Oportunidad cerrada:</strong> La convocatoria para esta vacante ha finalizado. Sin embargo, el <strong>plan de desarrollo del colaborador continúa 100% activo y vigente</strong> para seguir avanzando y registrando el cumplimiento de sus actividades.
         </div>
       )}
 
@@ -157,7 +159,6 @@ export default async function PostulacionDetailPage({
       )}
       {decidida === "ACEPTADA" && (
         <div className="mt-4 flex items-center gap-3 rounded-xl border border-emerald-600/50 bg-emerald-950/40 px-4 py-3 text-xs text-emerald-200 shadow-sm animate-in fade-in duration-300">
-          <span className="text-xl">🎉</span>
           <div>
             <strong className="font-bold text-emerald-100">Postulación Aceptada</strong>
             <p className="text-zinc-300 mt-0.5">
@@ -168,7 +169,6 @@ export default async function PostulacionDetailPage({
       )}
       {decidida === "RECHAZADA" && (
         <div className="mt-4 flex items-center gap-3 rounded-xl border border-zinc-700 bg-zinc-900/60 px-4 py-3 text-xs text-zinc-300 shadow-sm animate-in fade-in duration-300">
-          <span className="text-xl">ℹ️</span>
           <div>
             <strong className="font-bold text-zinc-200">Postulación Descartada</strong>
             <p className="text-zinc-400 mt-0.5">
@@ -200,12 +200,11 @@ export default async function PostulacionDetailPage({
               </p>
             </div>
 
-            {puedeGestionar && (
+            {puedeEvaluar && (
               <Link
                 href={`/evaluaciones?empleado=${app.employeeId}&tipo=POST_CAPACITACION&returnTo=/postulaciones/${app.id}`}
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-red-700 via-rose-700 to-red-600 hover:from-red-600 hover:to-rose-600 border border-red-600/50 px-4 py-2.5 text-xs font-bold text-white shadow-md hover:shadow-lg transition shrink-0 cursor-pointer"
               >
-                <span>🎓</span>
                 <span>Realizar Evaluación Post-Capacitación</span>
                 <span>→</span>
               </Link>
@@ -266,7 +265,6 @@ export default async function PostulacionDetailPage({
       {app.status === "ACEPTADA" && (
         <div className="mt-5 rounded-2xl border border-emerald-500/50 bg-gradient-to-r from-emerald-950/40 via-[#0e1812] to-[#121118] p-4 text-xs text-emerald-200 flex flex-wrap items-center justify-between gap-3 shadow-md">
           <div className="flex items-center gap-3">
-            <span className="text-2xl">🏆</span>
             <div>
               <strong className="block text-emerald-100 font-bold text-sm">
                 Postulación Aceptada Oficialmente
@@ -335,7 +333,6 @@ export default async function PostulacionDetailPage({
       </div>
 
       <h2 className="mt-8 text-lg font-bold text-zinc-100 flex items-center gap-2">
-        <span>✨</span>
         <span>Recomendación de desarrollo (Fase 4)</span>
       </h2>
       <div className="mt-3 rounded-2xl border border-zinc-800/80 bg-[#0e0e13] p-5 shadow-xl">
@@ -391,7 +388,7 @@ export default async function PostulacionDetailPage({
                           {/* Herramientas / Metodología (Negro Grafito con sutil borde grafito) */}
                           <div className="rounded-lg border border-zinc-800/90 bg-[#161622] p-3 transition hover:border-zinc-700">
                             <span className="block text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                              🛠️ Herramientas / Metodología
+                              Herramientas / Metodología
                             </span>
                             <p className="mt-1 text-xs text-zinc-300 leading-snug font-normal">
                               {act.herramientas || "No especificado"}
@@ -401,7 +398,7 @@ export default async function PostulacionDetailPage({
                           {/* Entregable y Evidencia (Tinte Vino / Borgoña Elegante) */}
                           <div className="rounded-lg border border-red-900/60 bg-gradient-to-br from-red-950/45 via-[#1b1218] to-[#141217] p-3 transition hover:border-red-800/70 shadow-[inset_0_0_12px_rgba(140,37,52,0.08)]">
                             <span className="block text-[10px] font-bold uppercase tracking-wider text-red-300">
-                              📦 Entregable y Evidencia
+                              Entregable y Evidencia
                             </span>
                             <p className="mt-1 text-xs font-semibold text-red-100 leading-snug">
                               {act.entregable || "Evidencia según rúbrica"}
@@ -411,7 +408,7 @@ export default async function PostulacionDetailPage({
                           {/* Criterio de Aprobación (Tinte Carmesí / Granate Suave) */}
                           <div className="rounded-lg border border-rose-950/80 bg-gradient-to-br from-rose-950/30 via-[#171116] to-[#141217] p-3 transition hover:border-rose-900/60 shadow-[inset_0_0_12px_rgba(173,66,81,0.06)]">
                             <span className="block text-[10px] font-bold uppercase tracking-wider text-rose-300">
-                              🎯 Criterio de Aprobación
+                              Criterio de Aprobación
                             </span>
                             <p className="mt-1 text-xs font-medium text-zinc-200 leading-snug">
                               {act.criterio || "Validación del supervisor"}
@@ -436,11 +433,11 @@ export default async function PostulacionDetailPage({
                     className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[11px] font-medium text-amber-800 border border-amber-200"
                     title={app.recommendation.modelVersion}
                   >
-                    ⚠️ Origen: Plantilla estructurada (Cuota GLM en límite o red)
+                    Origen: Plantilla estructurada (Cuota GLM en límite o red)
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-medium text-emerald-800 border border-emerald-200">
-                    🤖 Origen: IA GLM ({app.recommendation.modelVersion || "glm-4.5"})
+                    Origen: IA GLM ({app.recommendation.modelVersion || "glm-4.5"})
                   </span>
                 )}
               </div>

@@ -50,9 +50,9 @@ function testEmpleadosFilters() {
     hasReset &&
     hasEmptyState
   ) {
-    console.log("\n🎉 ¡TODAS LAS VALIDACIONES DE BÚSQUEDA Y FILTRADO PASARON EXITOSAMENTE!");
+    console.log("\n ¡TODAS LAS VALIDACIONES DE BÚSQUEDA Y FILTRADO PASARON EXITOSAMENTE!");
   } else {
-    console.error("❌ Falló alguna verificación.");
+    console.error("Falló alguna verificación.");
     process.exit(1);
   }
 }

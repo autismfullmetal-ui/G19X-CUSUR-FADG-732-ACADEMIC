@@ -99,7 +99,6 @@ export default async function OportunidadesPage({
                   {o.objective && (
                     <div className="flex items-center gap-1.5 mt-0.5">
                       <span className="inline-flex items-center gap-1 rounded bg-zinc-100 px-2 py-0.5 text-[11px] font-medium text-zinc-700 border border-zinc-200">
-                        <span>🎯</span>
                         <span>Alineado a: {o.objective.title}</span>
                         {o.objective.targetPeriod && (
                           <span className="text-zinc-500 font-normal">({o.objective.targetPeriod})</span>
@@ -137,18 +136,18 @@ export default async function OportunidadesPage({
               <div className="mt-3 flex flex-wrap gap-4 text-xs text-zinc-500">
                 {o.openDate && (
                   <span>
-                    📅 <strong>Apertura:</strong>{" "}
+                    <strong>Apertura:</strong>{" "}
                     {new Date(o.openDate).toLocaleDateString("es-MX")}
                   </span>
                 )}
                 {o.deadline && (
                   <span>
-                    ⏰ <strong>Fecha máxima para aplicar:</strong>{" "}
+                    <strong>Fecha máxima para aplicar:</strong>{" "}
                     {new Date(o.deadline).toLocaleDateString("es-MX")}
                   </span>
                 )}
                 <span>
-                  👥 <strong>Postulaciones registradas:</strong> {o.applications.length}
+                  <strong>Postulaciones registradas:</strong> {o.applications.length}
                 </span>
               </div>
 

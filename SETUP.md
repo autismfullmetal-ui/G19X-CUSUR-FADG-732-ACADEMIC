@@ -4,7 +4,7 @@ Esta guía proporciona el paso a paso detallado para inicializar, configurar y e
 
 ---
 
-## 📋 Requisitos Previos
+## Requisitos Previos
 
 Antes de comenzar, asegúrate de tener instalado en tu sistema:
 
@@ -21,7 +21,7 @@ npm -v
 
 ---
 
-## 🚀 Paso a Paso de Instalación
+## Paso a Paso de Instalación
 
 ### 1. Clonar o Abrir el Proyecto
 
@@ -84,9 +84,9 @@ La aplicación utiliza SQLite (`prisma/dev.db`), por lo que no necesitas instala
 
 1. **Crear las tablas en la base de datos:**
    ```bash
-   node prisma/apply-init.mjs
+   npx prisma db push
    ```
-   *(O de forma equivalente: `npx prisma db push`)*
+   *(Alternativa sin Prisma CLI: `node prisma/apply-init.mjs`, que ejecuta `prisma/init.sql`. Si modificas `schema.prisma`, regenera ese archivo con `npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script`.)*
 
 2. **Generar el cliente tipado de Prisma:**
    ```bash
@@ -127,20 +127,20 @@ Abre tu navegador en: **[http://localhost:3000](http://localhost:3000)**
 
 ---
 
-## 🔑 Credenciales para Pruebas
+## Credenciales para Pruebas
 
 Todas las cuentas de prueba comparten la misma contraseña de acceso: **`Demo1234!`**
 
 | Correo Electrónico | Contraseña | Rol Asignado | Vista Predeterminada |
 | :--- | :---: | :---: | :--- |
 | `admin@demo.mx` | `Demo1234!` | **ADMIN** | Dashboard Ejecutivo + Auditoría + Configuración |
-| `rh@demo.mx` | `Demo1234!` | **RH** | Gestión de Talento, Evaluaciones e Importación CSV |
+| `rh@demo.mx` | `Demo1234!` | **RH** | Gestión de Talento, Consulta de Evaluaciones e Importación CSV |
 | `supervisor@demo.mx` | `Demo1234!` | **SUPERVISOR** | Monitoreo de Equipo y Calificación de Entregables |
 | `empleado@demo.mx` | `Demo1234!` | **EMPLEADO** | Convocatorias, Postulaciones y Plan Personal |
 
 ---
 
-## 🧪 Recorridos de Prueba Recomendados
+## Recorridos de Prueba Recomendados
 
 ### Flujo 1: Nueva Barra Lateral Izquierda y Tema Oscuro
 1. Inicia sesión con cualquier usuario.
@@ -177,12 +177,14 @@ Todas las cuentas de prueba comparten la misma contraseña de acceso: **`Demo123
 
 ---
 
-## 🛠️ Ejecución de Pruebas Automatizadas
+## Ejecución de Pruebas Automatizadas
 
 El proyecto cuenta con scripts de prueba automatizados para verificar cada módulo:
 
 ```bash
 # Validar compilación de TypeScript (0 errores)
+# Nota: en un clon nuevo ejecuta primero `npm run dev` (o `npx next typegen`)
+# para que Next.js genere los tipos globales como `LayoutProps`.
 npx tsc --noEmit
 
 # Probar la barra lateral y el tema oscuro
@@ -212,7 +214,7 @@ node tests/perfil-password-test.mjs
 
 ---
 
-## ❓ Preguntas Frecuentes y Solución de Problemas
+## Preguntas Frecuentes y Solución de Problemas
 
 ### 1. Error: "Cannot find module '@prisma/client'" o tipos de Prisma desactualizados
 Ejecuta la regeneración del cliente:
@@ -220,10 +222,10 @@ Ejecuta la regeneración del cliente:
 npx prisma generate
 ```
 
-### 2. La base de datos está vacía o faltan tablas
-Aplica el script de inicialización y vuelve a ejecutar la semilla:
+### 2. La base de datos está vacía o faltan tablas (ej. "The table `main.Notification` does not exist")
+Sincroniza el esquema y vuelve a ejecutar la semilla:
 ```bash
-node prisma/apply-init.mjs
+npx prisma db push
 npx tsx prisma/seed.ts
 ```
 

@@ -110,9 +110,6 @@ export default function EmployeeDashboard({
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-xs">
           <div className="flex items-center justify-between text-zinc-500 text-xs font-medium">
             <span>Mi Plan de Desarrollo</span>
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-50 text-purple-600 text-sm">
-              🚀
-            </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-3xl font-bold text-purple-600">
@@ -135,9 +132,6 @@ export default function EmployeeDashboard({
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-xs">
           <div className="flex items-center justify-between text-zinc-500 text-xs font-medium">
             <span>Brechas Superadas</span>
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 text-sm">
-              🎯
-            </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-3xl font-bold text-emerald-600">
@@ -166,9 +160,6 @@ export default function EmployeeDashboard({
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-xs">
           <div className="flex items-center justify-between text-zinc-500 text-xs font-medium">
             <span>Mis Postulaciones</span>
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-blue-600 text-sm">
-              📋
-            </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-3xl font-bold text-zinc-900">
@@ -185,9 +176,6 @@ export default function EmployeeDashboard({
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-xs">
           <div className="flex items-center justify-between text-zinc-500 text-xs font-medium">
             <span>Nivel Promedio de Perfil</span>
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-50 text-amber-600 text-sm">
-              ⭐
-            </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-3xl font-bold text-zinc-900">
@@ -274,7 +262,7 @@ export default function EmployeeDashboard({
 
             {pendingActivities.length === 0 ? (
               <div className="py-12 text-center text-xs text-zinc-400">
-                🎉 ¡Estás al día! No tienes actividades pendientes de entrega en este momento.
+                ¡Estás al día! No tienes actividades pendientes de entrega en este momento.
               </div>
             ) : (
               <div className="space-y-3">
@@ -294,7 +282,7 @@ export default function EmployeeDashboard({
                       </div>
                       {act.deliverable && (
                         <p className="text-[11px] text-zinc-500 mt-1 pl-7 line-clamp-1">
-                          📦 Entregable: <span className="text-zinc-700">{act.deliverable}</span>
+                          Entregable: <span className="text-zinc-700">{act.deliverable}</span>
                         </p>
                       )}
                     </div>
@@ -302,7 +290,7 @@ export default function EmployeeDashboard({
                       href="/planes"
                       className="rounded-lg bg-zinc-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-zinc-800 transition shrink-0 self-end sm:self-auto"
                     >
-                      📤 Enviar entrega
+                      Enviar entrega
                     </Link>
                   </div>
                 ))}

@@ -13,7 +13,7 @@ export default async function EvaluacionesPage({
   }>;
 }) {
   const session = await requireSession();
-  const puedeEvaluar = ["ADMIN", "RH", "SUPERVISOR"].includes(session.user.role);
+  const puedeEvaluar = ["ADMIN", "SUPERVISOR"].includes(session.user.role);
   const { ok, empleado, tipo, returnTo } = await searchParams;
 
   const [evaluaciones, employees, competencies, objectives] = await Promise.all([
@@ -126,7 +126,7 @@ export default async function EvaluacionesPage({
 
             {ev.comment && (
               <p className="text-xs text-zinc-600 bg-zinc-50 rounded-xl p-3 leading-relaxed border border-zinc-100">
-                💬 {ev.comment}
+                {ev.comment}
               </p>
             )}
 
@@ -162,7 +162,7 @@ export default async function EvaluacionesPage({
                     >
                       <div className="flex items-center justify-between">
                         <span className="font-semibold text-zinc-800 truncate" title={os.objective.title}>
-                          🎯 {os.objective.title}
+                          {os.objective.title}
                         </span>
                         <span className="rounded bg-red-950/70 border border-red-800/50 px-1.5 py-0.5 text-[10px] font-bold text-rose-200">
                           {os.complianceRate}%

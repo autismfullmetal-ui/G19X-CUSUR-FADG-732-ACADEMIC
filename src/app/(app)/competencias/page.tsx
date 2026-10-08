@@ -25,7 +25,7 @@ export default async function CompetenciasPage({
               href="/importacion"
               className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 transition shadow-2xs"
             >
-              📥 Importar CSV
+              Importar CSV
             </Link>
             <CompetenciaForm />
           </div>

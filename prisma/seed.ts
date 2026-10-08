@@ -5,7 +5,7 @@ import { calcCompatibility } from "../src/lib/compatibility";
 const db = new PrismaClient();
 
 async function main() {
-  console.log("🧹 1. Limpiando datos existentes en la base de datos...");
+  console.log("1. Limpiando datos existentes en la base de datos...");
 
   // Eliminar en orden estricto de dependencias foráneas
   await db.notification.deleteMany();
@@ -28,12 +28,12 @@ async function main() {
   await db.department.deleteMany();
   await db.user.deleteMany();
 
-  console.log("✅ Tablas limpiadas exitosamente.");
+  console.log("Tablas limpiadas exitosamente.");
 
   // Contraseña universal para ambiente de pruebas
   const pass = bcrypt.hashSync("Demo1234!", 10);
 
-  console.log("👤 2. Creando usuarios y roles...");
+  console.log("2. Creando usuarios y roles...");
   const adminUser = await db.user.create({
     data: {
       email: "admin@demo.mx",
@@ -97,7 +97,7 @@ async function main() {
     },
   });
 
-  console.log("🏢 3. Creando departamentos y puestos...");
+  console.log("3. Creando departamentos y puestos...");
   const depSistemas = await db.department.create({
     data: { name: "Sistemas y Tecnología" },
   });
@@ -127,7 +127,7 @@ async function main() {
     data: { title: "Analista de Procesos Operativos" },
   });
 
-  console.log("👥 4. Creando colaboradores y jerarquía...");
+  console.log("4. Creando colaboradores y jerarquía...");
   // Sergio Ponce: Supervisor en Sistemas
   const empSergio = await db.employee.create({
     data: {
@@ -209,7 +209,7 @@ async function main() {
     },
   });
 
-  console.log("🎯 5. Creando catálogo de competencias...");
+  console.log("5. Creando catálogo de competencias...");
   const cPython = await db.competency.create({
     data: {
       name: "Python Avanzado",
@@ -273,7 +273,7 @@ async function main() {
     },
   });
 
-  console.log("📝 6. Creando evaluaciones diagnósticas y asignando niveles vigentes...");
+  console.log("6. Creando evaluaciones diagnósticas y asignando niveles vigentes...");
   // Función auxiliar para registrar evaluación y competencias vigentes
   async function seedEmployeeEval(
     emp: { id: number; firstName: string; lastName: string },
@@ -346,7 +346,7 @@ async function main() {
     { competencyId: cScrum.id, level: 2, comment: "Nociones de tableros Kanban" },
   ]);
 
-  console.log("📊 7. Creando objetivos organizacionales estratégicos...");
+  console.log("7. Creando objetivos organizacionales estratégicos...");
   const objCalidad = await db.organizationalObjective.create({
     data: {
       title: "Incrementar Cobertura de Pruebas Unitarias al 85%",
@@ -392,7 +392,7 @@ async function main() {
     },
   });
 
-  console.log("🚀 8. Creando oportunidades de crecimiento...");
+  console.log("8. Creando oportunidades de crecimiento...");
   // Oportunidad 1: Scrum Master & Agile Lead (Ideal para que Elena postule y pruebe la IA)
   const oppScrum = await db.opportunity.create({
     data: {
@@ -462,7 +462,7 @@ async function main() {
     include: { requirements: true },
   });
 
-  console.log("🤝 9. Creando postulaciones, brechas y planes de prueba...");
+  console.log("9. Creando postulaciones, brechas y planes de prueba...");
 
   // CASO 1: Elena Vega postulada a "Scrum Master & Facilitador Ágil"
   // ESTADO: Lista para generar recomendación con IA por el usuario.
@@ -715,7 +715,7 @@ async function main() {
     },
   });
 
-  console.log("🔔 10. Creando notificaciones iniciales del sistema...");
+  console.log("10. Creando notificaciones iniciales del sistema...");
   await db.notification.createMany({
     data: [
       {
@@ -745,7 +745,7 @@ async function main() {
     ],
   });
 
-  console.log("📜 11. Registrando logs de auditoría iniciales (RF-026)...");
+  console.log("11. Registrando logs de auditoría iniciales (RF-026)...");
   await db.auditLog.createMany({
     data: [
       {
@@ -776,7 +776,7 @@ async function main() {
   });
 
   console.log("\n========================================================");
-  console.log("✨ BASE DE DATOS REINICIADA Y REPOBLADA EXITOSAMENTE ✨");
+  console.log("BASE DE DATOS REINICIADA Y REPOBLADA EXITOSAMENTE");
   console.log("========================================================");
   console.log("Credenciales de acceso (todas con contraseña: Demo1234!):");
   console.log("1. Administrador: admin@demo.mx");
@@ -792,7 +792,7 @@ async function main() {
 
 main()
   .catch((e) => {
-    console.error("❌ Error al ejecutar el seed:", e);
+    console.error("Error al ejecutar el seed:", e);
     process.exit(1);
   })
   .finally(async () => {

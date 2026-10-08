@@ -102,9 +102,6 @@ export default function SupervisorDashboard({
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-xs">
           <div className="flex items-center justify-between text-zinc-500 text-xs font-medium">
             <span>Equipo a Cargo</span>
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-blue-600 text-sm">
-              👥
-            </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-3xl font-bold text-zinc-900">
@@ -121,13 +118,9 @@ export default function SupervisorDashboard({
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-xs">
           <div className="flex items-center justify-between text-zinc-500 text-xs font-medium">
             <span>Entregables por Revisar</span>
-            <span className={`flex h-7 w-7 items-center justify-center rounded-lg text-sm ${
-              teamMetrics.pendingReviewsCount > 0
-                ? "bg-purple-100 text-purple-700 animate-bounce"
-                : "bg-zinc-100 text-zinc-500"
-            }`}>
-              📥
-            </span>
+            {teamMetrics.pendingReviewsCount > 0 && (
+              <span className="h-2 w-2 rounded-full bg-purple-500 animate-pulse" />
+            )}
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className={`text-3xl font-bold ${
@@ -148,9 +141,6 @@ export default function SupervisorDashboard({
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-xs">
           <div className="flex items-center justify-between text-zinc-500 text-xs font-medium">
             <span>Avance Promedio del Equipo</span>
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 text-sm">
-              📈
-            </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-3xl font-bold text-emerald-600">
@@ -173,9 +163,6 @@ export default function SupervisorDashboard({
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-xs">
           <div className="flex items-center justify-between text-zinc-500 text-xs font-medium">
             <span>Brechas Superadas en Equipo</span>
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-50 text-amber-600 text-sm">
-              🎯
-            </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-3xl font-bold text-zinc-900">
@@ -242,7 +229,7 @@ export default function SupervisorDashboard({
                       rel="noopener noreferrer"
                       className="rounded-lg border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-100 transition"
                     >
-                      🔗 Ver evidencia
+                      Ver evidencia
                     </a>
                   )}
                   <Link

@@ -235,10 +235,11 @@ export async function toggleCompetency(formData: FormData) {
   revalidatePath("/competencias");
 }
 
-/* ============ EVALUACIONES (RH/SUPERVISOR/ADMIN) ============ */
+/* ============ EVALUACIONES (SUPERVISOR/ADMIN) ============ */
+/* RH solo consulta: la evaluación inicial y la post-capacitación son tarea del supervisor. */
 
 export async function createEvaluation(formData: FormData) {
-  const session = await requireRole([ROLES.ADMIN, ROLES.RH, ROLES.SUPERVISOR]);
+  const session = await requireRole([ROLES.ADMIN, ROLES.SUPERVISOR]);
   const employeeId = num(formData.get("employeeId"));
   if (!employeeId) redirect("/evaluaciones?error=datos");
 
@@ -1168,7 +1169,7 @@ export async function reviewActivityDeliverable(formData: FormData) {
   if (activity.plan.employee.userId) {
     await createNotification({
       userId: activity.plan.employee.userId,
-      title: status === "COMPLETADA" ? "✓ Entregable aprobado" : "⚠️ Ajustes solicitados en tu entregable",
+      title: status === "COMPLETADA" ? "✓ Entregable aprobado" : "Ajustes solicitados en tu entregable",
       message: status === "COMPLETADA"
         ? `Tu evaluador (${session.user.name}) ha aprobado tu entrega en: "${activity.description.slice(0, 50)}...".`
         : `Tu evaluador (${session.user.name}) solicitó ajustes en: "${activity.description.slice(0, 50)}...". Revisa los comentarios para corregir.`,

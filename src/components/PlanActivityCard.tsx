@@ -232,7 +232,7 @@ export default function PlanActivityCard({
               {/* Herramientas / Metodología (Negro Grafito elegante) */}
               <div className="rounded-lg border border-zinc-800/90 bg-[#161622] p-3 transition hover:border-zinc-700">
                 <span className="block text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                  🛠️ Herramientas / Metodología
+                  Herramientas / Metodología
                 </span>
                 <p className="mt-1 text-xs text-zinc-300 leading-snug font-normal">
                   {parsed.herramientas || "Metodología estándar"}
@@ -242,7 +242,7 @@ export default function PlanActivityCard({
               {/* Entregable y Evidencia esperada (Gradiente Borgoña / Vino) */}
               <div className="rounded-lg border border-red-900/60 bg-gradient-to-br from-red-950/45 via-[#1b1218] to-[#141217] p-3 transition hover:border-red-800/70 shadow-[inset_0_0_12px_rgba(140,37,52,0.08)]">
                 <span className="block text-[10px] font-bold uppercase tracking-wider text-red-300">
-                  📦 Entregable Esperado
+                  Entregable Esperado
                 </span>
                 <p className="mt-1 text-xs font-semibold text-red-100 leading-snug">
                   {parsed.entregable || "Evidencia según rúbrica"}
@@ -252,7 +252,7 @@ export default function PlanActivityCard({
               {/* Criterio de Aprobación (Gradiente Carmesí / Granate) */}
               <div className="rounded-lg border border-rose-950/80 bg-gradient-to-br from-rose-950/30 via-[#171116] to-[#141217] p-3 transition hover:border-rose-900/60 shadow-[inset_0_0_12px_rgba(173,66,81,0.06)]">
                 <span className="block text-[10px] font-bold uppercase tracking-wider text-rose-300">
-                  🎯 Criterio de Aprobación
+                  Criterio de Aprobación
                 </span>
                 <p className="mt-1 text-xs font-medium text-zinc-200 leading-snug">
                   {parsed.criterio || "Validación del supervisor"}
@@ -274,7 +274,7 @@ export default function PlanActivityCard({
                   type="submit"
                   className="rounded-lg border border-blue-800/60 bg-blue-950/50 px-3 py-1.5 text-xs font-semibold text-blue-300 hover:bg-blue-900/50 transition cursor-pointer"
                 >
-                  ▶ Iniciar actividad
+                  Iniciar actividad
                 </button>
               </form>
             )}
@@ -291,7 +291,7 @@ export default function PlanActivityCard({
                 >
                   {actualSubmittedText
                     ? "Editar entregable / evidencia"
-                    : "📤 Enviar entregable"}
+                    : "Enviar entregable"}
                 </button>
               )}
 
@@ -302,7 +302,7 @@ export default function PlanActivityCard({
                 onClick={() => setShowReviewModal((prev) => !prev)}
                 className="rounded-lg border border-zinc-700/80 bg-zinc-900/80 px-3.5 py-1.5 text-xs font-semibold text-zinc-200 hover:text-white hover:bg-zinc-800 transition shadow-xs cursor-pointer"
               >
-                {activity.feedback ? "Modificar revisión" : "🔍 Revisar y calificar"}
+                {activity.feedback ? "Modificar revisión" : "Revisar y calificar"}
               </button>
             )}
 
@@ -312,7 +312,6 @@ export default function PlanActivityCard({
                 className="rounded-lg border border-zinc-800/90 bg-[#161622] px-2.5 py-1.5 text-[11px] font-medium text-zinc-400 flex items-center gap-1.5 shadow-2xs"
                 title="Recursos Humanos da seguimiento al plan; la calificación y retroalimentación técnica corresponde al supervisor."
               >
-                <span>👁️</span>
                 <span>Seguimiento RH</span>
               </span>
             )}
@@ -324,7 +323,7 @@ export default function PlanActivityCard({
       {hasActualDelivery && actualSubmittedText && (
         <div className="mt-3.5 rounded-lg border border-red-900/60 bg-gradient-to-br from-red-950/40 via-[#1b1218] to-[#141217] p-3.5 text-xs shadow-[inset_0_0_12px_rgba(140,37,52,0.08)]">
           <div className="flex flex-wrap items-center justify-between gap-1 text-red-300 font-semibold">
-            <span>📦 Entregable y evidencia enviada por el colaborador:</span>
+            <span>Entregable y evidencia enviada por el colaborador:</span>
             {activity.submittedAt && (
               <span className="text-[11px] text-zinc-400 font-normal">
                 Enviado:{" "}
@@ -346,7 +345,7 @@ export default function PlanActivityCard({
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 font-semibold text-red-400 underline hover:text-red-300 transition"
               >
-                🔗 Ver evidencia adjunta ({activity.evidenceUrl})
+                Ver evidencia adjunta ({activity.evidenceUrl})
               </a>
             </div>
           )}
@@ -357,7 +356,7 @@ export default function PlanActivityCard({
       {activity.feedback && (
         <div className="mt-3 rounded-lg border border-rose-950/80 bg-gradient-to-br from-rose-950/30 via-[#171116] to-[#141217] p-3 text-xs shadow-[inset_0_0_12px_rgba(173,66,81,0.06)]">
           <div className="flex flex-wrap items-center justify-between gap-1 text-rose-300 font-semibold">
-            <span>💬 Retroalimentación del supervisor:</span>
+            <span>Retroalimentación del supervisor:</span>
             {activity.reviewedAt && (
               <span className="text-[11px] text-zinc-400 font-normal">
                 Revisado:{" "}

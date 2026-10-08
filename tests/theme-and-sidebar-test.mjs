@@ -33,20 +33,20 @@ async function testThemeAndSidebar() {
 
   console.log("✓ Contiene clase de tema oscuro (app-dark-layout):", html.includes("app-dark-layout"));
   console.log("✓ Contiene barra lateral <aside> a la izquierda:", html.includes("<aside") || html.includes("aside"));
-  console.log("✓ Contiene botón de navegación 'Inicio' con ícono:", html.includes("Inicio") && html.includes("🏠"));
-  console.log("✓ Contiene botón de navegación 'Empleados' con ícono:", html.includes("Empleados") && html.includes("👥"));
-  console.log("✓ Contiene botón de navegación 'Competencias' con ícono:", html.includes("Competencias") && html.includes("⭐"));
-  console.log("✓ Contiene botón de navegación 'Evaluaciones' con ícono:", html.includes("Evaluaciones") && html.includes("📋"));
-  console.log("✓ Contiene botón de navegación 'Objetivos' con ícono:", html.includes("Objetivos") && html.includes("🎯"));
-  console.log("✓ Contiene botón de navegación 'Oportunidades' con ícono:", html.includes("Oportunidades") && html.includes("💼"));
-  console.log("✓ Contiene botón de navegación 'Postulaciones' con ícono:", html.includes("Postulaciones") && html.includes("📨"));
-  console.log("✓ Contiene botón de navegación 'Planes' con ícono:", html.includes("Planes") && html.includes("📝"));
-  console.log("✓ Contiene botón de navegación 'Importación' con ícono:", html.includes("Importación") && html.includes("📥"));
-  console.log("✓ Contiene botón de navegación 'Auditoría' con ícono:", html.includes("Auditoría") && html.includes("🛡️"));
+  console.log("✓ Contiene botón de navegación 'Inicio':", html.includes("Inicio"));
+  console.log("✓ Contiene botón de navegación 'Empleados':", html.includes("Empleados"));
+  console.log("✓ Contiene botón de navegación 'Competencias':", html.includes("Competencias"));
+  console.log("✓ Contiene botón de navegación 'Evaluaciones':", html.includes("Evaluaciones"));
+  console.log("✓ Contiene botón de navegación 'Objetivos':", html.includes("Objetivos"));
+  console.log("✓ Contiene botón de navegación 'Oportunidades':", html.includes("Oportunidades"));
+  console.log("✓ Contiene botón de navegación 'Postulaciones':", html.includes("Postulaciones"));
+  console.log("✓ Contiene botón de navegación 'Planes':", html.includes("Planes"));
+  console.log("✓ Contiene botón de navegación 'Importación':", html.includes("Importación"));
+  console.log("✓ Contiene botón de navegación 'Auditoría':", html.includes("Auditoría"));
   console.log("✓ Contiene enlace de Perfil en la barra lateral:", html.includes("/perfil"));
   console.log("✓ Contiene acentos en rojo rubí / red gradient:", html.includes("from-red-600") || html.includes("border-red-500"));
 
-  console.log("\n🎉 ¡EL NUEVO TEMA Y LA BARRA LATERAL A LA IZQUIERDA FUNCIONAN PERFECTAMENTE!");
+  console.log("\n¡EL NUEVO TEMA Y LA BARRA LATERAL A LA IZQUIERDA FUNCIONAN PERFECTAMENTE!");
 }
 
 testThemeAndSidebar().catch(err => {

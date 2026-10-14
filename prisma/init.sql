@@ -94,7 +94,9 @@ CREATE TABLE "Opportunity" (
     "deadline" DATETIME,
     "createdById" INTEGER NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "Opportunity_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    "objectiveId" INTEGER,
+    CONSTRAINT "Opportunity_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "Opportunity_objectiveId_fkey" FOREIGN KEY ("objectiveId") REFERENCES "OrganizationalObjective" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -138,6 +140,7 @@ CREATE TABLE "Recommendation" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "applicationId" INTEGER NOT NULL,
     "text" TEXT NOT NULL,
+    "activities" TEXT,
     "modelVersion" TEXT,
     "status" TEXT NOT NULL DEFAULT 'PROPUESTA',
     "reviewedById" INTEGER,
@@ -158,11 +161,13 @@ CREATE TABLE "DevelopmentPlan" (
     "status" TEXT NOT NULL DEFAULT 'BORRADOR',
     "createdById" INTEGER NOT NULL,
     "approvedById" INTEGER,
+    "strategicObjectiveId" INTEGER,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "DevelopmentPlan_employeeId_fkey" FOREIGN KEY ("employeeId") REFERENCES "Employee" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "DevelopmentPlan_applicationId_fkey" FOREIGN KEY ("applicationId") REFERENCES "Application" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT "DevelopmentPlan_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "DevelopmentPlan_approvedById_fkey" FOREIGN KEY ("approvedById") REFERENCES "User" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+    CONSTRAINT "DevelopmentPlan_approvedById_fkey" FOREIGN KEY ("approvedById") REFERENCES "User" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT "DevelopmentPlan_strategicObjectiveId_fkey" FOREIGN KEY ("strategicObjectiveId") REFERENCES "OrganizationalObjective" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -178,6 +183,65 @@ CREATE TABLE "PlanActivity" (
     "reviewedAt" DATETIME,
     "status" TEXT NOT NULL DEFAULT 'PENDIENTE',
     CONSTRAINT "PlanActivity_planId_fkey" FOREIGN KEY ("planId") REFERENCES "DevelopmentPlan" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Notification" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "userId" INTEGER NOT NULL,
+    "title" TEXT NOT NULL,
+    "message" TEXT NOT NULL,
+    "type" TEXT NOT NULL DEFAULT 'INFO',
+    "linkUrl" TEXT,
+    "read" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "AuditLog" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "userId" INTEGER,
+    "action" TEXT NOT NULL,
+    "entity" TEXT NOT NULL,
+    "entityId" INTEGER,
+    "details" TEXT,
+    "ip" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "AuditLog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "OrganizationalObjective" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "title" TEXT NOT NULL,
+    "description" TEXT,
+    "targetPeriod" TEXT NOT NULL,
+    "category" TEXT NOT NULL DEFAULT 'ESTRATEGICO',
+    "targetValue" REAL NOT NULL DEFAULT 100.0,
+    "unit" TEXT NOT NULL DEFAULT '%',
+    "weight" INTEGER NOT NULL DEFAULT 1,
+    "status" TEXT NOT NULL DEFAULT 'ACTIVO',
+    "departmentId" INTEGER,
+    "createdById" INTEGER NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "OrganizationalObjective_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "Department" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT "OrganizationalObjective_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "ObjectiveEvaluation" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "evaluationId" INTEGER NOT NULL,
+    "objectiveId" INTEGER NOT NULL,
+    "currentValue" REAL NOT NULL,
+    "complianceRate" REAL NOT NULL,
+    "rating" INTEGER NOT NULL DEFAULT 3,
+    "feedback" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "ObjectiveEvaluation_evaluationId_fkey" FOREIGN KEY ("evaluationId") REFERENCES "Evaluation" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "ObjectiveEvaluation_objectiveId_fkey" FOREIGN KEY ("objectiveId") REFERENCES "OrganizationalObjective" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateIndex
@@ -218,4 +282,31 @@ CREATE UNIQUE INDEX "Recommendation_applicationId_key" ON "Recommendation"("appl
 
 -- CreateIndex
 CREATE UNIQUE INDEX "DevelopmentPlan_applicationId_key" ON "DevelopmentPlan"("applicationId");
+
+-- CreateIndex
+CREATE INDEX "Notification_userId_read_idx" ON "Notification"("userId", "read");
+
+-- CreateIndex
+CREATE INDEX "AuditLog_action_idx" ON "AuditLog"("action");
+
+-- CreateIndex
+CREATE INDEX "AuditLog_entity_idx" ON "AuditLog"("entity");
+
+-- CreateIndex
+CREATE INDEX "AuditLog_createdAt_idx" ON "AuditLog"("createdAt");
+
+-- CreateIndex
+CREATE INDEX "AuditLog_userId_idx" ON "AuditLog"("userId");
+
+-- CreateIndex
+CREATE INDEX "OrganizationalObjective_status_idx" ON "OrganizationalObjective"("status");
+
+-- CreateIndex
+CREATE INDEX "OrganizationalObjective_departmentId_idx" ON "OrganizationalObjective"("departmentId");
+
+-- CreateIndex
+CREATE INDEX "ObjectiveEvaluation_objectiveId_idx" ON "ObjectiveEvaluation"("objectiveId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ObjectiveEvaluation_evaluationId_objectiveId_key" ON "ObjectiveEvaluation"("evaluationId", "objectiveId");
 

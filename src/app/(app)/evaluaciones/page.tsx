@@ -13,8 +13,18 @@ export default async function EvaluacionesPage({
   }>;
 }) {
   const session = await requireSession();
-  const puedeEvaluar = ["ADMIN", "SUPERVISOR"].includes(session.user.role);
+  const puedeEvaluar = ["ADMIN", "RH", "SUPERVISOR"].includes(session.user.role);
   const { ok, empleado, tipo, returnTo } = await searchParams;
+
+  // El supervisor solo evalúa a sus colaboradores directos (PRD 5.2)
+  let employeeFilter: { status: string; supervisorId?: number } = { status: "ACTIVO" };
+  if (session.user.role === "SUPERVISOR") {
+    const supervisorEmployee = await db.employee.findUnique({
+      where: { userId: Number(session.user.id) },
+      select: { id: true },
+    });
+    employeeFilter = { status: "ACTIVO", supervisorId: supervisorEmployee?.id ?? -1 };
+  }
 
   const [evaluaciones, employees, competencies, objectives] = await Promise.all([
     db.evaluation.findMany({
@@ -27,7 +37,7 @@ export default async function EvaluacionesPage({
       orderBy: { createdAt: "desc" },
     }),
     db.employee.findMany({
-      where: { status: "ACTIVO" },
+      where: employeeFilter,
       select: { id: true, firstName: true, lastName: true, departmentId: true },
       orderBy: { lastName: "asc" },
     }),

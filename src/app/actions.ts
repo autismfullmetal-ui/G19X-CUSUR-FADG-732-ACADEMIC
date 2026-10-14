@@ -39,37 +39,6 @@ export async function createEmployee(formData: FormData) {
     redirect("/empleados?error=datos");
   }
 
-  const existingUser = await db.user.findUnique({ where: { email } });
-  let userId: number | null = existingUser?.id ?? null;
-  if (!userId) {
-    const user = await db.user.create({
-      data: {
-        email,
-        passwordHash: bcrypt.hashSync(DEFAULT_PASSWORD, 10),
-        name: `${firstName} ${lastName}`.trim(),
-        role: ROLES.EMPLEADO,
-      },
-    });
-    userId = user.id;
-  }
-
-  let employee;
-  try {
-    employee = await db.employee.create({
-      data: {
-        firstName,
-        lastName,
-        email,
-        departmentId: num(formData.get("departmentId")),
-        positionId: num(formData.get("positionId")),
-        supervisorId: num(formData.get("supervisorId")) || null,
-        userId,
-      },
-    });
-  } catch {
-    redirect("/empleados?error=duplicado");
-  }
-
   // Competencias iniciales seleccionadas por RH (RF-006, RF-036)
   const rawCompIds = formData.getAll("empCompetencyId").map((v) => num(v));
   const rawLevels = formData.getAll("empLevel").map((v) => num(v));
@@ -86,50 +55,81 @@ export async function createEmployee(formData: FormData) {
     }
   }
 
-  if (validEntries.length > 0) {
-    const evaluatorId = session?.user?.id ? Number(session.user.id) : null;
-    let evalId: number | null = null;
+  const evaluatorId = session?.user?.id ? Number(session.user.id) : null;
 
-    if (evaluatorId) {
-      const evaluation = await db.evaluation.create({
-        data: {
-          employeeId: employee.id,
-          evaluatorId,
-          type: "INICIAL",
-          status: "FINALIZADA",
-          comment: "Evaluación diagnóstica inicial registrada al dar de alta al empleado por RH.",
-          finalizedAt: new Date(),
-        },
-      });
-      evalId = evaluation.id;
-    }
-
-    for (const item of validEntries) {
-      if (evalId) {
-        await db.evaluationScore.create({
+  // Transacción: usuario + empleado + evaluación inicial + calificaciones
+  // se aplican como una sola unidad atómica (o todo o nada).
+  let employee;
+  try {
+    employee = await db.$transaction(async (tx) => {
+      const existingUser = await tx.user.findUnique({ where: { email } });
+      let userId: number | null = existingUser?.id ?? null;
+      if (!userId) {
+        const user = await tx.user.create({
           data: {
-            evaluationId: evalId,
-            competencyId: item.competencyId,
-            level: item.level,
+            email,
+            passwordHash: bcrypt.hashSync(DEFAULT_PASSWORD, 10),
+            name: `${firstName} ${lastName}`.trim(),
+            role: ROLES.EMPLEADO,
           },
         });
+        userId = user.id;
       }
 
-      await db.employeeCompetency.upsert({
-        where: {
-          employeeId_competencyId: {
-            employeeId: employee.id,
-            competencyId: item.competencyId,
-          },
-        },
-        update: { level: item.level },
-        create: {
-          employeeId: employee.id,
-          competencyId: item.competencyId,
-          level: item.level,
+      const created = await tx.employee.create({
+        data: {
+          firstName,
+          lastName,
+          email,
+          departmentId: num(formData.get("departmentId")),
+          positionId: num(formData.get("positionId")),
+          supervisorId: num(formData.get("supervisorId")) || null,
+          userId,
         },
       });
-    }
+
+      if (validEntries.length > 0 && evaluatorId) {
+        const evaluation = await tx.evaluation.create({
+          data: {
+            employeeId: created.id,
+            evaluatorId,
+            type: "INICIAL",
+            status: "FINALIZADA",
+            comment: "Evaluación diagnóstica inicial registrada al dar de alta al empleado por RH.",
+            finalizedAt: new Date(),
+          },
+        });
+
+        for (const item of validEntries) {
+          await tx.evaluationScore.create({
+            data: {
+              evaluationId: evaluation.id,
+              competencyId: item.competencyId,
+              level: item.level,
+            },
+          });
+
+          await tx.employeeCompetency.upsert({
+            where: {
+              employeeId_competencyId: {
+                employeeId: created.id,
+                competencyId: item.competencyId,
+              },
+            },
+            update: { level: item.level },
+            create: {
+              employeeId: created.id,
+              competencyId: item.competencyId,
+              level: item.level,
+            },
+          });
+        }
+      }
+
+      return created;
+    });
+  } catch {
+    redirect("/empleados?error=duplicado");
   }
 
   // RF-026: Auditoría

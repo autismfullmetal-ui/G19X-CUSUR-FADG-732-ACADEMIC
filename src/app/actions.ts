@@ -235,11 +235,11 @@ export async function toggleCompetency(formData: FormData) {
   revalidatePath("/competencias");
 }
 
-/* ============ EVALUACIONES (SUPERVISOR/ADMIN) ============ */
-/* RH solo consulta: la evaluación inicial y la post-capacitación son tarea del supervisor. */
+/* ============ EVALUACIONES (RH/SUPERVISOR/ADMIN) ============ */
+/* RH y Supervisor pueden realizar evaluaciones iniciales y post-capacitación. */
 
 export async function createEvaluation(formData: FormData) {
-  const session = await requireRole([ROLES.ADMIN, ROLES.SUPERVISOR]);
+  const session = await requireRole([ROLES.ADMIN, ROLES.RH, ROLES.SUPERVISOR]);
   const employeeId = num(formData.get("employeeId"));
   if (!employeeId) redirect("/evaluaciones?error=datos");
 
@@ -248,6 +248,17 @@ export async function createEvaluation(formData: FormData) {
     include: { department: true },
   });
   if (!employee) redirect("/evaluaciones?error=noexiste");
+
+  // PRD 5.2: el supervisor solo puede evaluar a sus colaboradores directos
+  if (session.user.role === "SUPERVISOR") {
+    const supervisorEmployee = await db.employee.findUnique({
+      where: { userId: Number(session.user.id) },
+      select: { id: true },
+    });
+    if (!supervisorEmployee || employee.supervisorId !== supervisorEmployee.id) {
+      redirect("/evaluaciones?error=nosubordinado");
+    }
+  }
 
   const competencies = await db.competency.findMany({
     where: { status: "ACTIVA" },

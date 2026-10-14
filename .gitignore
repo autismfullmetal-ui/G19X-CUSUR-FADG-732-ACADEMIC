@@ -65,3 +65,6 @@ PRD/
 *PRD*
 *.docx
 *.pdf
+
+# Documentacion personal de estudio (nunca subir a Git)
+estudio/

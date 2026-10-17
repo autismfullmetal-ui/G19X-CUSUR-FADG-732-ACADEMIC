@@ -56,11 +56,12 @@ Sistema integral de gestión de talento, diagnóstico de competencias, convocato
 | **Gestión de Empleados y Nómina** | Sí | Sí | No | No |
 | **Catálogo de Competencias** | Sí | Sí | No | No |
 | **Definir Objetivos Organizacionales** | Sí | Sí | No | No |
-| **Realizar Evaluaciones de Desempeño (inicial y post-capacitación)** | Sí | No (solo consulta) | Sí | No |
+| **Realizar Evaluaciones de Desempeño (inicial y post-capacitación)** | Sí | Sí | Sí (solo sus subordinados) | No |
 | **Crear y Publicar Oportunidades** | Sí | Sí | No | No |
 | **Postularse a Convocatorias** | No | No | No | Sí |
 | **Generar y Aprobar Recomendaciones** | Sí | Sí | Sí | No |
-| **Aprobar Planes y Calificar Entregables**| Sí | Sí | Sí | No |
+| **Aprobar Planes de Desarrollo** | Sí | Sí | Sí | No |
+| **Revisar y Calificar Entregables de Actividades** | Sí | No | Sí | No |
 | **Enviar Evidencias y Completar Plan** | No | No | No | Sí |
 | **Carga Masiva por CSV** | Sí | Sí | No | No |
 | **Panel de Auditoría Inmutable** | Sí | Sí | No | No |
@@ -176,7 +177,7 @@ Todas las cuentas vienen preconfiguradas con la contraseña universal: **`Demo12
 | Correo Electrónico | Rol | Función en el Sistema |
 | :--- | :---: | :--- |
 | `admin@demo.mx` | **ADMIN** | Control total del sistema, auditoría y configuración |
-| `rh@demo.mx` | **RH** | Gestión de talento, vacantes, consulta de evaluaciones e importación CSV |
+| `rh@demo.mx` | **RH** | Gestión de talento, vacantes, evaluaciones, aprobación de planes e importación CSV |
 | `supervisor@demo.mx` | **SUPERVISOR** | Monitoreo de equipo, revisión de entregables y evaluaciones |
 | `empleado@demo.mx` | **EMPLEADO** | Postulación a vacantes, envío de evidencias y seguimiento de plan |
 

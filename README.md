@@ -13,11 +13,11 @@ Sistema integral de gestión de talento, diagnóstico de competencias, convocato
 | **Directorio de Empleados** | Búsqueda dinámica en vivo, filtros combinados por departamento, puesto y competencias (`EmpleadosDirectory`), asignación de competencias iniciales al crear y reseteo administrativo de contraseñas. | RF-001, RF-028 |
 | **Catálogo de Competencias** | Matriz de competencias técnicas y blandas con descripción interactiva por nivel (hover tooltip) y control de vigencia. | RF-005 |
 | **Evaluaciones y Desempeño** | Evaluación diagnóstica y post-capacitación con pestañas integradas para calificar **Competencias (RF-006)** y **Cumplimiento de Objetivos Organizacionales (RF-007)**. | RF-006, RF-007, OE-04 |
-| **Objetivos Organizacionales** | Registro y monitoreo de metas estratégicas, operativas, de innovación o calidad vinculadas a convocatorias y planes de capacitación. | RF-007, OE-04 |
-| **Convocatorias y Oportunidades** | Publicación de vacantes y proyectos con requisitos ponderados, competencias obligatorias/deseables y validación estricta de fecha límite de postulación. | RF-010, RF-011 |
+| **Objetivos Organizacionales** | Registro y monitoreo de metas estratégicas, operativas, de innovación o calidad. El **Período de Evaluación** se define con un selector de rango con calendario en la misma ventana (`PeriodDateRangePicker`), con atajos Q1–Q4, Semestre 1/2 y Anual. | RF-007, OE-04 |
+| **Convocatorias y Oportunidades** | Publicación de vacantes y proyectos con requisitos ponderados, competencias obligatorias/deseables, validación estricta de fecha límite y **vínculo opcional a un objetivo organizacional** (insignia visible en el catálogo). | RF-010, RF-011 |
 | **Postulaciones y Fase 4** | Cálculo algorítmico de compatibilidad ponderada %, detección automática de brechas formativas y desglose de Fase 4 con entrega de evidencias, enlaces y calificación. | RF-012, RF-020, RF-021 |
 | **Recomendaciones con IA (70-20-10)** | Generación inteligente de actividades formativas basadas en el modelo 70-20-10 mediante **GLM Coding Plan / Coding Pro** (`glm-4.5` / `glm-5.3`) con doble ranura de failover y plantilla local. | RF-014, RF-015 |
-| **Planes de Capacitación** | Vista ejecutiva compacta (`PlanesList`) con barra de avance, conteo de estados y acordeón interactivo desplegable para inspeccionar fases, evidencias y retroalimentación (`PlanActivityCard`). | RF-017, RF-018 |
+| **Planes de Capacitación** | Vista ejecutiva compacta (`PlanesList`) con barra de avance, conteo de estados y acordeón interactivo desplegable para inspeccionar fases, evidencias y retroalimentación (`PlanActivityCard`). Los planes heredan automáticamente el objetivo estratégico de la convocatoria de origen. | RF-017, RF-018 |
 | **Dashboards por Rol con Recharts** | Tableros ejecutivos con gráficas interactivas Recharts: Cobertura global para Admin/RH, cola de entregables para Supervisores y plan activo para Colaboradores. | RF-023, RF-024 |
 | **Notificaciones In-App** | Campana interactiva en cabecera con contador de pendientes y alertas automáticas ante postulaciones, revisiones y calificaciones. | RF-025 |
 | **Auditoría y Trazabilidad** | Registro inmutable de eventos críticos (creación, edición, evaluación, aprobación) con panel de filtrado y búsqueda exclusivo para Admin y RH. | RF-026, OE-17 |
@@ -29,13 +29,15 @@ Sistema integral de gestión de talento, diagnóstico de competencias, convocato
 ## Flujo de Trabajo Integral
 
 ```
-   [1. Convocatoria Publicada] (Con fecha límite y requisitos ponderados)
+   [0. Objetivo Organizacional] (Período de evaluación definido con calendario)
+              ↓
+   [1. Convocatoria Publicada] (Vinculada al objetivo, con fecha límite y requisitos ponderados)
               ↓
    [2. Postulación del Empleado] → Cálculo automático de Compatibilidad % y Brechas
               ↓
    [3. Recomendación Formativa] → Generación con IA (70-20-10) o Plantilla Local
               ↓
-   [4. Aprobación y Creación del Plan] → RH o Supervisor aprueba recomendación y formaliza el plan
+   [4. Aprobación y Creación del Plan] → RH o Supervisor aprueba recomendación y formaliza el plan (hereda el objetivo)
               ↓
    [5. Ejecución y Evidencias (Fase 4)] → Empleado envía enlaces a entregables
               ↓
@@ -129,13 +131,21 @@ pdp/
 │   │   └── globals.css            # Tokens de estilo, tema Vino/Negro/Grafito
 │   ├── components/                # Formularios y componentes modulares
 │   │   ├── AppSidebar.tsx         # Barra de navegación lateral fija a la izquierda
+│   │   ├── HeaderNotifications.tsx# Campana interactiva de notificaciones in-app
+│   │   ├── LoginFormCard.tsx      # Tarjeta de login glassmorphism
+│   │   ├── LoginBackgroundSlideshow.tsx # Carrusel de fondos cinemáticos del login
 │   │   ├── EmpleadosDirectory.tsx # Directorio con buscador y filtros dinámicos
+│   │   ├── EmpleadoForm.tsx       # Alta de empleados con competencias iniciales
+│   │   ├── CompetenciaForm.tsx    # Alta de competencias del catálogo
+│   │   ├── CompetencyBadgeTooltip.tsx # Tooltip explicativo de niveles de competencia
+│   │   ├── EvaluacionForm.tsx     # Formulario de evaluación en 2 pestañas
+│   │   ├── ObjetivoForm.tsx       # Formulario modal de objetivos estratégicos
+│   │   ├── PeriodDateRangePicker.tsx # Selector de rango con calendario y atajos Q/S/Anual
+│   │   ├── OportunidadForm.tsx    # Convocatorias con requisitos y objetivo vinculado
+│   │   ├── GenerateRecommendationButton.tsx # Disparador de recomendación IA 70-20-10
+│   │   ├── PlanForm.tsx           # Formalización de planes de desarrollo
 │   │   ├── PlanesList.tsx         # Resumen ejecutivo con acordeón de planes
 │   │   ├── PlanActivityCard.tsx   # Tarjeta interactiva de entregables con feedback
-│   │   ├── CompetencyBadgeTooltip.tsx # Tooltip explicativo de niveles de competencia
-│   │   ├── HeaderNotifications.tsx# Campana interactiva de notificaciones in-app
-│   │   ├── ObjetivoForm.tsx       # Formulario modal de objetivos estratégicos
-│   │   ├── EvaluacionForm.tsx     # Formulario de evaluación en 2 pestañas
 │   │   └── dashboard/             # Componentes de métricas Recharts por rol
 │   ├── lib/
 │   │   ├── ai.ts                  # Motor de IA con prompt 70-20-10 y failover
@@ -143,12 +153,16 @@ pdp/
 │   │   ├── notifications.ts       # Gestor y disparador de notificaciones in-app
 │   │   ├── compatibility.ts       # Motor de cálculo de compatibilidad y brechas
 │   │   ├── auth.ts                # Configuración de credenciales Auth.js
+│   │   ├── session.ts             # Utilidad de obtención de sesión actual
 │   │   └── db.ts                  # Instancia singleton de PrismaClient
 ├── tests/                         # Suite de pruebas automatizadas E2E
+├── PRD/                           # Documento de requerimientos del producto
+├── estudio/                       # Material de estudio y análisis del proyecto
 ├── .env                           # Variables de entorno locales
 ├── .env.example                   # Plantilla de variables de entorno
 ├── contexto.md                    # Documento maestro conceptual y de arquitectura
 ├── historial.md                   # Bitácora detallada de cambios e hitos
+├── HERRAMIENTAS.md                # Herramientas y tecnologías utilizadas
 ├── README.md                      # Resumen ejecutivo de la plataforma
 └── SETUP.md                       # Guía paso a paso de instalación y puesta en marcha
 ```

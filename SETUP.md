@@ -53,25 +53,26 @@ Copia la plantilla `.env.example` para crear tu archivo `.env` local:
 cp .env.example .env
 ```
 
-Edita el archivo `.env` según tus requerimientos:
+La plantilla contiene estas variables; coloca tus claves en `AI_API_KEY` (y opcionalmente `AI_API_KEY_2`):
 
 ```env
 # Conexión de base de datos local SQLite
 DATABASE_URL="file:./dev.db"
 
 # Clave secreta para cifrado de sesiones y JWT (Auth.js)
-AUTH_SECRET="tu-clave-secreta-de-desarrollo-segura"
+AUTH_SECRET="cambia-esta-clave"
 
-# --- CONFIGURACIÓN DE IA (MODELO 70-20-10) ---
-# Ranura 1 (Principal): Zhipu AI GLM-4.5
+# Proveedor 1 (Principal): GLM Coding Plan
+# Endpoint alterno internacional: https://api.z.ai/api/coding/paas/v4
 AI_BASE_URL="https://open.bigmodel.cn/api/coding/paas/v4"
-AI_API_KEY="tu_clave_glm_aqui"
+AI_API_KEY=""
 AI_MODEL="glm-4.5"
 
-# Ranura 2 (Failover / Respaldo Automático): OpenRouter / OpenAI
-AI_BASE_URL_2="https://openrouter.ai/api/v1"
-AI_API_KEY_2="sk-or-v1-tu_clave_openrouter_aqui"
-AI_MODEL_2="zhipu/glm-4-9b-chat"
+# Proveedor 2 (Respaldo automático si el 1 falla o se queda sin cuota)
+# Compatible con: OpenRouter, OpenAI, DeepSeek, Groq u otra key de GLM.
+AI_BASE_URL_2="https://api.z.ai/api/coding/paas/v4"
+AI_API_KEY_2=""
+AI_MODEL_2="GLM-5.3"
 ```
 
 > **Nota sobre IA:** Si no configuras claves de API en `.env`, el sistema activa automáticamente el **motor de plantillas formativas locales**, permitiendo probar la generación y aprobación de planes sin costo alguno ni interrupciones.
@@ -179,7 +180,7 @@ Todas las cuentas de prueba comparten la misma contraseña de acceso: **`Demo123
 
 ## Ejecución de Pruebas Automatizadas
 
-El proyecto cuenta con scripts de prueba automatizados para verificar cada módulo:
+El proyecto cuenta con scripts de prueba automatizados en `tests/`. Varios de ellos hacen peticiones a `http://localhost:3000`, así que mantén `npm run dev` corriendo en otra terminal mientras los ejecutas.
 
 ```bash
 # Validar compilación de TypeScript (0 errores)
@@ -193,14 +194,14 @@ node tests/theme-and-sidebar-test.mjs
 # Probar fechas de oportunidades y vigencia (RF-011)
 node tests/opportunity-dates-test.mjs
 
-# Probar flujo de entregables y evidencias en Fase 4 (RF-020, RF-021)
-node tests/fase4-activities-test.mjs
+# Probar el vínculo Objetivo -> Convocatoria -> Plan
+node tests/opportunity-objective-link-test.mjs
 
-# Probar tableros por rol y notificaciones (RF-023, RF-024, RF-025)
-node tests/dashboards-and-notifications-test.mjs
+# Probar entregables de Fase 4, revisión y evaluación post-capacitación (RF-020, RF-021)
+node tests/deliverables-and-evaluation-test.mjs
 
-# Probar bitácora de auditoría inmutable (RF-026)
-node tests/audit-system-test.mjs
+# Probar bitácora de auditoría y su restricción por rol (RF-026)
+node tests/auditoria-test.mjs
 
 # Probar objetivos organizacionales y desempeño (RF-007)
 node tests/objetivos-desempeno-test.mjs

@@ -68,3 +68,7 @@ PRD/
 
 # Documentacion personal de estudio (nunca subir a Git)
 estudio/
+
+# Excepciones: solo PRD y MVP publicados en docs/ (estudio/ sigue excluido)
+!docs/PRD.md
+!docs/MVP.md

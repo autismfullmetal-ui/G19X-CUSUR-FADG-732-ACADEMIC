@@ -157,10 +157,10 @@ pdp/
 │   │   ├── session.ts             # Utilidad de obtención de sesión actual
 │   │   └── db.ts                  # Instancia singleton de PrismaClient
 ├── tests/                         # Suite de pruebas automatizadas E2E
-├── PRD/                           # Documento de requerimientos del producto
-├── estudio/                       # Material de estudio y análisis del proyecto
-├── .env                           # Variables de entorno locales
-├── .env.example                   # Plantilla de variables de entorno
+├── docs/
+│   ├── PRD.md                     # Documento de requerimientos del producto
+│   └── MVP.md                     # Alcance del producto mínimo viable
+├── .env.example                   # Plantilla de variables de entorno (copiar a .env)
 ├── contexto.md                    # Documento maestro conceptual y de arquitectura
 ├── historial.md                   # Bitácora detallada de cambios e hitos
 ├── HERRAMIENTAS.md                # Herramientas y tecnologías utilizadas

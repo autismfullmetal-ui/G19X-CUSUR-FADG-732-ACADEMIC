@@ -10,7 +10,7 @@ Antes de comenzar, asegúrate de tener instalado en tu sistema:
 
 * **Node.js 20 o superior** (Recomendado Node.js 22 LTS) → [nodejs.org](https://nodejs.org)
 * **npm 10 o superior** (Incluido con Node.js)
-* **Git** (Opcional, para clonar y control de versiones)
+* **Git** (para clonar el repositorio) → [git-scm.com](https://git-scm.com)
 
 Para verificar las versiones instaladas, ejecuta en tu terminal:
 
@@ -23,15 +23,16 @@ npm -v
 
 ## Paso a Paso de Instalación
 
-### 1. Clonar o Abrir el Proyecto
+### 1. Clonar el Repositorio
 
-Abre una terminal y dirígete a la carpeta `pdp`:
+Abre una terminal, clona el repositorio y entra a la carpeta creada:
 
 ```bash
-cd "f:/TO_DO PROYECTO/pdp"
+git clone https://github.com/autismfullmetal-ui/G19X-CUSUR-FADG-732-ACADEMIC.git
+cd G19X-CUSUR-FADG-732-ACADEMIC
 ```
 
-*(O `cd pdp` si estás en la raíz del repositorio).*
+*(Si ya tienes el proyecto descargado, solo abre una terminal en la carpeta raíz del repositorio).*
 
 ---
 
@@ -135,7 +136,7 @@ Todas las cuentas de prueba comparten la misma contraseña de acceso: **`Demo123
 | Correo Electrónico | Contraseña | Rol Asignado | Vista Predeterminada |
 | :--- | :---: | :---: | :--- |
 | `admin@demo.mx` | `Demo1234!` | **ADMIN** | Dashboard Ejecutivo + Auditoría + Configuración |
-| `rh@demo.mx` | `Demo1234!` | **RH** | Gestión de Talento, Consulta de Evaluaciones e Importación CSV |
+| `rh@demo.mx` | `Demo1234!` | **RH** | Gestión de Talento, Evaluaciones, Aprobación de Planes e Importación CSV |
 | `supervisor@demo.mx` | `Demo1234!` | **SUPERVISOR** | Monitoreo de Equipo y Calificación de Entregables |
 | `empleado@demo.mx` | `Demo1234!` | **EMPLEADO** | Convocatorias, Postulaciones y Plan Personal |
 

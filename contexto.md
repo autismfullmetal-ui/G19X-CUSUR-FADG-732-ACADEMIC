@@ -193,10 +193,10 @@ Para asegurar alta disponibilidad y resiliencia ante límites de cuota (como el 
 * Registro de metas estratégicas, de innovación, calidad y operativas vinculadas a departamentos o transversales a la organización.
 * **Cálculo del "Cumplimiento Registrado":**
   * Se alimenta a través del módulo de **Evaluaciones** (`/evaluaciones` -> `+ Nueva evaluación`), en la pestaña **2. Objetivos de Desempeño (RF-007)**.
-  * El evaluador (Supervisor o Admin; RH solo consulta) registra el **Valor Alcanzado** real frente a la **Meta Cuantitativa** (ej. meta 100%, alcanzado 92%).
+  * El evaluador (Admin, RH o Supervisor; este último solo para sus colaboradores directos) registra el **Valor Alcanzado** real frente a la **Meta Cuantitativa** (ej. meta 100%, alcanzado 92%).
   * El sistema calcula individualmente:
     $$\text{Tasa de Cumplimiento} = \left(\frac{\text{Valor Alcanzado}}{\text{Meta Objetivo}}\right) \times 100$$
-  * En la vista de **/objetivos**, la barra de progreso de cada meta promedia automáticamente todas las evaluaciones realizadas por los supervisores:
+  * En la vista de **/objetivos**, la barra de progreso de cada meta promedia automáticamente todas las evaluaciones registradas por los evaluadores:
     $$\text{Cumplimiento Registrado Promedio} = \frac{\sum \text{Cumplimiento individual}}{\text{Total de evaluaciones}}$$
   * Además, las convocatorias u oportunidades creadas pueden vincularse formalmente a un objetivo organizacional, permitiendo que los planes de desarrollo formativos hereden dicha alineación estratégica.
 * **Selector de Período con Calendario de Rango (`PeriodDateRangePicker.tsx`):**

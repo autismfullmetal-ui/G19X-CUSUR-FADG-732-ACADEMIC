@@ -132,7 +132,7 @@ El flujo completo del empleado a través de la plataforma consta de 8 fases cone
   * Doméstico (BigModel): `https://open.bigmodel.cn/api/coding/paas/v4/chat/completions`
   * Internacional (Z.AI): `https://api.z.ai/api/coding/paas/v4/chat/completions`
 * **Formato:** Compatible con el estándar de OpenAI (`messages`, `response_format: { type: "json_object" }`).
-* **Modelos de Razonamiento y Timeout Optimizado:** Los modelos de GLM Coding Pro generan cadenas de razonamiento profundo (`reasoning_content`) antes de emitir la respuesta final estructurada. El timeout de red se calibró en **90 segundos** con `max_tokens: 4096` en [`src/lib/ai.ts`](file:///f:/TO_DO%20PROYECTO/pdp/src/lib/ai.ts) para garantizar que las peticiones complejas se completen al 100% sin abortar prematuramente.
+* **Modelos de Razonamiento y Timeout Optimizado:** Los modelos de GLM Coding Pro generan cadenas de razonamiento profundo (`reasoning_content`) antes de emitir la respuesta final estructurada. El timeout de red se calibró en **90 segundos** con `max_tokens: 4096` en [`src/lib/ai.ts`](src/lib/ai.ts) para garantizar que las peticiones complejas se completen al 100% sin abortar prematuramente.
 
 ### 4.2. Estructura de Desglose Obligatorio (Metodología 70-20-10)
 Está estrictamente prohibido generar actividades genéricas (como *"Curso de Python"* o *"Taller de liderazgo"*). Cada actividad generada por la IA debe contener 5 dimensiones técnicas:
@@ -222,7 +222,7 @@ Para asegurar alta disponibilidad y resiliencia ante límites de cuota (como el 
   * **Fondos Base:** Negro profundo (`#09090b` en canvas general y `#0c0c11` en sidebar).
   * **Superficies y Tarjetas:** Matices de gris carbón (`#121217` y `#181820`), bordes sutiles en gris grafito (`#272732`) y sombras suaves.
   * **Acentos Principales:** Rojo carmesí y borgoña refinado (`#8c2534`, `#ad4251`, `#751c2a`) para botones principales, badges de alerta, barras de progreso y bordes interactivos.
-  * **Armonización Cromática:** Se eliminaron los tonos verdes disonantes; badges de completitud, barras de avance al 100% e hitos de reevaluación se calibraron a la gama vino oscuro y rosa cálido, respaldados por reglas globales en [`src/app/globals.css`](file:///f:/TO_DO%20PROYECTO/pdp/src/app/globals.css).
+  * **Armonización Cromática:** Se eliminaron los tonos verdes disonantes; badges de completitud, barras de avance al 100% e hitos de reevaluación se calibraron a la gama vino oscuro y rosa cálido, respaldados por reglas globales en [`src/app/globals.css`](src/app/globals.css).
   * **Tipografía y Textos:** Blanco roto (`#f4f4f5`) para títulos y encabezados de alta legibilidad, gris plata (`#a1a1aa`) para descripciones y metadatos secundarios.
   * **Tablas e Inputs:** Fondos oscuros (`#121217`), encabezados en gris oscuro con bordes atenuados y estados focus con resplandor en rojo suave (`ring-[#ad4251]/20`).
 

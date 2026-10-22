@@ -22,9 +22,9 @@
 * Selección y uso de API Key de **GLM / Zhipu AI**.
 
 ### Diagnóstico y Acciones:
-1. Se estructuró el archivo [.env](file:///f:/TO_DO%20PROYECTO/pdp/.env) para admitir variables estándar compatibles con llamadas estilo OpenAI: `AI_BASE_URL`, `AI_API_KEY`, `AI_MODEL`.
-2. Se documentaron las opciones en [SETUP.md](file:///f:/TO_DO%20PROYECTO/pdp/SETUP.md).
-3. Se implementó la verificación `aiConfigured()` en [src/lib/ai.ts](file:///f:/TO_DO%20PROYECTO/pdp/src/lib/ai.ts) para evitar fallos si la clave no está configurada, recurriendo al mecanismo de plantilla de contingencia (RNF-015).
+1. Se estructuró el archivo [.env](.env) para admitir variables estándar compatibles con llamadas estilo OpenAI: `AI_BASE_URL`, `AI_API_KEY`, `AI_MODEL`.
+2. Se documentaron las opciones en [SETUP.md](SETUP.md).
+3. Se implementó la verificación `aiConfigured()` en [src/lib/ai.ts](src/lib/ai.ts) para evitar fallos si la clave no está configurada, recurriendo al mecanismo de plantilla de contingencia (RNF-015).
 
 ---
 
@@ -37,7 +37,7 @@
 * Tomar en cuenta las fechas establecidas al generar los planes de desarrollo.
 
 ### Modificaciones en Base de Datos:
-* **Modelo `Opportunity` en [prisma/schema.prisma](file:///f:/TO_DO%20PROYECTO/pdp/prisma/schema.prisma) y [prisma/init.sql](file:///f:/TO_DO%20PROYECTO/pdp/prisma/init.sql):**
+* **Modelo `Opportunity` en [prisma/schema.prisma](prisma/schema.prisma) y [prisma/init.sql](prisma/init.sql):**
   * `vacancies Int @default(1)`
   * `openDate DateTime?`
   * `deadline DateTime?`
@@ -45,7 +45,7 @@
   * `targetDate DateTime?` (fecha objetivo de cumplimiento del plan).
 * Sincronización de base de datos ejecutada con `npx prisma db push` y cliente regenerado con `npx prisma generate`.
 
-### Modificaciones en Lógica de Servidor ([src/app/actions.ts](file:///f:/TO_DO%20PROYECTO/pdp/src/app/actions.ts)):
+### Modificaciones en Lógica de Servidor ([src/app/actions.ts](src/app/actions.ts)):
 * **`createOpportunity`:** Almacenamiento de vacantes, fecha de apertura y fecha límite.
 * **`applyToOpportunity`:**
   * Validación de fecha de apertura: rechazo si la fecha actual es anterior a `openDate`.
@@ -54,7 +54,7 @@
 * **`closeOpportunity`:** Al cambiar la oportunidad a estado `CERRADA`, solo se cancelan las postulaciones sin plan activo. Aquellas con un `DevelopmentPlan` creado permanecen activas para que el colaborador complete su formación.
 
 ### Pruebas Automatizadas:
-* Creación y ejecución exitosa de [tests/opportunity-dates-test.mjs](file:///f:/TO_DO%20PROYECTO/pdp/tests/opportunity-dates-test.mjs).
+* Creación y ejecución exitosa de [tests/opportunity-dates-test.mjs](tests/opportunity-dates-test.mjs).
 
 ---
 
@@ -77,7 +77,7 @@
 * **Modelo `DevelopmentPlan`:**
   * `postEvaluationId Int?`: Vinculación directa con la evaluación post-capacitación.
 
-### Nuevas Acciones del Servidor ([src/app/actions.ts](file:///f:/TO_DO%20PROYECTO/pdp/src/app/actions.ts)):
+### Nuevas Acciones del Servidor ([src/app/actions.ts](src/app/actions.ts)):
 * **`submitActivityDeliverable`:** El colaborador envía su entregable y URL; la actividad pasa a `ENTREGADA` y el plan cambia a `EN_PROGRESO`.
 * **`reviewActivityDeliverable`:** El evaluador deja retroalimentación y decide:
   * **Aprobar:** Cambia a `COMPLETADA` y registra `reviewedAt`. Si todas las actividades quedan completadas, el plan pasa automáticamente a `COMPLETADO`.
@@ -87,14 +87,14 @@
   * Si `nivelEvaluado >= requiredLevel`, el estado de la brecha pasa automáticamente a **`SUPERADA`**.
 
 ### Componentes y Vistas Creados / Modificados:
-* **Nuevo componente interactivo [PlanActivityCard.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/PlanActivityCard.tsx):**
+* **Nuevo componente interactivo [PlanActivityCard.tsx](src/components/PlanActivityCard.tsx):**
   * Vista para el empleado: botones para iniciar, modal/formulario desplegable para adjuntar entregable y enlace, visualización de feedback del supervisor.
   * Vista para el supervisor: inspección de enlace externo, formulario para calificar y dejar observaciones.
-* **[src/app/(app)/planes/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/planes/page.tsx):**
+* **[src/app/(app)/planes/page.tsx](src/app/(app)/planes/page.tsx):**
   * Barra de progreso porcentual del plan en tiempo real.
   * Integración de `PlanActivityCard`.
   * Acceso dinámico a *"Realizar Evaluación Post-Capacitación"* al alcanzar avances clave.
-* **[src/app/(app)/postulaciones/[id]/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/postulaciones/[id]/page.tsx):**
+* **[src/app/(app)/postulaciones/[id]/page.tsx](src/app/(app)/postulaciones/[id]/page.tsx):**
   * Visualización de insignias de brechas superadas (`✓ Superada`).
 
 ---
@@ -111,10 +111,10 @@
 3. **Límite de cuota 429:** Al conectar directamente al endpoint de Zhipu, se detectó que la cuenta GLM Coding Plan había alcanzado el límite de 5 horas (`código 1308: 已达到 5 小时的使用上限`).
 
 ### Solución Implementada:
-1. **Configuración de Endpoint Oficial en [.env](file:///f:/TO_DO%20PROYECTO/pdp/.env):**
+1. **Configuración de Endpoint Oficial en [.env](.env):**
    * `AI_BASE_URL="https://open.bigmodel.cn/api/coding/paas/v4"`
    * `AI_MODEL="glm-4.5"`
-2. **Estructura Obligatoria de 5 Campos en [src/lib/ai.ts](file:///f:/TO_DO%20PROYECTO/pdp/src/lib/ai.ts):**
+2. **Estructura Obligatoria de 5 Campos en [src/lib/ai.ts](src/lib/ai.ts):**
    * `fase`: Período cronológico alineado al calendario de la oportunidad (ej. *Fase 1 [Semanas 1-4]*).
    * `titulo`: Nombre técnico formal de la actividad.
    * `descripcion`: Metodología y pasos específicos que ejecutará el colaborador.
@@ -122,10 +122,10 @@
    * `entregable`: Producto tangible y verificable que el colaborador debe entregar (ej. *Repositorio privado en GitHub con API REST y cobertura >75%*).
    * `criterio`: Criterio objetivo de validación para el supervisor.
 3. **Plantilla Enriquecida de Contingencia:** Se actualizó `templateRecommendation` para generar exactamente el mismo desglose profundo, evitando respuestas genéricas incluso en modo sin conexión o con cuota agotada.
-4. **Tarjetas Visuales en Fase 4 ([postulaciones/[id]/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/postulaciones/[id]/page.tsx)):**
+4. **Tarjetas Visuales en Fase 4 ([postulaciones/[id]/page.tsx](src/app/(app)/postulaciones/[id]/page.tsx)):**
    * Reemplazo de la lista simple `<ol>` por tarjetas con diseño visual por bloques (azul para fase, gris para herramientas, lila para entregables y verde para criterios de validación).
    * Indicador transparente de origen (`IA GLM` vs `Plantilla estructurada por límite de cuota`).
-5. **Precarga en Plan ([PlanForm.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/PlanForm.tsx) y [actions.ts](file:///f:/TO_DO%20PROYECTO/pdp/src/app/actions.ts)):**
+5. **Precarga en Plan ([PlanForm.tsx](src/components/PlanForm.tsx) y [actions.ts](src/app/actions.ts)):**
    * `createPlan` ahora acepta `activitiesJson`. Al crear el plan, el `deliverable` esperado sugerido por la IA se inicializa directamente en `PlanActivity`, de modo que el empleado sabe qué debe construir desde el primer día.
 
 ---
@@ -136,21 +136,21 @@
 * Crear otro espacio para otra API key en la configuración del proyecto.
 
 ### Solución Implementada:
-1. **Configuración en [.env](file:///f:/TO_DO%20PROYECTO/pdp/.env):**
+1. **Configuración en [.env](.env):**
    * Se añadieron variables para el Proveedor 2 de respaldo:
      ```env
      AI_BASE_URL_2="https://openrouter.ai/api/v1"
      AI_API_KEY_2=""
      AI_MODEL_2="zhipu/glm-4-9b-chat"
      ```
-2. **Lógica de Conmutación Inteligente en [src/lib/ai.ts](file:///f:/TO_DO%20PROYECTO/pdp/src/lib/ai.ts):**
+2. **Lógica de Conmutación Inteligente en [src/lib/ai.ts](src/lib/ai.ts):**
    * Función `getProviders()` que normaliza las credenciales de Proveedor 1 y Proveedor 2.
    * Lógica de failover en `generateAiRecommendation`:
      1. Intenta primero con el Proveedor 1 (GLM Coding Plan).
      2. Si el Proveedor 1 falla (por ejemplo, error HTTP 429 por límite de cuota o error de red), pasa automáticamente y de forma transparente a llamar al Proveedor 2.
      3. Si solo se proporciona la clave en `AI_API_KEY_2`, utiliza directamente el Proveedor 2.
      4. Si ambos fallan o no hay claves, recurre a la plantilla estructurada de alta precisión.
-3. **Actualización de Documentación:** Actualización de [SETUP.md](file:///f:/TO_DO%20PROYECTO/pdp/SETUP.md).
+3. **Actualización de Documentación:** Actualización de [SETUP.md](SETUP.md).
 
 ---
 
@@ -169,19 +169,19 @@
    * `backdrop-blur-2xl`, `bg-black/40`, borde de cristal sutil `border-white/20`, esquinas `rounded-3xl` y sombras profundas.
    * Título *"Welcome"* con tipografía limpia en blanco.
    * Inputs en formato de píldora redondeada (`rounded-full`) con clase `.glass-input`.
-   * En [src/app/globals.css](file:///f:/TO_DO%20PROYECTO/pdp/src/app/globals.css), se añadieron reglas para `.glass-input` para evitar que las reglas globales del tema claro sobreescriban el fondo translúcido.
+   * En [src/app/globals.css](src/app/globals.css), se añadieron reglas para `.glass-input` para evitar que las reglas globales del tema claro sobreescriban el fondo translúcido.
    * Botón `LOGIN` con formato píldora y gradiente en tono vino/borgoña (`from-[#7a1c3d] via-[#8f224a] to-[#5c132c]`) con sombra de resplandor.
    * Enlaces discretos *"Forgot Password?"* y *"Sign Up"*. Diseño limpio y despejado sin botones de prueba.
 3. **Imágenes de Fondo Dinámicas (Slideshow con Transición Suave):**
-   * Creación del directorio [public/backgrounds/](file:///f:/TO_DO%20PROYECTO/pdp/public/backgrounds).
+   * Creación del directorio [public/backgrounds/](public/backgrounds).
    * Generación de 3 imágenes cinemáticas en resolución 16:9:
      * `bg1.jpg`: Montañas crepúsculo en tonos rosa y violeta (idéntico al estilo de la foto de referencia).
      * `bg2.jpg`: Skyline y arquitectura corporativa moderna nocturna.
      * `bg3.jpg`: Paisaje alpino con aurora boreal esmeralda.
-   * Nuevo componente cliente [LoginBackgroundSlideshow.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/LoginBackgroundSlideshow.tsx) con transición suave de desvanecimiento (cross-fade) cada 8 segundos y controles manuales en la esquina inferior derecha.
-   * Documentación para el usuario en [public/backgrounds/README.md](file:///f:/TO_DO%20PROYECTO/pdp/public/backgrounds/README.md) explicando cómo reemplazar o agregar sus propias fotografías.
-4. **Componente de Tarjeta:** Nuevo componente [LoginFormCard.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/LoginFormCard.tsx).
-5. **Página Principal de Login:** Actualización de [src/app/login/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/login/page.tsx).
+   * Nuevo componente cliente [LoginBackgroundSlideshow.tsx](src/components/LoginBackgroundSlideshow.tsx) con transición suave de desvanecimiento (cross-fade) cada 8 segundos y controles manuales en la esquina inferior derecha.
+   * Documentación para el usuario en [public/backgrounds/README.md](public/backgrounds/README.md) explicando cómo reemplazar o agregar sus propias fotografías.
+4. **Componente de Tarjeta:** Nuevo componente [LoginFormCard.tsx](src/components/LoginFormCard.tsx).
+5. **Página Principal de Login:** Actualización de [src/app/login/page.tsx](src/app/login/page.tsx).
 
 ---
 
@@ -191,14 +191,14 @@
 * Al crear un nuevo empleado desde la sección de Recursos Humanos, además de los datos laborales existentes (nombre, apellidos, correo, departamento, puesto, supervisor), RH debe poder asignarle sus competencias iniciales, evitando que los nuevos empleados queden con un perfil de competencias vacío.
 
 ### Modificaciones Realizadas:
-1. **Acción del Servidor (`createEmployee` en [src/app/actions.ts](file:///f:/TO_DO%20PROYECTO/pdp/src/app/actions.ts)):**
+1. **Acción del Servidor (`createEmployee` en [src/app/actions.ts](src/app/actions.ts)):**
    * Captura y validación de arrays de competencias (`empCompetencyId`) y niveles (`empLevel`, 1 a 5).
    * Deduplicación de competencias seleccionadas.
    * Inserción automática de los registros en `EmployeeCompetency` para asegurar disponibilidad inmediata en el cálculo de compatibilidad (`calcCompatibility`), radar y brechas de oportunidades.
    * Registro formal de una `Evaluation` inicial (tipo `INICIAL`, estado `FINALIZADA`, evaluador: usuario RH/Admin en sesión) con sus respectivos `EvaluationScore` para trazabilidad y auditoría completa del PRD (RF-006, RF-036).
    * Revalidación de las rutas `/empleados` y `/evaluaciones`.
 
-2. **Formulario Interactivo de Empleado ([src/components/EmpleadoForm.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/EmpleadoForm.tsx)):**
+2. **Formulario Interactivo de Empleado ([src/components/EmpleadoForm.tsx](src/components/EmpleadoForm.tsx)):**
    * Nueva sección interactiva *"Competencias iniciales"* con contador dinámico de asignaciones.
    * Botón `+ Agregar competencia` para añadir filas dinámicas con selector de competencia y selector de nivel descriptivo (Nivel 1 - Básico a Nivel 5 - Experto).
    * Opción de conveniencia `Cargar todas` para precargar en un solo clic todas las competencias activas del catálogo.
@@ -206,7 +206,7 @@
    * Deshabilitación inteligente de opciones en el dropdown para evitar asignar la misma competencia dos veces.
    * Estado opcional: si RH decide no asignar competencias en el momento, el empleado se registra y se puede evaluar posteriormente en el módulo de Evaluaciones.
 
-3. **Directorio y Tabla de Empleados ([src/app/(app)/empleados/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/empleados/page.tsx)):**
+3. **Directorio y Tabla de Empleados ([src/app/(app)/empleados/page.tsx](src/app/(app)/empleados/page.tsx)):**
    * Consulta ampliada en `db.employee.findMany` para incluir `competencies: { include: { competency: true } }`.
    * Consulta de competencias activas y pase como prop a `EmpleadoForm`.
    * Nueva columna **"Competencias"** en la tabla del directorio de empleados donde se visualizan inmediatamente las insignias con el nombre de cada competencia y su nivel vigente (`Nv.1` a `Nv.5`), o la etiqueta *"Sin competencias"* en caso de no tener asignadas.
@@ -222,12 +222,12 @@
 
 ### Modificaciones Realizadas:
 
-1. **Modelo de Notificaciones en Base de Datos ([prisma/schema.prisma](file:///f:/TO_DO%20PROYECTO/pdp/prisma/schema.prisma)):**
+1. **Modelo de Notificaciones en Base de Datos ([prisma/schema.prisma](prisma/schema.prisma)):**
    * Nuevo modelo `Notification`: `id`, `userId`, `title`, `message`, `type` (`INFO`, `SUCCESS`, `WARNING`, `ACTION_REQUIRED`), `linkUrl`, `read` (Boolean), `createdAt`.
    * Índice optimizado `@@index([userId, read])` y relación con cascada con `User`.
    * Sincronización exitosa con la base de datos SQLite y regeneración de Prisma Client.
 
-2. **Módulo y Acciones de Notificaciones ([src/lib/notifications.ts](file:///f:/TO_DO%20PROYECTO/pdp/src/lib/notifications.ts) y [src/app/actions.ts](file:///f:/TO_DO%20PROYECTO/pdp/src/app/actions.ts)):**
+2. **Módulo y Acciones de Notificaciones ([src/lib/notifications.ts](src/lib/notifications.ts) y [src/app/actions.ts](src/app/actions.ts)):**
    * Utilidades `createNotification` y `notifyUsers`.
    * Nuevas acciones de servidor: `markNotificationAsRead`, `markAllNotificationsAsRead`, `clearAllNotifications`.
    * Disparadores automáticos en eventos clave:
@@ -236,24 +236,24 @@
      * Envío de entregable con evidencia -> Alerta al supervisor con enlace directo para calificar.
      * Calificación o solicitud de ajustes -> Alerta al colaborador con el feedback del evaluador.
 
-3. **Componente de Notificaciones en Barra de Navegación ([src/components/HeaderNotifications.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/HeaderNotifications.tsx) y [src/app/(app)/layout.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/layout.tsx)):**
+3. **Componente de Notificaciones en Barra de Navegación ([src/components/HeaderNotifications.tsx](src/components/HeaderNotifications.tsx) y [src/app/(app)/layout.tsx](src/app/(app)/layout.tsx)):**
    * Campana interactiva en el header con insignia animada de conteo de no leídas (`9+`).
    * Menú flotante (*popover*) con lista cronológica de notificaciones, código de colores por severidad, formato de tiempo transcurrido (*hace X min*), marcado con un clic y botón para limpiar historial.
 
-4. **Dashboards Especializados por Rol con Recharts ([src/app/(app)/dashboard/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/dashboard/page.tsx)):**
-   * **Para Administrador y Recursos Humanos ([src/components/dashboard/AdminRhDashboard.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/dashboard/AdminRhDashboard.tsx)):**
+4. **Dashboards Especializados por Rol con Recharts ([src/app/(app)/dashboard/page.tsx](src/app/(app)/dashboard/page.tsx)):**
+   * **Para Administrador y Recursos Humanos ([src/components/dashboard/AdminRhDashboard.tsx](src/components/dashboard/AdminRhDashboard.tsx)):**
      * Indicadores clave con barras de progreso: Cobertura de Evaluaciones (%), Tasa de Cierre de Brechas (%), Tasa de Adopción de Planes (%) y Plantilla Activa.
      * Gráfica Recharts de **Competencias Más Demandadas** en oportunidades activas.
      * Gráfica Recharts Donut de **Distribución de Estados de Planes** (Aprobados, En Progreso, Completados, Borrador).
      * Gráfica Recharts de **Brechas Organizacionales por Competencia** para identificar necesidades prioritarias de capacitación.
      * Tabla en tiempo real de últimas postulaciones con compatibilidad, brechas y accesos rápidos.
-   * **Para Supervisor ([src/components/dashboard/SupervisorDashboard.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/dashboard/SupervisorDashboard.tsx)):**
+   * **Para Supervisor ([src/components/dashboard/SupervisorDashboard.tsx](src/components/dashboard/SupervisorDashboard.tsx)):**
      * Indicadores: Total de equipo a cargo, entregables por revisar, avance promedio del equipo y brechas superadas.
      * Bandeja destacada de **Entregables por Calificar** con acceso a evidencias externas y botón directo de evaluación.
      * Gráfica Recharts de **Progreso de Planes por Colaborador**.
      * Gráfica Recharts Donut de **Cierre de Brechas del Equipo**.
      * Directorio de subordinados directos con accesos para evaluar o inspeccionar planes.
-   * **Para Empleado / Colaborador ([src/components/dashboard/EmployeeDashboard.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/dashboard/EmployeeDashboard.tsx)):**
+   * **Para Empleado / Colaborador ([src/components/dashboard/EmployeeDashboard.tsx](src/components/dashboard/EmployeeDashboard.tsx)):**
      * Indicadores: Progreso de su plan activo con barra porcentual, brechas superadas vs abiertas, total postulaciones y promedio de dominio competencial (1 a 5).
      * Gráfica Recharts de **Mi Perfil de Competencias** (escala 1 a 5).
      * Lista de **Próximas Actividades a Entregar** con botón directo `Enviar entrega`.
@@ -269,7 +269,7 @@
 
 ### Modificaciones Realizadas:
 
-1. **Modelo de Datos de Auditoría ([prisma/schema.prisma](file:///f:/TO_DO%20PROYECTO/pdp/prisma/schema.prisma)):**
+1. **Modelo de Datos de Auditoría ([prisma/schema.prisma](prisma/schema.prisma)):**
    * Nuevo modelo `AuditLog`:
      * `id`: Identificador autoincremental único.
      * `userId`: Identificador del usuario que ejecutó la acción (relacionado con modelo `User`).
@@ -281,10 +281,10 @@
    * Índices de alto rendimiento: `@@index([action])`, `@@index([entity])`, `@@index([createdAt])`.
    * Sincronización con base de datos SQLite y regeneración de tipos con Prisma Client.
 
-2. **Servicio Centralizado de Auditoría ([src/lib/audit.ts](file:///f:/TO_DO%20PROYECTO/pdp/src/lib/audit.ts)):**
+2. **Servicio Centralizado de Auditoría ([src/lib/audit.ts](src/lib/audit.ts)):**
    * Función `logAudit({ userId, action, entity, entityId, details })` con manejo robusto de excepciones para garantizar que un fallo de auditoría no bloquee la transacción principal del usuario.
 
-3. **Instrumentación de Operaciones Críticas en Acciones del Servidor ([src/app/actions.ts](file:///f:/TO_DO%20PROYECTO/pdp/src/app/actions.ts)):**
+3. **Instrumentación de Operaciones Críticas en Acciones del Servidor ([src/app/actions.ts](src/app/actions.ts)):**
    * Registro sistemático de eventos en:
      * `createEmployee`: Registro de alta de colaborador con departamento asignado.
      * `setEmployeeStatus`: Registro de activación/inactivación de colaboradores.
@@ -296,7 +296,7 @@
      * `createPlan`, `approvePlan`: Creación y formalización de planes de desarrollo.
      * `submitActivityDeliverable`, `reviewActivityDeliverable`: Envío y calificación de entregables.
 
-4. **Interfaz de Consulta y Filtrado de Auditoría ([src/app/(app)/auditoria/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/auditoria/page.tsx)):**
+4. **Interfaz de Consulta y Filtrado de Auditoría ([src/app/(app)/auditoria/page.tsx](src/app/(app)/auditoria/page.tsx)):**
    * Acceso protegido por roles (solo visible y accesible para `ADMIN` y `RH`; colaboradores y supervisores reciben pantalla amigable de acceso restringido).
    * Tarjetas de resumen en tiempo real: Total de eventos registrados, operaciones ejecutadas hoy y total de registros mostrados.
    * Filtros combinados por:
@@ -305,7 +305,7 @@
      * **Búsqueda por texto libre** en el detalle del evento o nombre de usuario ejecutor.
    * Enlace directo en la barra superior de navegación (`src/app/(app)/layout.tsx`) para roles autorizados.
 
-5. **Pruebas Automatizadas de Auditoría ([tests/auditoria-test.mjs](file:///f:/TO_DO%20PROYECTO/pdp/tests/auditoria-test.mjs)):**
+5. **Pruebas Automatizadas de Auditoría ([tests/auditoria-test.mjs](tests/auditoria-test.mjs)):**
    * Verificación de autenticación de sesión `ADMIN`.
    * Verificación de consulta y renderizado de la tabla de eventos con código 200.
    * Verificación de funcionamiento del filtro por URL (`?entity=Oportunidad`).
@@ -321,7 +321,7 @@
 
 ### Modificaciones Realizadas:
 
-1. **Modelos de Datos en Prisma ([prisma/schema.prisma](file:///f:/TO_DO%20PROYECTO/pdp/prisma/schema.prisma)):**
+1. **Modelos de Datos en Prisma ([prisma/schema.prisma](prisma/schema.prisma)):**
    * `OrganizationalObjective`:
      * `id`, `title`, `description`, `targetPeriod` (ej. "2025 - Q1", "2025 - Anual"), `category` (`ESTRATEGICO`, `INNOVACION`, `CALIDAD`, `OPERATIVO`), `targetValue` (Float), `unit` (String), `weight` (Int 1..5), `status` (`ACTIVO`, `PAUSADO`, `COMPLETADO`, `CANCELADO`), `departmentId` (opcional o global), `createdById`.
      * Relaciones con `ObjectiveEvaluation` y `DevelopmentPlan` (permitiendo vincular planes de desarrollo a metas estratégicas).
@@ -330,25 +330,25 @@
      * Restricción única `@@unique([evaluationId, objectiveId])`.
    * Sincronización exitosa con base de datos SQLite y regeneración de tipos con Prisma Client.
 
-2. **Acciones del Servidor ([src/app/actions.ts](file:///f:/TO_DO%20PROYECTO/pdp/src/app/actions.ts)):**
+2. **Acciones del Servidor ([src/app/actions.ts](src/app/actions.ts)):**
    * `createObjective`: Creación de objetivos estratégicos por RH/Admin con registro de auditoría (`CREAR_OBJETIVO`).
    * `updateObjectiveStatus`: Cambio de ciclo de vida (Completar, Pausar o Reactivar) con auditoría (`ACTUALIZAR_OBJETIVO`).
    * `createEvaluation`: Actualizada para evaluar simultáneamente **Competencias (RF-006)** y **Cumplimiento de Objetivos Organizacionales (RF-007)** del departamento del empleado o globales, calculando el `% de cumplimiento` automático y registrando el evento de auditoría `EVALUAR_OBJETIVOS`.
 
-3. **Formulario de Creación de Objetivos ([src/components/ObjetivoForm.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/ObjetivoForm.tsx)):**
+3. **Formulario de Creación de Objetivos ([src/components/ObjetivoForm.tsx](src/components/ObjetivoForm.tsx)):**
    * Formulario interactivo con categorías temáticas con íconos, meta numérica, unidad personalizada, ponderación de 1 a 5 y selector de alcance (Global empresarial vs Departamental).
 
-4. **Pestaña de Objetivos en Evaluaciones ([src/components/EvaluacionForm.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/EvaluacionForm.tsx)):**
+4. **Pestaña de Objetivos en Evaluaciones ([src/components/EvaluacionForm.tsx](src/components/EvaluacionForm.tsx)):**
    * Integración de dos pestañas: `1. Competencias (RF-006)` y `2. Objetivos de Desempeño (RF-007)`.
    * Permite al evaluador capturar el valor alcanzado, calificación de 1 a 5 y observaciones específicas por objetivo para el colaborador.
 
-5. **Módulo Completo de Objetivos ([src/app/(app)/objetivos/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/objetivos/page.tsx)):**
+5. **Módulo Completo de Objetivos ([src/app/(app)/objetivos/page.tsx](src/app/(app)/objetivos/page.tsx)):**
    * Vista accesible para todos los roles con métricas organizacionales en tiempo real: Objetivos Activos, Promedio de Cumplimiento Global (%), Total de Evaluaciones Registradas y Departamentos alineados.
    * Filtros combinados por Departamento y Estado.
    * Tarjetas informativas con barra de progreso del promedio alcanzado, desglose de calificaciones y resultados recientes de colaboradores.
    * Enlace en la barra superior de navegación (`src/app/(app)/layout.tsx`) para todos los perfiles.
 
-6. **Pruebas Automatizadas de Objetivos y Desempeño ([tests/objetivos-desempeno-test.mjs](file:///f:/TO_DO%20PROYECTO/pdp/tests/objetivos-desempeno-test.mjs)):**
+6. **Pruebas Automatizadas de Objetivos y Desempeño ([tests/objetivos-desempeno-test.mjs](tests/objetivos-desempeno-test.mjs)):**
    * Verificación de acceso y creación de objetivos con rol `ADMIN`.
    * Verificación de consulta y visualización de objetivos con rol `EMPLEADO` (sin permisos de edición).
    * Verificación de renderizado de objetivos y competencias en `/evaluaciones`.
@@ -364,12 +364,12 @@
 
 ### Modificaciones Realizadas:
 
-1. **Rutas de Descarga de Plantillas Oficiales ([src/app/api/templates/](file:///f:/TO_DO%20PROYECTO/pdp/src/app/api/templates/)):**
+1. **Rutas de Descarga de Plantillas Oficiales ([src/app/api/templates/](src/app/api/templates/)):**
    * `/api/templates/empleados`: Descarga de `plantilla_empleados.csv` con cabeceras `nombre,apellidos,email,departamento,puesto,rol,supervisor_email` y filas de ejemplo.
    * `/api/templates/competencias`: Descarga de `plantilla_competencias.csv` con cabeceras `nombre,descripcion,tipo` y ejemplos de competencias técnicas y blandas.
    * Configuración de cabeceras HTTP `Content-Disposition: attachment` para descarga directa en el navegador.
 
-2. **Parser y Acciones del Servidor ([src/app/actions.ts](file:///f:/TO_DO%20PROYECTO/pdp/src/app/actions.ts)):**
+2. **Parser y Acciones del Servidor ([src/app/actions.ts](src/app/actions.ts)):**
    * Función `parseCsv(text)`: Procesador de CSV que maneja saltos de línea Windows (`\r\n`) y Unix (`\n`), comillas envolventes y limpieza de espacios en blanco.
    * `importEmployeesCsv`:
      * Valida cabeceras requeridas (`nombre`, `email`).
@@ -383,7 +383,7 @@
      * Inserta competencias con estado `ACTIVA` y omite duplicadas existentes.
      * Registra auditoría automática `IMPORTACION_MASIVA`.
 
-3. **Módulo Web de Importación ([src/app/(app)/importacion/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/importacion/page.tsx)):**
+3. **Módulo Web de Importación ([src/app/(app)/importacion/page.tsx](src/app/(app)/importacion/page.tsx)):**
    * Acceso exclusivo para perfiles `ADMIN` y `RH`.
    * Tarjetas de métricas del volumen actual (Total de Empleados, Departamentos, Puestos y Competencias).
    * Dos paneles de importación:
@@ -392,11 +392,11 @@
    * Alertas contextuales de éxito (conteo de registros creados vs omitidos) y de error (archivos vacíos o cabeceras no válidas).
 
 4. **Accesos Rápidos y Navegación:**
-   * Botón directo `Importar CSV` integrado en el encabezado de [src/app/(app)/empleados/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/empleados/page.tsx).
-   * Botón directo `Importar CSV` integrado en el encabezado de [src/app/(app)/competencias/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/competencias/page.tsx).
-   * Enlace permanente en la barra superior de navegación ([src/app/(app)/layout.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/layout.tsx)) para administradores y RH.
+   * Botón directo `Importar CSV` integrado en el encabezado de [src/app/(app)/empleados/page.tsx](src/app/(app)/empleados/page.tsx).
+   * Botón directo `Importar CSV` integrado en el encabezado de [src/app/(app)/competencias/page.tsx](src/app/(app)/competencias/page.tsx).
+   * Enlace permanente en la barra superior de navegación ([src/app/(app)/layout.tsx](src/app/(app)/layout.tsx)) para administradores y RH.
 
-5. **Pruebas Automatizadas ([tests/importacion-csv-test.mjs](file:///f:/TO_DO%20PROYECTO/pdp/tests/importacion-csv-test.mjs)):**
+5. **Pruebas Automatizadas ([tests/importacion-csv-test.mjs](tests/importacion-csv-test.mjs)):**
    * Descarga y validación de sintaxis de ambas plantillas CSV (200 OK).
    * Verificación de acceso y permisos de administración (`ADMIN` permitido, `EMPLEADO` bloqueado).
    * Verificación de inserción masiva en base de datos.
@@ -412,7 +412,7 @@
 
 ### Modificaciones Realizadas:
 
-1. **Acciones del Servidor ([src/app/actions.ts](file:///f:/TO_DO%20PROYECTO/pdp/src/app/actions.ts)):**
+1. **Acciones del Servidor ([src/app/actions.ts](src/app/actions.ts)):**
    * `changePassword`:
      * Requiere sesión activa del usuario.
      * Valida obligatoriedad de campos, longitud mínima (≥ 6 caracteres) y coincidencia de confirmación.
@@ -426,20 +426,20 @@
      * Emite notificación in-app de advertencia (`WARNING`) invitando a actualizar la clave temporal.
      * Registra evento de auditoría `RESTABLECER_CONTRASENA`.
 
-2. **Módulo de Perfil Personal ([src/app/(app)/perfil/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/perfil/page.tsx)):**
+2. **Módulo de Perfil Personal ([src/app/(app)/perfil/page.tsx](src/app/(app)/perfil/page.tsx)):**
    * Consulta integral de la cuenta: Nombre completo, email corporativo, rol con badge estilizado e identificador de cuenta.
    * Información laboral vinculada: Departamento asignado, puesto, nombre del supervisor directo y estatus laboral.
    * Cuadrícula de competencias vigentes del colaborador con sus niveles de dominio (1 a 5).
    * Formulario seguro para cambio de contraseña con validación de clave actual y confirmación de nueva clave.
    * Banners de confirmación de éxito y mensajes explicativos ante errores de coincidencia o clave actual incorrecta.
 
-3. **Restablecimiento Administrativo desde Nómina ([src/app/(app)/empleados/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/empleados/page.tsx)):**
+3. **Restablecimiento Administrativo desde Nómina ([src/app/(app)/empleados/page.tsx](src/app/(app)/empleados/page.tsx)):**
    * Acción `Restablecer clave` incorporada directamente en la columna de acciones para que RH o Administradores puedan atender solicitudes de reseteo con un solo clic.
 
-4. **Acceso Rápido en Encabezado ([src/app/(app)/layout.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/layout.tsx)):**
+4. **Acceso Rápido en Encabezado ([src/app/(app)/layout.tsx](src/app/(app)/layout.tsx)):**
    * Avatar y botón interactivo `[Nombre]` en la barra superior que enlaza directamente a `/perfil`.
 
-5. **Pruebas Automatizadas ([tests/perfil-password-test.mjs](file:///f:/TO_DO%20PROYECTO/pdp/tests/perfil-password-test.mjs)):**
+5. **Pruebas Automatizadas ([tests/perfil-password-test.mjs](tests/perfil-password-test.mjs)):**
    * Verificación de acceso a `/perfil` con rol `EMPLEADO` (200 OK).
    * Verificación de hashing bcrypt y cambio exitoso de contraseña a nueva clave.
    * Verificación de inicio de sesión exitoso con la nueva credencial (HTTP 302).
@@ -456,25 +456,25 @@
 
 ### Modificaciones Realizadas:
 
-1. **Nueva Barra Lateral Izquierda ([src/components/AppSidebar.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/AppSidebar.tsx)):**
+1. **Nueva Barra Lateral Izquierda ([src/components/AppSidebar.tsx](src/components/AppSidebar.tsx)):**
    * Creación del componente cliente `AppSidebar` situado en la columna izquierda fija/adherida (`w-64 xl:w-72 border-r border-zinc-800/80 bg-[#0c0c11]`).
    * Menú vertical completo con todos los accesos principales acompañados de íconos representativos ( Inicio, Empleados, Competencias, Evaluaciones, Objetivos, Oportunidades, Postulaciones, Planes, Importación, Auditoría).
    * Detección dinámica de ruta activa (`usePathname()`) con realce en rojo rubí degradado (`from-red-950/70 via-red-900/30`), borde indicador izquierdo (`border-l-3 border-red-500`) y punto resplandeciente.
    * Sección inferior con minitarjeta del usuario conectado, rol con badge estilizado, acceso directo a `Mi Perfil` y botón de `Salir` con acción de servidor segura.
    * Drawer responsivo para dispositivos móviles con botón hamburguesa y fondo con desenfoque.
 
-2. **Esquema Global de Colores Negro / Rojo / Matices de Gris ([src/app/globals.css](file:///f:/TO_DO%20PROYECTO/pdp/src/app/globals.css)):**
+2. **Esquema Global de Colores Negro / Rojo / Matices de Gris ([src/app/globals.css](src/app/globals.css)):**
    * Fondo general obsidiana profundo: `#09090b` (`--background`).
    * Tipografía de alto contraste blanco/marfil: `#f4f4f5` (`--foreground`), con grises secundarios `#a1a1aa`, `#71717a`.
    * Superficies de tarjetas en carbón oscuro (`#121217`) con bordes en matices de gris (`#272732`).
    * Acentos en rojo carmesí / rubí (`#dc2626`, `#ef4444`) para botones principales con sombra resplandeciente, inputs activos con anillo rojo e insignias clave.
    * Adaptación de tablas, campos de texto, selectores y leyendas en gráficas Recharts para visualización en modo oscuro.
 
-3. **Reestructuración de Layout Principal ([src/app/(app)/layout.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/layout.tsx)):**
+3. **Reestructuración de Layout Principal ([src/app/(app)/layout.tsx](src/app/(app)/layout.tsx)):**
    * Disposición flexible horizontal (`flex-col lg:flex-row`) con la barra lateral ubicada a la izquierda y el contenedor de trabajo a la derecha.
    * Barra superior ligera de soporte con indicador de sistema activo, campana de notificaciones in-app y acceso a perfil.
 
-4. **Pruebas Automatizadas ([tests/theme-and-sidebar-test.mjs](file:///f:/TO_DO%20PROYECTO/pdp/tests/theme-and-sidebar-test.mjs)):**
+4. **Pruebas Automatizadas ([tests/theme-and-sidebar-test.mjs](tests/theme-and-sidebar-test.mjs)):**
    * Verificación de renderizado de la barra lateral `<aside>` en la posición izquierda.
    * Verificación de presencia y enlaces con íconos para todos los botones de navegación.
    * Verificación de clases del tema oscuro (`app-dark-layout`, acentos `border-red-500` y `from-red-600`). 100% de tests aprobados.
@@ -527,7 +527,7 @@
 * Eliminar los enlaces de texto "Forgot Password" y "Sign Up" que figuraban en la tarjeta de inicio de sesión.
 
 ### Modificaciones Realizadas:
-1. **Limpieza en [src/components/LoginFormCard.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/LoginFormCard.tsx):**
+1. **Limpieza en [src/components/LoginFormCard.tsx](src/components/LoginFormCard.tsx):**
    * Se retiró el contenedor de enlaces de pie (`Forgot Password?` y `Sign Up`), dejando la tarjeta centrada exclusivamente en los campos de usuario/contraseña y el botón principal de acceso (`LOGIN`), conservando la estética glassmorphism minimalista.
 2. **Validación:**
    * Comprobación en tiempo de ejecución de la respuesta de `/login`: ausencia confirmada de ambos textos.
@@ -542,7 +542,7 @@
 * Requisito estricto: no debe abrir otra página, ni redirigir a ninguna otra parte, únicamente desplegar una tarjeta flotante descriptiva contextual al hacer hover.
 
 ### Modificaciones Realizadas:
-1. **Componente Cliente de Tooltip ([src/components/CompetencyBadgeTooltip.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/CompetencyBadgeTooltip.tsx)):**
+1. **Componente Cliente de Tooltip ([src/components/CompetencyBadgeTooltip.tsx](src/components/CompetencyBadgeTooltip.tsx)):**
    * Creación de un componente ligero e interactivo basado en `createPortal` en `document.body` y coordenadas fijas calculadas por `getBoundingClientRect()`, garantizando que nunca quede cortado por `overflow-hidden` o tablas con scroll horizontal.
    * **Desglose Descriptivo por Nivel (1 a 5):**
      * **Especializado:** Textos contextuales para tecnologías clave (Python, SQL/Datos) y habilidades blandas (Liderazgo, Comunicación).
@@ -554,9 +554,9 @@
      * Descripción base del catálogo de competencias.
    * Sin enlaces (`<a>`), sin recargas de página, y con soporte táctil en dispositivos móviles.
 2. **Integración en Páginas Clave:**
-   * **Directorio de Empleados ([src/app/(app)/empleados/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/empleados/page.tsx)):** Cada insignia de competencia en la columna de la tabla ahora utiliza `CompetencyBadgeTooltip`.
-   * **Mi Perfil ([src/app/(app)/perfil/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/perfil/page.tsx)):** La cuadrícula de competencias vigentes del colaborador también permite visualizar la leyenda descriptiva.
-3. **Pruebas Automatizadas ([tests/competency-tooltip-test.mjs](file:///f:/TO_DO%20PROYECTO/pdp/tests/competency-tooltip-test.mjs)):**
+   * **Directorio de Empleados ([src/app/(app)/empleados/page.tsx](src/app/(app)/empleados/page.tsx)):** Cada insignia de competencia en la columna de la tabla ahora utiliza `CompetencyBadgeTooltip`.
+   * **Mi Perfil ([src/app/(app)/perfil/page.tsx](src/app/(app)/perfil/page.tsx)):** La cuadrícula de competencias vigentes del colaborador también permite visualizar la leyenda descriptiva.
+3. **Pruebas Automatizadas ([tests/competency-tooltip-test.mjs](tests/competency-tooltip-test.mjs)):**
    * Verificación de la renderización de competencias en `/empleados` (ej. Sergio Ponce con Python Nivel 4).
    * Verificación de que no existen enlaces externos ni redirecciones. 100% de tests aprobados.
 
@@ -571,17 +571,17 @@
 * En `EmpleadoForm.tsx`, la función `addRow` ejecutaba `competencies.find(...)`, seleccionando automáticamente la primera competencia en orden alfabético del catálogo (`Comunicación`), forzando su inserción en lugar de permitir una elección deliberada.
 
 ### Modificaciones Realizadas:
-1. **Rediseño del Flujo de Asignación en [src/components/EmpleadoForm.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/EmpleadoForm.tsx):**
+1. **Rediseño del Flujo de Asignación en [src/components/EmpleadoForm.tsx](src/components/EmpleadoForm.tsx):**
    * **Selector Directo Específico:** Menú desplegable con opción inicial `-- Elige qué competencia deseas agregar --` + selector de nivel de dominio (1 a 5) + botón `+ Agregar seleccionada`.
    * **Chips Rápidos Interactivos:** Botones con un solo clic para cada competencia disponible no agregada aún, con distintivo de tipo (*Técnica* en cian, *Blanda* en púrpura).
    * **Filas Manuales Sin Preselección Forzada:** Las filas añadidas inician vacías (`competencyId: ""`), permitiendo al usuario elegir del desplegable sin sesgos.
    * **Prevención de Duplicados:** Las competencias ya agregadas quedan deshabilitadas para evitar re-selecciones redundantes.
    * **Estilo Visual Oscuro Consistente:** Integración completa con el tema Negro / Rojo / Matices de Gris.
-2. **Pruebas Automatizadas ([tests/empleado-form-competency-test.mjs](file:///f:/TO_DO%20PROYECTO/pdp/tests/empleado-form-competency-test.mjs)):**
+2. **Pruebas Automatizadas ([tests/empleado-form-competency-test.mjs](tests/empleado-form-competency-test.mjs)):**
    * Comprobación de eliminación de `firstUnused` automático.
    * Verificación de presencia del selector específico `compToAdd`, `handleAddSelected`, chips rápidos y filas vacías. 100% aprobado.
 3. **Actualización del Documento Maestro:**
-   * Actualizado [contexto.md](file:///f:/TO_DO%20PROYECTO/pdp/contexto.md) en Fase 1 y Sección 5.12.
+   * Actualizado [contexto.md](contexto.md) en Fase 1 y Sección 5.12.
 
 ---
 
@@ -592,19 +592,19 @@
 * Explicar con precisión el funcionamiento y la forma en que se llena el porcentaje de "Cumplimiento Registrado" de las metas.
 
 ### Modificaciones Realizadas:
-1. **Extensión del Modelo de Datos ([prisma/schema.prisma](file:///f:/TO_DO%20PROYECTO/pdp/prisma/schema.prisma)):**
+1. **Extensión del Modelo de Datos ([prisma/schema.prisma](prisma/schema.prisma)):**
    * Agregado el campo `objectiveId Int?` y la relación `objective OrganizationalObjective?` en el modelo `Opportunity`.
    * Agregada la relación inversa `opportunities Opportunity[]` en `OrganizationalObjective`.
    * Sincronizado esquema en base de datos SQLite y regenerado cliente tipado de Prisma.
-2. **Formulario de Oportunidades ([src/components/OportunidadForm.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/OportunidadForm.tsx)):**
+2. **Formulario de Oportunidades ([src/components/OportunidadForm.tsx](src/components/OportunidadForm.tsx)):**
    * Selector desplegable para alinear voluntariamente la convocatoria con un objetivo organizacional activo (mostrando título, período y categoría).
    * Estilo consistente con el tema oscuro Negro / Rojo / Gris.
-3. **Acciones y Herencia en Planes ([src/app/actions.ts](file:///f:/TO_DO%20PROYECTO/pdp/src/app/actions.ts)):**
+3. **Acciones y Herencia en Planes ([src/app/actions.ts](src/app/actions.ts)):**
    * Guardado de `objectiveId` en `createOpportunity` con registro en bitácora de auditoría.
    * Herencia automática de `strategicObjectiveId` en `createPlan`, enlazando el ciclo completo: *Objetivo Corporativo -> Convocatoria -> Postulación -> Plan de Desarrollo*.
-4. **Visualización en Catálogo ([src/app/(app)/oportunidades/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/oportunidades/page.tsx)):**
+4. **Visualización en Catálogo ([src/app/(app)/oportunidades/page.tsx](src/app/(app)/oportunidades/page.tsx)):**
    * Insignia destacada en cada tarjeta de oportunidad indicando el objetivo al que contribuye.
-5. **Pruebas Automatizadas ([tests/opportunity-objective-link-test.mjs](file:///f:/TO_DO%20PROYECTO/pdp/tests/opportunity-objective-link-test.mjs)):**
+5. **Pruebas Automatizadas ([tests/opportunity-objective-link-test.mjs](tests/opportunity-objective-link-test.mjs)):**
    * Prueba completa de creación de oportunidad con objetivo, postulación y herencia en plan. 100% aprobado.
 
 ---
@@ -612,7 +612,7 @@
 ## Hito 17: Suavización de la Intensidad del Rojo / Carmesí
 * **Requerimiento del Usuario:** Atenuar el rojo intenso hacia una gama más elegante y descansada para la vista.
 * **Solución Implementada:**
-  * En [src/app/globals.css](file:///f:/TO_DO%20PROYECTO/pdp/src/app/globals.css), se redefinieron las variables `--color-red-*` hacia una paleta borgoña / carmesí templado: `--color-red-600: #8c2534`, `--color-red-500: #ad4251`, `--color-red-700: #751c2a`.
+  * En [src/app/globals.css](src/app/globals.css), se redefinieron las variables `--color-red-*` hacia una paleta borgoña / carmesí templado: `--color-red-600: #8c2534`, `--color-red-500: #ad4251`, `--color-red-700: #751c2a`.
   * Se actualizaron los degradados de botones de acción y halos activos de navegación lateral.
 
 ---
@@ -620,30 +620,30 @@
 ## Hito 18: Buscador y Filtros Avanzados en el Directorio de Empleados
 * **Requerimiento del Usuario:** Incorporar un buscador por nombre de colaborador y filtros cruzados por departamento, puesto y competencias en `/empleados`.
 * **Solución Implementada:**
-  * Creación del componente cliente [src/components/EmpleadosDirectory.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/EmpleadosDirectory.tsx).
+  * Creación del componente cliente [src/components/EmpleadosDirectory.tsx](src/components/EmpleadosDirectory.tsx).
   * Búsqueda en vivo insensible a acentos (`normalizeText`) sobre nombre, apellidos y email.
   * Menús desplegables para filtrar por Departamento, Puesto y Competencias con contador dinámico y botón de reinicio de filtros.
-  * Pruebas automatizadas en [tests/empleados-filters-test.mjs](file:///f:/TO_DO%20PROYECTO/pdp/tests/empleados-filters-test.mjs).
+  * Pruebas automatizadas en [tests/empleados-filters-test.mjs](tests/empleados-filters-test.mjs).
 
 ---
 
 ## Hito 19: Rediseño Ejecutivo y Acordeón Desplegable en Planes de Desarrollo
 * **Requerimiento del Usuario:** Los planes en `/planes` aparecían todos expandidos con decenas de actividades desplegadas a la vez, resultando abrumador. Se solicitó mostrar solo la información más importante por defecto y una pestaña desplegable para ver las fases, entregables y retroalimentación a detalle.
 * **Solución Implementada:**
-  * Creación de [src/components/PlanesList.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/PlanesList.tsx) e integración en [src/app/(app)/planes/page.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/app/(app)/planes/page.tsx).
+  * Creación de [src/components/PlanesList.tsx](src/components/PlanesList.tsx) e integración en [src/app/(app)/planes/page.tsx](src/app/(app)/planes/page.tsx).
   * **Tarjeta Ejecutiva Colapsada por Defecto:** Muestra título, colaborador con iniciales y departamento, oportunidad, fecha meta, badge de estado, objetivo resumido, barra de avance y pastillas con desglose de actividades completadas, en revisión, en progreso y pendientes.
   * **Pestaña Desplegable:** Botón `[ Ver fases, entregables y retroalimentación ({total} actividades) ▼ ]` para abrir las actividades (`PlanActivityCard`), subir entregables, calificar y ver el hito de reevaluación.
   * Barra de herramientas superior con buscador en vivo, filtro por estado y botones de *Expandir todo* y *Colapsar todo*.
-  * Pruebas automatizadas en [tests/planes-ui-test.mjs](file:///f:/TO_DO%20PROYECTO/pdp/tests/planes-ui-test.mjs).
+  * Pruebas automatizadas en [tests/planes-ui-test.mjs](tests/planes-ui-test.mjs).
 
 ---
 
 ## Hito 20: Armonización Cromática hacia la Paleta Vino, Negro y Rojo
 * **Requerimiento del Usuario:** Eliminar los tonos verdes disonantes que aparecían en el hito de reevaluación y en las tarjetas de actividades completadas para mantener la armonía vino/negro/rojo.
 * **Solución Implementada:**
-  * En [src/components/PlanesList.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/PlanesList.tsx): Rediseño del banner de reevaluación con degradado vino oscuro, borde borgoña y botón carmesí; barra de progreso al 100% y pastillas de conteo unificadas a tonos vino y rosa cálido.
-  * En [src/components/PlanActivityCard.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/PlanActivityCard.tsx): Contenedor oscuro con borde vino suave (`border-red-900/50 bg-[#141218]`), badge de completada en borgoña profundo y botón de aprobación en carmesí.
-  * En [src/app/globals.css](file:///f:/TO_DO%20PROYECTO/pdp/src/app/globals.css): Reglas globales en `.app-dark-layout` para adaptar automáticamente clases residuales verdes (`emerald`, `green`) a la paleta vino corporativa.
+  * En [src/components/PlanesList.tsx](src/components/PlanesList.tsx): Rediseño del banner de reevaluación con degradado vino oscuro, borde borgoña y botón carmesí; barra de progreso al 100% y pastillas de conteo unificadas a tonos vino y rosa cálido.
+  * En [src/components/PlanActivityCard.tsx](src/components/PlanActivityCard.tsx): Contenedor oscuro con borde vino suave (`border-red-900/50 bg-[#141218]`), badge de completada en borgoña profundo y botón de aprobación en carmesí.
+  * En [src/app/globals.css](src/app/globals.css): Reglas globales en `.app-dark-layout` para adaptar automáticamente clases residuales verdes (`emerald`, `green`) a la paleta vino corporativa.
 
 ---
 
@@ -652,7 +652,7 @@
 * **Diagnóstico y Solución:**
   * Los modelos insignia de GLM Coding Pro (`glm-4.5` y `glm-5.3`) generan cadenas de pensamiento profundo (`reasoning_content`) de ~2500 tokens que demoran entre 40 y 55 segundos.
   * El timeout previo de 45 segundos cortaba la llamada justo antes de terminar.
-  * Se amplió el timeout a **90 segundos** y se configuró `max_tokens: 4096` en [src/lib/ai.ts](file:///f:/TO_DO%20PROYECTO/pdp/src/lib/ai.ts).
+  * Se amplió el timeout a **90 segundos** y se configuró `max_tokens: 4096` en [src/lib/ai.ts](src/lib/ai.ts).
   * Se verificó la compatibilidad con los endpoints internacional (`https://api.z.ai/api/coding/paas/v4`) y doméstico (`https://open.bigmodel.cn/api/coding/paas/v4`).
   * Validación en tiempo real con 100% de éxito generando el plan directamente con la IA real (`Origen: ia`, `Modelo: glm-4.5`).
 
@@ -670,12 +670,72 @@
 ## Hito 23: Selector de Rango con Calendario en la Misma Ventana para Período de Evaluación
 * **Requerimiento del Usuario:** En el modal de "Definir nuevo objetivo organizacional", sustituir el campo de texto libre en "Período de Evaluación" por un calendario que se abra en la misma ventana para elegir la fecha de inicio y de fin interactivamente sin tener que teclearla.
 * **Solución Implementada:**
-  * Creación del componente interactivo [src/components/PeriodDateRangePicker.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/PeriodDateRangePicker.tsx):
+  * Creación del componente interactivo [src/components/PeriodDateRangePicker.tsx](src/components/PeriodDateRangePicker.tsx):
     * Tarjeta activadora que muestra el período formateado, duración en días y botón desplegable.
     * Ventana flotante / Popover en la misma interfaz con navegación mensual interactiva (`` y ``) y cuadrícula visual de días.
     * Selección en 2 clics (Fecha de Inicio y Fecha de Fin) con resaltado visual del rango en degradado vino/carmesí.
     * Selectores directos numéricos de fecha (`type="date"`) para inicio y fin.
     * Botones de atajos rápidos corporativos: Q1, Q2, Q3, Q4, Semestre 1, Semestre 2 y Anual.
     * Campo oculto sincronizado que envía el formato estructurado a la Server Action `createObjective`.
-  * Integración en [src/components/ObjetivoForm.tsx](file:///f:/TO_DO%20PROYECTO/pdp/src/components/ObjetivoForm.tsx) con actualización integral a la estética Vino, Negro y Grafito.
+  * Integración en [src/components/ObjetivoForm.tsx](src/components/ObjetivoForm.tsx) con actualización integral a la estética Vino, Negro y Grafito.
+
+---
+
+## Hito 24: Eliminación de Emojis en Interfaz, Documentación y Pruebas (7 oct 2026, `8313ca2`)
+* **Requerimiento:** Dar una presentación más sobria y profesional quitando todos los emojis del sistema.
+* **Solución Implementada:**
+  * Retiro de emojis en 40 archivos: páginas de `src/app/(app)/` (auditoría, competencias, empleados, evaluaciones, importación, objetivos, oportunidades, perfil, planes y postulaciones), componentes (`AppSidebar`, `HeaderNotifications`, `PlanActivityCard`, `PlanesList`, `PeriodDateRangePicker`, formularios y dashboards por rol), `prisma/seed.ts` y documentación (`README.md`, `SETUP.md`, `contexto.md`, `historial.md`).
+  * Ajuste de las pruebas que buscaban esos emojis en el HTML (`theme-and-sidebar`, `competency-tooltip`, `empleados-filters`, `perfil-password`, entre otras).
+  * En el mismo cambio se quitó temporalmente a RH el permiso de registrar evaluaciones. Se revirtió en el Hito 25.
+
+---
+
+## Hito 25: Permisos de Evaluación por Rol y Ámbito del Supervisor (14 oct 2026, `e1093bb`)
+* **Requerimiento (PRD 5.2):** RH debe poder registrar evaluaciones, y el supervisor solo debe evaluar a sus colaboradores directos.
+* **Solución Implementada:**
+  * **[src/app/actions.ts](src/app/actions.ts):** `createEvaluation` acepta otra vez los roles `ADMIN`, `RH` y `SUPERVISOR`. Si quien evalúa es un supervisor, se verifica que `employee.supervisorId` sea igual a su propio `Employee.id`; si no coincide, redirige con `?error=nosubordinado`.
+  * **[src/app/(app)/evaluaciones/page.tsx](src/app/(app)/evaluaciones/page.tsx):** `puedeEvaluar` incluye a RH. Para el supervisor, el selector de empleados se filtra con `supervisorId` y solo muestra a sus subordinados activos.
+  * **[prisma/init.sql](prisma/init.sql):** se sincronizó con `schema.prisma` (`objectiveId` en `Opportunity`, `strategicObjectiveId` en `DevelopmentPlan` y `activities` en `Recommendation`).
+  * Los documentos de estudio personales (`CODIGO-EXPLICADO.md`, `DEFENSA.md`) salieron del repositorio (`e19a649`) y la carpeta `estudio/` se agregó a `.gitignore` (`ef23b9c`).
+
+---
+
+## Hito 26: Transacción Atómica en el Alta de Empleados (14 oct 2026, `bdbf99f`)
+* **Problema detectado:** En `createEmployee`, si fallaba la creación del `Employee` después de haber creado el `User`, quedaba un usuario huérfano en la base de datos.
+* **Solución Implementada en [src/app/actions.ts](src/app/actions.ts):**
+  * El flujo completo **usuario → empleado → evaluación inicial → calificaciones → niveles vigentes de competencias** corre dentro de `db.$transaction(async (tx) => { ... })`.
+  * Si cualquier paso falla, se revierten todos los cambios (o se guarda todo o no se guarda nada).
+  * La validación y deduplicación de competencias iniciales se hace antes de abrir la transacción.
+
+---
+
+## Hito 27: Sincronización de Documentación con el Código (16 oct 2026, `39f07e5`, `6fd068a`, `24d0f72`)
+* **[README.md](README.md):** se documentó el vínculo Objetivo → Convocatoria → Plan, el selector de período con calendario y la estructura completa del proyecto. La matriz de roles quedó alineada con los permisos reales (RH evalúa y el supervisor se limita a sus subordinados).
+* **[.env.example](.env.example):** coincide con la configuración GLM (endpoint Coding Plan, modelo y ranura del proveedor 2).
+* **[SETUP.md](SETUP.md):** se corrigieron las variables de entorno y la lista de pruebas existentes.
+
+---
+
+## Hito 28: Auditoría de Pruebas E2E y Documentación Formal del Proyecto (19 y 20 oct 2026)
+* **Auditoría de pruebas (`013a775`):** nuevo [tests/PLAN-CONVERSION.md](tests/PLAN-CONVERSION.md) con la fase 1 del plan de pruebas:
+  * Inventario de 17 pruebas clasificadas por tipo (unitaria, estática, E2E HTTP, BD directa), indicando si necesitan servidor y si hoy pueden fallar.
+  * Hallazgo principal: la mayoría solo imprime resultados con `console.log` y no falla con un error claro.
+  * Tabla de valores esperados para los futuros asserts (compatibilidad 75, brechas, códigos HTTP 302/303/200, estados de plan).
+  * Objetivo: exponer `npm run seed` y `npm test`. `verify-glm-recommendation.ts` queda fuera del runner porque consume tokens de la IA real.
+* **PRD y MVP (`b91e459`):** se publicaron [docs/PRD.md](docs/PRD.md) y [docs/MVP.md](docs/MVP.md), con excepciones `!docs/PRD.md` y `!docs/MVP.md` en `.gitignore` (los demás PRD y `.docx`/`.pdf` siguen excluidos).
+* **Herramientas (`55a4b26`):** nuevo [HERRAMIENTAS.md](HERRAMIENTAS.md) con la IA usada como asistente de desarrollo y la integrada en la aplicación, el stack tecnológico, las herramientas de desarrollo, las pruebas y la documentación.
+* **Alineación final (`c47db10`):** `SETUP.md`, `contexto.md` y `README.md` quedaron coherentes con el código y el repositorio.
+
+---
+
+## Hito 29: Enlaces Relativos en la Documentación (21 oct 2026)
+* **Problema detectado:** `contexto.md` (líneas 135 y 225) y `historial.md` tenían enlaces absolutos `file:///f:/TO_DO%20PROYECTO/pdp/...` que apuntaban al disco local del desarrollador y no funcionaban en GitHub ni en otros equipos.
+* **Solución Implementada:**
+  * Se reemplazaron por rutas relativas al repositorio (ej. `src/lib/ai.ts`, `src/app/globals.css`): 2 enlaces en `contexto.md` (`afcd8be`) y 100 en `historial.md`.
+
+---
+
+## Pendientes
+* Fase 2 del plan de pruebas: convertir cada prueba para que use asserts con salida `exit(1)` y crear el runner `npm test`.
+
 

@@ -735,7 +735,35 @@
 
 ---
 
+## Hito 30: Cambio Obligatorio de la Contraseña Temporal en el Primer Ingreso (21 oct 2026, `13fc4ec`)
+* **Problema detectado:** El alta de empleados, la importación CSV y el restablecimiento por RH asignaban a todos la misma contraseña fija (`Demo1234!`), sin obligar a cambiarla. Cualquiera que conociera la clave temporal podía entrar a cuentas que nunca se habían usado (RNF-001).
+* **Modificaciones en Base de Datos:**
+  * Nuevo campo `mustChangePassword Boolean @default(false)` en el modelo `User` ([prisma/schema.prisma](prisma/schema.prisma) y [prisma/init.sql](prisma/init.sql)), aplicado con `npx prisma db push`.
+  * Los usuarios demo del seed conservan `false`, así que el acceso de prueba y las demás pruebas no cambian.
+* **Lógica de Servidor ([src/app/actions.ts](src/app/actions.ts)):**
+  * `createEmployee`, `importEmployeesCsv` y `adminResetPassword` marcan al usuario con `mustChangePassword: true`.
+  * `changePassword`:
+    * Rechaza una nueva contraseña igual a la clave temporal o a la actual (`?error=misma_clave`).
+    * Al cambiarla, pone la marca en `false`.
+    * Acepta el campo oculto `origen=forzado`: los errores regresan a `/cambiar-contrasena` y, si el cambio es correcto, redirige a `/dashboard`.
+  * La notificación de restablecimiento ya no muestra la clave en texto plano e informa que el cambio será obligatorio.
+* **Bloqueo de Acceso ([src/app/(app)/layout.tsx](src/app/(app)/layout.tsx)):**
+  * El layout principal consulta `mustChangePassword` en la base de datos (no en el JWT) y, si está activo, redirige a `/cambiar-contrasena`. Así queda bloqueada toda la plataforma y el bloqueo se libera en cuanto se cambia la clave.
+* **Pantalla Obligatoria ([src/app/cambiar-contrasena/page.tsx](src/app/cambiar-contrasena/page.tsx)):**
+  * Está fuera del grupo `(app)` para evitar un ciclo de redirecciones.
+  * Formulario con la clave temporal, la nueva contraseña y su confirmación, mensajes de error y opción de cerrar sesión, con la estética vino, negro y grafito.
+  * Si el usuario ya no tiene la marca, redirige a `/dashboard`.
+* **Textos de Interfaz:** se indica que el cambio es obligatorio en [EmpleadoForm.tsx](src/components/EmpleadoForm.tsx), [importacion/page.tsx](src/app/(app)/importacion/page.tsx) y en el aviso de restablecimiento de [empleados/page.tsx](src/app/(app)/empleados/page.tsx). Además, [perfil/page.tsx](src/app/(app)/perfil/page.tsx) muestra el error `misma_clave`.
+* **Pruebas Automatizadas ([tests/forced-password-change-test.mjs](tests/forced-password-change-test.mjs)):**
+  * Sigue el patrón de la fase 2: cada verificación tiene nombre y la prueba termina con `exit(1)` si algo falla.
+  * 12 verificaciones: redirección forzada, rechazo de la clave temporal y de una confirmación distinta, cambio válido, marca en `false`, hash actualizado, acceso a `/dashboard`, login con la clave anterior bloqueado y con la nueva permitido. 100% aprobadas.
+  * Crea y elimina su propio usuario de prueba.
+
+---
+
 ## Pendientes
 * Fase 2 del plan de pruebas: convertir cada prueba para que use asserts con salida `exit(1)` y crear el runner `npm test`.
+* `tests/perfil-password-test.mjs`: usa `userId: 1` fijo para el admin (hoy es otro ID) y falla por llave foránea en `AuditLog`. Debe buscar al admin por rol o correo.
+* `tests/login-test.mjs`: busca el texto "Empleados activos", que ya no existe en el dashboard del empleado.
 
 

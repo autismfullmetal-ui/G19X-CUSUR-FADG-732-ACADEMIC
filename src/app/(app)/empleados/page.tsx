@@ -77,7 +77,7 @@ export default async function EmpleadosPage({
 
       {ok === "password_reset" && (
         <p className="mt-4 rounded-xl bg-red-950/60 px-4 py-2.5 text-xs text-rose-200 border border-red-800/50 shadow-xs">
-          ✓ Contraseña del colaborador restablecida con éxito a la clave temporal predeterminada (Demo1234!).
+          ✓ Contraseña del colaborador restablecida con éxito a la clave temporal predeterminada (Demo1234!). Se le pedirá definir una nueva en su próximo ingreso.
         </p>
       )}
       {ok && (

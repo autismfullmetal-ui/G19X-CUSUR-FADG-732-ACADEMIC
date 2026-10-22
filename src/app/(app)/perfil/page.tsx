@@ -74,6 +74,7 @@ export default async function PerfilPage({
           {error === "longitud_minima" && "La nueva contraseña debe tener al menos 6 caracteres."}
           {error === "coincidencia" && "La confirmación de contraseña no coincide con la nueva clave."}
           {error === "campos_requeridos" && "Debes completar todos los campos del formulario."}
+          {error === "misma_clave" && "La nueva contraseña debe ser distinta de la actual y de la clave temporal."}
         </div>
       )}
 

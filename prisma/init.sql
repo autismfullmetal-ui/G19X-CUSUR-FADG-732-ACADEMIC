@@ -3,6 +3,7 @@ CREATE TABLE "User" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "email" TEXT NOT NULL,
     "passwordHash" TEXT NOT NULL,
+    "mustChangePassword" BOOLEAN NOT NULL DEFAULT false,
     "name" TEXT NOT NULL,
     "role" TEXT NOT NULL
 );

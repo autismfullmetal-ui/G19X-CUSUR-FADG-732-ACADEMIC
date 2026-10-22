@@ -446,7 +446,7 @@ export default function EmpleadoForm({
       </div>
 
       <div className="rounded-lg bg-zinc-900/60 p-3 text-xs text-zinc-400 border border-zinc-800">
-        Se creará acceso al sistema con la contraseña temporal <strong>Demo1234!</strong> y rol <strong>Empleado</strong>.
+        Se creará acceso al sistema con la contraseña temporal <strong>Demo1234!</strong> y rol <strong>Empleado</strong>. El colaborador deberá cambiarla obligatoriamente en su primer ingreso.
       </div>
 
       <div className="flex gap-2 pt-2">

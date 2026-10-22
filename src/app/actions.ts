@@ -69,6 +69,8 @@ export async function createEmployee(formData: FormData) {
           data: {
             email,
             passwordHash: bcrypt.hashSync(DEFAULT_PASSWORD, 10),
+            // La clave temporal es compartida: se exige cambiarla al primer ingreso
+            mustChangePassword: true,
             name: `${firstName} ${lastName}`.trim(),
             role: ROLES.EMPLEADO,
           },
@@ -1349,6 +1351,7 @@ export async function importEmployeesCsv(formData: FormData) {
         email,
         name: `${firstName} ${lastName}`.trim(),
         passwordHash: passHash,
+        mustChangePassword: true,
         role,
       },
     });
@@ -1475,17 +1478,25 @@ export async function changePassword(formData: FormData) {
   const currentPassword = str(formData.get("currentPassword"));
   const newPassword = str(formData.get("newPassword"));
   const confirmPassword = str(formData.get("confirmPassword"));
+  // El formulario obligatorio de primer ingreso envía origen=forzado
+  const forzado = str(formData.get("origen")) === "forzado";
+  const errorBase = forzado ? "/cambiar-contrasena" : "/perfil";
 
   if (!currentPassword || !newPassword || !confirmPassword) {
-    redirect("/perfil?error=campos_requeridos");
+    redirect(`${errorBase}?error=campos_requeridos`);
   }
 
   if (newPassword.length < 6) {
-    redirect("/perfil?error=longitud_minima");
+    redirect(`${errorBase}?error=longitud_minima`);
   }
 
   if (newPassword !== confirmPassword) {
-    redirect("/perfil?error=coincidencia");
+    redirect(`${errorBase}?error=coincidencia`);
+  }
+
+  // No se permite conservar la clave temporal compartida ni repetir la actual
+  if (newPassword === DEFAULT_PASSWORD || newPassword === currentPassword) {
+    redirect(`${errorBase}?error=misma_clave`);
   }
 
   const userId = Number(session.user.id);
@@ -1496,13 +1507,13 @@ export async function changePassword(formData: FormData) {
 
   const isValidCurrent = bcrypt.compareSync(currentPassword, user.passwordHash);
   if (!isValidCurrent) {
-    redirect("/perfil?error=actual_incorrecta");
+    redirect(`${errorBase}?error=actual_incorrecta`);
   }
 
   const newHash = bcrypt.hashSync(newPassword, 10);
   await db.user.update({
     where: { id: userId },
-    data: { passwordHash: newHash },
+    data: { passwordHash: newHash, mustChangePassword: false },
   });
 
   // Notificación in-app
@@ -1523,8 +1534,8 @@ export async function changePassword(formData: FormData) {
     details: `El usuario ${user.name} (${user.email}) actualizó su contraseña personal.`,
   });
 
-  revalidatePath("/perfil");
-  redirect("/perfil?ok=password_cambiada");
+  revalidatePath("/", "layout");
+  redirect(forzado ? "/dashboard" : "/perfil?ok=password_cambiada");
 }
 
 export async function adminResetPassword(formData: FormData) {
@@ -1554,14 +1565,14 @@ export async function adminResetPassword(formData: FormData) {
   const defaultHash = bcrypt.hashSync(DEFAULT_PASSWORD, 10);
   await db.user.update({
     where: { id: userToReset.id },
-    data: { passwordHash: defaultHash },
+    data: { passwordHash: defaultHash, mustChangePassword: true },
   });
 
   // Notificar al usuario
   await createNotification({
     userId: userToReset.id,
     title: "Contraseña restablecida",
-    message: `Tu contraseña ha sido restablecida por ${session.user.name} a la clave temporal "${DEFAULT_PASSWORD}". Te recomendamos cambiarla en tu Perfil.`,
+    message: `Tu contraseña ha sido restablecida por ${session.user.name} a la clave temporal. Deberás definir una nueva en tu próximo ingreso.`,
     type: "WARNING",
     linkUrl: "/perfil",
   });

@@ -136,7 +136,7 @@ export default async function ImportacionPage({
               </div>
               <p className="text-[11px] text-zinc-400 leading-relaxed">
                 * Genera automáticamente las credenciales de acceso iniciales (contraseña por defecto:{" "}
-                <code className="bg-white px-1 rounded text-zinc-700 font-mono">Demo1234!</code>).
+                <code className="bg-white px-1 rounded text-zinc-700 font-mono">Demo1234!</code>, que cada usuario deberá cambiar en su primer ingreso).
               </p>
             </div>
           </div>

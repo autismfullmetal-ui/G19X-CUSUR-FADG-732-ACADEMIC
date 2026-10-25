@@ -29,7 +29,7 @@ export default async function CambiarContrasenaPage({
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
-  const session = await requireSession();
+  const session = await requireSession({ skipMustChangeCheck: true });
   const { error } = await searchParams;
 
   const user = await db.user.findUnique({

@@ -9,16 +9,9 @@ import { calcCompatibility } from "@/lib/compatibility";
 import { generateAiRecommendation } from "@/lib/ai";
 import { createNotification, notifyUsers } from "@/lib/notifications";
 import { logAudit } from "@/lib/audit";
+import { requireRole } from "@/lib/session";
 
 const DEFAULT_PASSWORD = "Demo1234!";
-
-async function requireRole(roles: string[]) {
-  const session = await auth();
-  if (!session?.user || !roles.includes(session.user.role)) {
-    throw new Error("No autorizado");
-  }
-  return session;
-}
 
 function num(v: FormDataEntryValue | null): number {
   return Number(v ?? 0);

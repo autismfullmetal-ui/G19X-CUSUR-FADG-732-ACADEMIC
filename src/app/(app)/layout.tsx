@@ -54,13 +54,6 @@ export default async function AppLayout({
 }) {
   const session = await requireSession();
 
-  // Contraseña temporal pendiente: no se permite usar la plataforma hasta cambiarla
-  const currentUser = await db.user.findUnique({
-    where: { id: Number(session.user.id) },
-    select: { mustChangePassword: true },
-  });
-  if (currentUser?.mustChangePassword) redirect("/cambiar-contrasena");
-
   const nav = NAV[session.user.role] ?? NAV.EMPLEADO;
 
   const notifications = await db.notification.findMany({

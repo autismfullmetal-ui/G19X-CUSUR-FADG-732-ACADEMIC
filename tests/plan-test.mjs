@@ -15,23 +15,29 @@ function must(cond, msg) {
   }
 }
 
+function cookiesFrom(res) {
+  const c = res.headers.getSetCookie();
+  if (c && c.length) return c.map((x) => x.split(";")[0]).join("; ");
+  const single = res.headers.get("set-cookie");
+  return single ? single.split(";")[0] : "";
+}
+
 async function login(email, password) {
   const res1 = await fetch(`${base}/api/auth/csrf`);
+  must(res1.status === 200, `csrf endpoint responde 200 (llego ${res1.status})`);
   const { csrfToken } = await res1.json();
-  const cookie1 = res1.headers
-    .getSetCookie()
-    .map((c) => c.split(";")[0])
-    .join("; ");
+  must(!!csrfToken, "se obtiene csrfToken");
+  const cookie1 = cookiesFrom(res1);
   const res2 = await fetch(`${base}/api/auth/callback/credentials`, {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded", cookie: cookie1 },
     body: new URLSearchParams({ csrfToken, email, password }),
     redirect: "manual",
   });
-  return res2.headers
-    .getSetCookie()
-    .map((c) => c.split(";")[0])
-    .join("; ");
+  must(res2.status === 302, `login responde 302 (llego ${res2.status})`);
+  const cookie = cookiesFrom(res2);
+  must(cookie.includes("session-token"), "se obtiene cookie de sesion");
+  return cookie;
 }
 
 function formNear(html, anchor) {
@@ -73,17 +79,19 @@ must(!!target, "existe la postulacion creada por apply-test");
 must(target.recommendation && target.recommendation.status === "APROBADA",
   "la recomendacion de la postulacion esta APROBADA (rec-test la aprobo)");
 
-// Reset: sin plan previo
+try {
+  // Reset: sin plan previo
 await db.planActivity.deleteMany({ where: { plan: { applicationId: appId } } });
 await db.developmentPlan.deleteMany({ where: { applicationId: appId } });
 
 const admin = await db.user.findFirst({ where: { role: "ADMIN" } });
+must(!!admin, "existe usuario ADMIN");
 
 // 1. La pagina muestra el punto de entrada del plan para RH
 const rhCookie = await login("rh@demo.mx", "Demo1234!");
 let page = await fetch(detailUrl, { headers: { cookie: rhCookie } });
+must(page.status === 200, `el detalle responde 200 para RH (llego ${page.status})`);
 let html = await page.text();
-must(page.status === 200, "el detalle responde 200 para RH");
 must(html.includes("Crear plan de desarrollo"), "el detalle muestra el boton Crear plan de desarrollo para RH");
 
 // 2. Crear el plan (PROPUESTO) replicando el efecto del formulario
@@ -111,6 +119,7 @@ console.log(`plan creado: ${plan.title} (id ${plan.id})`);
 
 // 3. RH ve el plan en la pagina y lo APRUEBA con el formulario real
 page = await fetch(detailUrl, { headers: { cookie: rhCookie } });
+must(page.status === 200, `el detalle responde 200 para RH al aprobar (llego ${page.status})`);
 html = await page.text();
 must(html.includes(plan.title), "el detalle muestra el plan creado");
 let form = formNear(html, "Aprobar plan");
@@ -129,6 +138,7 @@ console.log("plan APROBADO por RH:", aprobado.approvedById);
 // 4. El empleado INICIA la primera actividad con su formulario real (PENDIENTE -> EN_PROGRESO)
 const empCookie = await login("empleado@demo.mx", "Demo1234!");
 page = await fetch(detailUrl, { headers: { cookie: empCookie } });
+must(page.status === 200, `el detalle responde 200 para empleado (llego ${page.status})`);
 html = await page.text();
 form = formNear(html, "Iniciar actividad");
 must(!!form, "el empleado ve el boton Iniciar actividad");
@@ -150,4 +160,9 @@ console.log("BD — aprobado por RH:", final.approvedById !== null ? "si" : "no"
 must(final.status === "EN_PROGRESO", "el plan pasa a EN_PROGRESO al iniciar una actividad");
 
 console.log("\nOK: ciclo de plan (crear -> aprobar -> avanzar actividad) verificado.");
-await db.$disconnect();
+} catch (err) {
+  console.error("ERROR EN PRUEBA:", err.message);
+  process.exit(1);
+} finally {
+  await db.$disconnect();
+}

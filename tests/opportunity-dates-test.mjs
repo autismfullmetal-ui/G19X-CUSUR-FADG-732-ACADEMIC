@@ -3,7 +3,14 @@ import { templateRecommendation } from "../src/lib/ai.ts";
 
 const db = new PrismaClient();
 
-async function run() {
+function must(cond, msg) {
+  if (!cond) {
+    console.error("FALLO:", msg);
+    process.exit(1);
+  }
+}
+
+try {
   console.log("=== INICIANDO PRUEBAS DE FECHAS, VACANTES Y CONTINUIDAD DE PLANES ===");
 
   // 1. Probar plantilla estructurada con fechas y vacantes
@@ -22,17 +29,19 @@ async function run() {
     ],
   });
 
-  console.log("1. Recomendación contiene plazo:", rec.text.includes("2026-10-31"));
-  console.log("2. Actividades cronológicas generadas:", rec.activities.length >= 4);
-  console.log("3. Contiene fases estructuradas:", rec.activities.some((a) => a.descripcion.includes("Fase 1")));
+  must(rec.text.includes("2026-10-31"), "recomendación contiene plazo 2026-10-31");
+  must(rec.activities.length >= 4, `actividades cronológicas >= 4 (llegaron ${rec.activities.length})`);
+  must(rec.activities.some((a) => a.descripcion.includes("Fase 1")), "contiene fases estructuradas (Fase 1)");
 
-  if (!rec.text.includes("2026-10-31") || rec.activities.length < 4) {
-    throw new Error("Fallo en la prueba de generación de recomendación con fechas");
-  }
+  console.log("1. Recomendación contiene plazo: OK");
+  console.log("2. Actividades cronológicas generadas: OK");
+  console.log("3. Contiene fases estructuradas: OK");
 
   // 2. Probar creación de oportunidad con vacantes y fechas en la base de datos
   const admin = await db.user.findFirst({ where: { role: "ADMIN" } });
+  must(!!admin, "existe usuario ADMIN");
   const comp = await db.competency.findFirst();
+  must(!!comp, "existe competencia en catálogo");
 
   const now = new Date();
   const pastDeadline = new Date(Date.now() - 24 * 60 * 60 * 1000); // ayer
@@ -49,16 +58,15 @@ async function run() {
       openDate: now,
       deadline: normalDeadline,
       createdById: admin.id,
-      requirements: {
-        create: [
-          { competencyId: comp.id, requiredLevel: 3, weight: 1, mandatory: false },
-        ],
-      },
+      requirements: { create: [{ competencyId: comp.id, requiredLevel: 3, weight: 1, mandatory: false }] },
     },
   });
+  must(!!testOpp.id, "oportunidad creada");
+  must(testOpp.vacancies === 3, "oportunidad creada con 3 vacantes");
+  must(testOpp.deadline !== null, "oportunidad creada con deadline no nulo");
 
-  console.log("4. Oportunidad creada con vacantes:", testOpp.vacancies === 3);
-  console.log("5. Oportunidad creada con deadline:", testOpp.deadline !== null);
+  console.log("4. Oportunidad creada con vacantes: OK");
+  console.log("5. Oportunidad creada con deadline: OK");
 
   // 3. Probar lógica de fechas de postulación
   const isExpired = (opp) => {
@@ -72,22 +80,23 @@ async function run() {
     return new Date() < new Date(opp.openDate);
   };
 
-  console.log("6. Oportunidad vigente detectada como no vencida:", !isExpired(testOpp));
-  console.log("7. Oportunidad con fecha pasada detectada como vencida:", isExpired({ deadline: pastDeadline }));
-  console.log("8. Oportunidad con apertura futura detectada como no abierta:", isNotYetOpen({ openDate: futureOpen }));
+  must(!isExpired(testOpp), "oportunidad vigente detectada como no vencida");
+  must(isExpired({ deadline: pastDeadline }), "oportunidad con fecha pasada detectada como vencida");
+  must(isNotYetOpen({ openDate: futureOpen }), "oportunidad con apertura futura detectada como no abierta");
+
+  console.log("6. Oportunidad vigente detectada como no vencida: OK");
+  console.log("7. Oportunidad con fecha pasada detectada como vencida: OK");
+  console.log("8. Oportunidad con apertura futura detectada como no abierta: OK");
 
   // 4. Probar continuidad del plan de desarrollo cuando la oportunidad se cierra
   const employee = await db.employee.findFirst();
+  must(!!employee, "existe empleado");
 
   // Crear 2 aplicaciones: una con plan y otra sin plan
   const appConPlan = await db.application.create({
-    data: {
-      opportunityId: testOpp.id,
-      employeeId: employee.id,
-      status: "ACTIVA",
-      compatibility: 80,
-    },
+    data: { opportunityId: testOpp.id, employeeId: employee.id, status: "ACTIVA", compatibility: 80 },
   });
+  must(!!appConPlan.id, "aplicación con plan creada");
 
   // Crear plan de desarrollo para la primera aplicación
   const plan = await db.developmentPlan.create({
@@ -107,8 +116,9 @@ async function run() {
       },
     },
   });
+  must(plan.targetDate !== null, "plan creado con targetDate no nulo");
 
-  console.log("9. Plan de desarrollo creado con targetDate:", plan.targetDate !== null);
+  console.log("9. Plan de desarrollo creado con targetDate: OK");
 
   // Simular la lógica de closeOpportunity
   const appsWithPlan = await db.developmentPlan.findMany({
@@ -132,19 +142,21 @@ async function run() {
     where: { id: appConPlan.id },
     include: { plan: { include: { activities: true } } },
   });
+  must(!!appVerificada, "postulación con plan recuperada");
+  must(appVerificada.status === "ACTIVA", "postulación con plan sigue ACTIVA");
+  must(appVerificada.plan.status === "APROBADO", "plan de desarrollo sigue intacto y APROBADO");
 
-  console.log("10. Postulación con plan sigue ACTIVA:", appVerificada.status === "ACTIVA");
-  console.log("11. Plan de desarrollo sigue intacto y APROBADO:", appVerificada.plan.status === "APROBADO");
+  console.log("10. Postulación con plan sigue ACTIVA: OK");
+  console.log("11. Plan de desarrollo sigue intacto y APROBADO: OK");
 
   // Probar avance de actividades con oportunidad cerrada
   const act1 = appVerificada.plan.activities[0];
-  await db.planActivity.update({
-    where: { id: act1.id },
-    data: { status: "COMPLETADA" },
-  });
+  await db.planActivity.update({ where: { id: act1.id }, data: { status: "COMPLETADA" } });
 
   const act1Verificada = await db.planActivity.findUnique({ where: { id: act1.id } });
-  console.log("12. Actividad actualizada a COMPLETADA con oportunidad cerrada:", act1Verificada.status === "COMPLETADA");
+  must(act1Verificada.status === "COMPLETADA", "actividad actualizada a COMPLETADA con oportunidad cerrada");
+
+  console.log("12. Actividad actualizada a COMPLETADA con oportunidad cerrada: OK");
 
   // Limpiar datos de prueba
   await db.planActivity.deleteMany({ where: { planId: plan.id } });
@@ -154,11 +166,9 @@ async function run() {
   await db.opportunity.delete({ where: { id: testOpp.id } });
 
   console.log("=== TODAS LAS PRUEBAS PASARON EXITOSAMENTE ===");
+} catch (err) {
+  console.error("ERROR EN PRUEBA:", err.message);
+  process.exit(1);
+} finally {
+  await db.$disconnect();
 }
-
-run()
-  .catch((e) => {
-    console.error("ERROR EN PRUEBA:", e);
-    process.exit(1);
-  })
-  .finally(() => db.$disconnect());

@@ -10,24 +10,32 @@ import { generateAiRecommendation } from "../src/lib/ai.ts";
 const base = "http://localhost:3000";
 const db = new PrismaClient();
 
+function cookiesFrom(res) {
+  const c = res.headers.getSetCookie();
+  if (c && c.length) return c.map((x) => x.split(";")[0]).join("; ");
+  const single = res.headers.get("set-cookie");
+  return single ? single.split(";")[0] : "";
+}
+
 async function login(email, password) {
   const res1 = await fetch(`${base}/api/auth/csrf`);
+  must(res1.status === 200, `csrf endpoint responde 200 (llego ${res1.status})`);
   const { csrfToken } = await res1.json();
-  const cookie1 = res1.headers
-    .getSetCookie()
-    .map((c) => c.split(";")[0])
-    .join("; ");
+  must(!!csrfToken, "se obtiene csrfToken");
+  const cookie1 = cookiesFrom(res1);
   const res2 = await fetch(`${base}/api/auth/callback/credentials`, {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded", cookie: cookie1 },
     body: new URLSearchParams({ csrfToken, email, password }),
     redirect: "manual",
   });
-  return res2.headers
-    .getSetCookie()
-    .map((c) => c.split(";")[0])
-    .join("; ");
+  must(res2.status === 302, `login responde 302 (llego ${res2.status})`);
+  const cookie = cookiesFrom(res2);
+  must(cookie.includes("session-token"), "se obtiene cookie de sesion");
+  return cookie;
 }
+
+
 
 function formNear(html, anchor) {
   const idx = html.indexOf(anchor);
@@ -62,6 +70,7 @@ function must(cond, msg) {
   }
 }
 
+try {
 // App mas reciente = la que acaba de crear apply-test
 const app = await db.application.findFirst({
   orderBy: { id: "desc" },
@@ -71,6 +80,7 @@ const app = await db.application.findFirst({
     gaps: { include: { requirement: { include: { competency: true } } } },
   },
 });
+must(!!app, "existe la aplicación creada por apply-test");
 const appId = app.id;
 const detailUrl = `${base}/postulaciones/${appId}`;
 
@@ -118,6 +128,7 @@ console.log("recomendacion creada y persistida:", rec.id > 0);
 // 2. APROBAR via el formulario real del servidor
 const rhCookie = await login("rh@demo.mx", "Demo1234!");
 let page = await fetch(detailUrl, { headers: { cookie: rhCookie } });
+must(page.status === 200, `el detalle responde 200 para RH (llego ${page.status})`);
 let html = await page.text();
 let form = formNear(html, "Aprobar recomendación");
 must(!!form, "el detalle muestra el formulario de aprobar recomendacion");
@@ -131,10 +142,16 @@ console.log("recomendacion APROBADA por RH:", rec2.reviewedById);
 
 // 3. Con la recomendacion aprobada, el formulario del plan debe aparecer precargado
 page = await fetch(detailUrl, { headers: { cookie: rhCookie } });
+must(page.status === 200, `el detalle responde 200 para RH al verificar (llego ${page.status})`);
 html = await page.text();
 must(html.includes("Crear plan de desarrollo"), "el detalle muestra el formulario de crear plan");
 const aprobadaConActividades = rec2.status === "APROBADA" && JSON.parse(rec2.activities).length > 0;
 must(aprobadaConActividades, "hay actividades aprobadas para precargar el plan");
 
 console.log("\nOK: ciclo de recomendacion (generar -> revisar -> aprobar) verificado.");
-await db.$disconnect();
+} catch (err) {
+  console.error("ERROR EN PRUEBA:", err.message);
+  process.exit(1);
+} finally {
+  await db.$disconnect();
+}

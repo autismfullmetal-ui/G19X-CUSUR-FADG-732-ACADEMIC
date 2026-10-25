@@ -767,3 +767,32 @@
 * `tests/login-test.mjs`: busca el texto "Empleados activos", que ya no existe en el dashboard del empleado.
 
 
+## Actualización: Centralización de mustChangePassword y conversión de tests
+
+### Cambios en src/lib/session.ts
+- `requireSession()` ahora acepta `{ skipMustChangeCheck?: boolean }` (default `false`).
+- Cuando no se salta el check, consulta `mustChangePassword` en BD y redirige a `/cambiar-contrasena` si está activo.
+- Se agregó `requireRole(roles)` que delega en `requireSession()` y verifica el rol, lanzando `"No autorizado"` si no coincide.
+
+### Cambios en src/app/actions.ts
+- Se eliminó la definición local de `requireRole` (que usaba `auth()` directamente sin revisar `mustChangePassword`).
+- Ahora importa `requireRole` desde `@/lib/session`, por lo que todas las server actions heredan automáticamente la revisión del flag.
+
+### Cambios en src/app/(app)/layout.tsx
+- Se eliminó la consulta redundante de `mustChangePassword` (ahora la hace `requireSession()`).
+
+### Cambios en src/app/cambiar-contrasena/page.tsx
+- Usa `requireSession({ skipMustChangeCheck: true })` para evitar el bucle de redirección.
+
+### Documentación
+- `README.md` y `docs/MVP.md` ahora mencionan el cambio obligatorio de contraseña en el primer ingreso y la ruta `/cambiar-contrasena`.
+
+### Tests
+- 11 tests convertidos a asserts granulares (`must(cond, msg)` + `try/catch` + `process.exit(1)`).
+- `forced-password-change-test.mjs` ya usaba el patrón check/failures (modelo) y está integrado al runner.
+
+### Commits
+- `734d8cb` — feat: centralizar revision mustChangePassword en requireSession/requireRole
+- `70ef0f5` — docs: mencionar cambio obligatorio de contraseña en primer ingreso y ruta /cambiar-contrasena
+- `a52eb89` — test: granularizar asserts en fechas, tooltip, filters y form-comp (cierre PLAN-CONVERSION)
+

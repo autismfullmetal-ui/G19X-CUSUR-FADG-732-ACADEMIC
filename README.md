@@ -22,7 +22,7 @@ Sistema integral de gestión de talento, diagnóstico de competencias, convocato
 | **Notificaciones In-App** | Campana interactiva en cabecera con contador de pendientes y alertas automáticas ante postulaciones, revisiones y calificaciones. | RF-025 |
 | **Auditoría y Trazabilidad** | Registro inmutable de eventos críticos (creación, edición, evaluación, aprobación) con panel de filtrado y búsqueda exclusivo para Admin y RH. | RF-026, OE-17 |
 | **Importación Masiva por CSV** | Descarga de plantillas modelo `.csv` y procesamiento en lote de empleados, puestos, áreas y competencias con creación de credenciales iniciales. | RF-027, OE-18 |
-| **Mi Perfil y Seguridad** | Consulta individual de perfil laboral, competencias vigentes, cambio autónomo de contraseña con encriptación bcryptjs y reseteo por administradores. | RF-028, RNF-001 |
+| **Mi Perfil y Seguridad** | Consulta individual de perfil laboral, competencias vigentes, cambio autónomo de contraseña con encriptación bcryptjs y reseteo por administradores. **Cambio obligatorio de contraseña en el primer ingreso** (clave temporal): el usuario es redirigido automáticamente a la ruta `/cambiar-contrasena` hasta definir su contraseña personal; la clave temporal deja de ser válida una vez completado el cambio. | RF-028, RNF-001 |
 
 ---
 

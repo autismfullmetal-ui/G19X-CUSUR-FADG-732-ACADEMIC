@@ -22,7 +22,7 @@ con entregables → Revisión del supervisor → Re-evaluación → Brecha SUPER
 
 | # | Módulo | Qué hace | Estado |
 |---|--------|----------|:------:|
-| 1 | **Autenticación** | Login con email/contraseña; JWT firmado; sesión con rol; cambio de contraseña con validación de la actual; restablecimiento admin. | ✅ |
+| 1 | **Autenticación** | Login con email/contraseña; JWT firmado; sesión con rol; cambio de contraseña con validación de la actual; restablecimiento admin. **Cambio obligatorio de contraseña en el primer ingreso** (clave temporal): el usuario con `mustChangePassword=true` es redirigido automáticamente a `/cambiar-contrasena` hasta definir su contraseña personal; la clave temporal queda inválida una vez completado el cambio. | ✅ |
 | 2 | **Empleados** | CRUD con status (ACTIVO/INACTIVO), departamento, puesto y supervisor; alta crea usuario EMPLEADO automáticamente; selección de competencias iniciales opcional; importación masiva CSV. | ✅ |
 | 3 | **Competencias** | Catálogo técnicas/blandas; activar/desactivar; niveles vigentes por empleado (RF-036). | ✅ |
 | 4 | **Evaluaciones** | Inicial y post-capacitación; calificación 1–5 por competencia con comentarios; evaluación de objetivos organizacionales; **RH y Supervisor** evalúan; **supervisor limitado a sus subordinados** (filtro en pantalla + validación en servidor). | ✅ |

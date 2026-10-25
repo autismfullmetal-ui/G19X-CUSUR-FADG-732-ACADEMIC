@@ -1,130 +1,101 @@
-import http from "http";
 import { PrismaClient } from "@prisma/client";
 
+const base = "http://localhost:3000";
 const db = new PrismaClient();
 
-async function testImportacionCsv() {
+function must(cond, msg) {
+  if (!cond) {
+    console.error("FALLO:", msg);
+    process.exit(1);
+  }
+}
+
+function cookiesFrom(res) {
+  const c = res.headers.getSetCookie();
+  if (c && c.length) return c.map((x) => x.split(";")[0]).join("; ");
+  const single = res.headers.get("set-cookie");
+  return single ? single.split(";")[0] : "";
+}
+
+async function login(email, password, initialCookies, csrfToken) {
+  const res = await fetch(`${base}/api/auth/callback/credentials`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded", Cookie: initialCookies },
+    body: new URLSearchParams({ csrfToken, email, password, redirect: "false" }),
+    redirect: "manual",
+  });
+  return cookiesFrom(res);
+}
+
+try {
   console.log("--- TEST BLOQUE 5: IMPORTACIÓN MASIVA POR CSV (RF-027, OE-18) ---");
 
-  // 1. Probar descarga de plantillas
   console.log("1. Probando descarga de plantilla de empleados...");
-  const tplEmpRes = await fetch("http://localhost:3000/api/templates/empleados");
-  console.log("Status plantilla empleados:", tplEmpRes.status);
+  const tplEmpRes = await fetch(`${base}/api/templates/empleados`);
+  must(tplEmpRes.status === 200, `plantilla empleados responde 200 (llego ${tplEmpRes.status})`);
   const tplEmpText = await tplEmpRes.text();
-  console.log("✓ Encabezados válidos:", tplEmpText.startsWith("nombre,apellidos,email,departamento,puesto"));
+  must(tplEmpText.startsWith("nombre,apellidos,email,departamento,puesto"), "encabezados válidos de plantilla empleados");
 
   console.log("2. Probando descarga de plantilla de competencias...");
-  const tplCompRes = await fetch("http://localhost:3000/api/templates/competencias");
-  console.log("Status plantilla competencias:", tplCompRes.status);
+  const tplCompRes = await fetch(`${base}/api/templates/competencias`);
+  must(tplCompRes.status === 200, `plantilla competencias responde 200 (llego ${tplCompRes.status})`);
   const tplCompText = await tplCompRes.text();
-  console.log("✓ Encabezados válidos:", tplCompText.startsWith("nombre,descripcion,tipo"));
+  must(tplCompText.startsWith("nombre,descripcion,tipo"), "encabezados válidos de plantilla competencias");
 
-  // 2. Obtener CSRF token
-  const csrfRes = await fetch("http://localhost:3000/api/auth/csrf");
+  const csrfRes = await fetch(`${base}/api/auth/csrf`);
+  must(csrfRes.status === 200, `csrf endpoint responde 200 (llego ${csrfRes.status})`);
   const csrfData = await csrfRes.json();
   const csrfToken = csrfData.csrfToken;
-  const initialCookies = csrfRes.headers.get("set-cookie") || "";
+  must(!!csrfToken, "se obtiene csrfToken");
+  const initialCookies = cookiesFrom(csrfRes);
 
-  // 3. Iniciar sesión como ADMIN
   console.log("3. Autenticando como ADMIN (admin@demo.mx)...");
-  const adminLoginRes = await fetch("http://localhost:3000/api/auth/callback/credentials", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      "Cookie": initialCookies,
-    },
-    body: new URLSearchParams({
-      csrfToken,
-      email: "admin@demo.mx",
-      password: "Demo1234!",
-      redirect: "false",
-    }),
-    redirect: "manual",
-  });
-  const adminCookies = adminLoginRes.headers.getSetCookie().map(c => c.split(';')[0]).join('; ');
+  const adminCookies = await login("admin@demo.mx", "Demo1234!", initialCookies, csrfToken);
+  must(adminCookies.includes("session-token"), "login de admin exitoso");
 
-  // 4. Consultar /importacion como ADMIN
   console.log("4. Consultando /importacion como ADMIN...");
-  const impRes = await fetch("http://localhost:3000/importacion", {
-    headers: { Cookie: adminCookies },
-  });
-  console.log("Status /importacion:", impRes.status);
+  const impRes = await fetch(`${base}/importacion`, { headers: { Cookie: adminCookies } });
+  must(impRes.status === 200, `GET /importacion responde 200 (llego ${impRes.status})`);
   const impText = await impRes.text();
-  console.log("✓ Contiene 'Importación Masiva de Datos':", impText.includes("Importación Masiva de Datos"));
-  console.log("✓ Contiene 'RF-027 / OE-18':", impText.includes("RF-027 / OE-18"));
-  console.log("✓ Contiene sección de Personal:", impText.includes("Personal y Estructura Organizacional"));
-  console.log("✓ Contiene sección de Competencias:", impText.includes("Catálogo de Competencias"));
+  must(impText.includes("Importación Masiva de Datos"), "contiene 'Importación Masiva de Datos'");
+  must(impText.includes("RF-027 / OE-18"), "contiene 'RF-027 / OE-18'");
+  must(impText.includes("Personal y Estructura Organizacional"), "contiene sección de Personal");
+  must(impText.includes("Catálogo de Competencias"), "contiene sección de Competencias");
 
-  // 5. Consultar /importacion como EMPLEADO (debe bloquear)
   console.log("5. Probando acceso como EMPLEADO (debe bloquearse)...");
-  const empLoginRes = await fetch("http://localhost:3000/api/auth/callback/credentials", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      "Cookie": initialCookies,
-    },
-    body: new URLSearchParams({
-      csrfToken,
-      email: "empleado@demo.mx",
-      password: "Demo1234!",
-      redirect: "false",
-    }),
-    redirect: "manual",
-  });
-  const empCookies = empLoginRes.headers.getSetCookie().map(c => c.split(';')[0]).join('; ');
-  const empImpRes = await fetch("http://localhost:3000/importacion", {
-    headers: { Cookie: empCookies },
-  });
+  const empCookies = await login("empleado@demo.mx", "Demo1234!", initialCookies, csrfToken);
+  must(empCookies.includes("session-token"), "login de empleado exitoso");
+  const empImpRes = await fetch(`${base}/importacion`, { headers: { Cookie: empCookies } });
   const empImpText = await empImpRes.text();
-  console.log("✓ Acceso denegado a EMPLEADO:", empImpText.includes("Acceso Restringido"));
+  must(empImpText.includes("Acceso Restringido"), "acceso denegado a EMPLEADO");
 
-  // 6. Probar importación real directa de Competencias
   console.log("6. Verificando inserción de datos masivos...");
   const compCountBefore = await db.competency.count();
-  const empCountBefore = await db.employee.count();
-
-  // Insertar una competencia de prueba directamente para simular el parser o verificar BD
   const testCompName = `GraphQL Test ${Date.now()}`;
   await db.competency.create({
-    data: {
-      name: testCompName,
-      description: "API queries con GraphQL",
-      type: "TECNICA",
-      status: "ACTIVA",
-    },
+    data: { name: testCompName, description: "API queries con GraphQL", type: "TECNICA", status: "ACTIVA" },
   });
   const compCountAfter = await db.competency.count();
-  console.log("✓ Competencia de prueba agregada:", compCountAfter === compCountBefore + 1);
+  must(compCountAfter === compCountBefore + 1, "competencia de prueba agregada");
 
-  // 7. Verificar registro de auditoría
   console.log("7. Verificando compatibilidad con el módulo de auditoría...");
   const adminUser = await db.user.findFirst({ where: { role: "ADMIN" } });
+  must(!!adminUser, "existe usuario ADMIN");
   const auditRes = await db.auditLog.create({
-    data: {
-      userId: adminUser.id,
-      action: "IMPORTACION_MASIVA",
-      entity: "Empleado",
-      details: "Test automático de carga masiva de personal por CSV.",
-    },
+    data: { userId: adminUser.id, action: "IMPORTACION_MASIVA", entity: "Empleado", details: "Test automático de carga masiva de personal por CSV." },
   });
-  console.log("✓ Evento de auditoría creado con éxito:", auditRes.id > 0);
+  must(auditRes.id > 0, "evento de auditoría creado con éxito");
 
-  // Verificar en /auditoria
-  const audRes = await fetch("http://localhost:3000/auditoria?action=IMPORTACION_MASIVA", {
-    headers: { Cookie: adminCookies },
-  });
+  const audRes = await fetch(`${base}/auditoria?action=IMPORTACION_MASIVA`, { headers: { Cookie: adminCookies } });
   const audText = await audRes.text();
-  console.log("✓ Evento visible en /auditoria:", audText.includes("Carga Masiva de Datos"));
+  must(audText.includes("Carga Masiva de Datos"), "evento visible en /auditoria");
 
-  // Limpiar auditoría de test
   await db.auditLog.delete({ where: { id: auditRes.id } });
 
   console.log("\n ¡TODAS LAS PRUEBAS DE BLOQUE 5 PASARON EXITOSAMENTE!");
+} catch (err) {
+  console.error("ERROR:", err.message);
+  process.exit(1);
+} finally {
+  await db.$disconnect();
 }
-
-testImportacionCsv()
-  .catch(err => {
-    console.error("Error en test:", err);
-    process.exit(1);
-  })
-  .finally(() => db.$disconnect());

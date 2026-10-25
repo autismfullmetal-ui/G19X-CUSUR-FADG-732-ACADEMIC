@@ -98,9 +98,10 @@ async function testImportacionCsv() {
 
   // 7. Verificar registro de auditoría
   console.log("7. Verificando compatibilidad con el módulo de auditoría...");
+  const adminUser = await db.user.findFirst({ where: { role: "ADMIN" } });
   const auditRes = await db.auditLog.create({
     data: {
-      userId: 1,
+      userId: adminUser.id,
       action: "IMPORTACION_MASIVA",
       entity: "Empleado",
       details: "Test automático de carga masiva de personal por CSV.",

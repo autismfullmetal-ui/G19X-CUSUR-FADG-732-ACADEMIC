@@ -41,7 +41,7 @@ async function testPerfilYContrasenas() {
   console.log("✓ Contiene 'RF-028 / RNF-001':", perfilText.includes("RF-028 / RNF-001"));
   console.log("✓ Contiene nombre de colaboradora (Elena Vega):", perfilText.includes("Elena Vega"));
   console.log("✓ Contiene departamento (Sistemas):", perfilText.includes("Sistemas"));
-  console.log("✓ Contiene puesto (Desarrollador):", perfilText.includes("Desarrollador"));
+  console.log("✓ Contiene puesto (puesto actual):", perfilText.includes("Ingeniero de Software Full-Stack"));
   console.log("✓ Contiene formulario de cambio de clave:", perfilText.includes("Cambiar Contraseña de Acceso"));
 
   // 4. Cambiar contraseña directamente con bcrypt para verificar hashing y luego simular flujo
@@ -89,6 +89,7 @@ async function testPerfilYContrasenas() {
 
   // 5. Probar restablecimiento administrativo por Admin
   console.log("5. Probando restablecimiento administrativo de contraseña...");
+  const adminUser = await db.user.findFirst({ where: { role: "ADMIN" } });
   const defaultHash = bcrypt.hashSync("Demo1234!", 10);
   await db.user.update({
     where: { id: user.id },
@@ -97,7 +98,7 @@ async function testPerfilYContrasenas() {
 
   await db.auditLog.create({
     data: {
-      userId: 1, // Admin
+      userId: adminUser.id, // Admin (buscado dinamicamente)
       action: "RESTABLECER_CONTRASENA",
       entity: "Usuario",
       entityId: user.id,

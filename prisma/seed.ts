@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { calcCompatibility } from "../src/lib/compatibility";
+import { calcCompatibility } from "../src/lib/compatibility.ts";
 
 const db = new PrismaClient();
 

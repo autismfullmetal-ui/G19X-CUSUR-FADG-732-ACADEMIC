@@ -10,7 +10,7 @@ async function run() {
     include: { user: true },
   });
   const comp = await db.competency.findFirst({
-    where: { name: "Python" },
+    where: { name: "Python Avanzado" },
   });
 
   // 1. Crear oportunidad de prueba

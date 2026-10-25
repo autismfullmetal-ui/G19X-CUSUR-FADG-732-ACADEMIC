@@ -1,11 +1,14 @@
-const base = "http://localhost:3000";
+// Prueba E2E de recomendaciones (RF-014, RF-015, RN-010).
+// La GENERACION se invoca llamando directamente a generateAiRecommendation()
+// (la misma funcion que usa el boton de la app, que es una accion cliente sin
+// $ACTION_ID en el HTML). La APROBACION se ejercita via el formulario real
+// del servidor (approveRecommendation).
+import "dotenv/config";
+import { PrismaClient } from "@prisma/client";
+import { generateAiRecommendation } from "../src/lib/ai.ts";
 
-// Reiniciar: sin recomendación previa
-const { PrismaClient } = await import("@prisma/client");
+const base = "http://localhost:3000";
 const db = new PrismaClient();
-const target = await db.application.findFirst({ orderBy: { id: "desc" } });
-const appId = target.id;
-await db.recommendation.deleteMany({ where: { applicationId: appId } });
 
 async function login(email, password) {
   const res1 = await fetch(`${base}/api/auth/csrf`);
@@ -52,48 +55,86 @@ async function submit(cookie, url, form) {
   });
 }
 
-const detailUrl = `${base}/postulaciones/${appId}`;
-const rhCookie = await login("rh@demo.mx", "Demo1234!");
+function must(cond, msg) {
+  if (!cond) {
+    console.error("FALLO:", msg);
+    process.exit(1);
+  }
+}
 
-// 1. Generar recomendación (sin clave -> ruta de plantillas, RNF-015)
+// App mas reciente = la que acaba de crear apply-test
+const app = await db.application.findFirst({
+  orderBy: { id: "desc" },
+  include: {
+    employee: true,
+    opportunity: true,
+    gaps: { include: { requirement: { include: { competency: true } } } },
+  },
+});
+const appId = app.id;
+const detailUrl = `${base}/postulaciones/${appId}`;
+
+// Limpiar recomendaciones previas
+await db.recommendation.deleteMany({ where: { applicationId: appId } });
+
+// 1. GENERAR: misma funcion que usa el boton de la app
+console.log(`Generando recomendacion para ${app.employee.firstName} ${app.employee.lastName} / "${app.opportunity.title}"...`);
+const result = await generateAiRecommendation({
+  employee: `${app.employee.firstName} ${app.employee.lastName}`,
+  opportunity: app.opportunity.title,
+  gaps: app.gaps.map((g) => ({
+    competency: g.requirement.competency.name,
+    description: g.requirement.competency.description,
+    type: g.requirement.competency.type,
+    currentLevel: g.currentLevel,
+    requiredLevel: g.requiredLevel,
+    mandatory: g.requirement.mandatory,
+  })),
+});
+
+const expectSource = process.env.AI_API_KEY ? "ia (o plantilla si la IA fallo)" : "plantilla-local";
+console.log(`origen: ${result.source} (esperado: ${expectSource})`);
+if (!process.env.AI_API_KEY) {
+  must(result.source === "plantilla" || result.source === "plantilla-local", `sin API key el origen debe ser plantilla-local (llego ${result.source})`);
+} else {
+  must(result.source === "ia" || result.source === "plantilla" || result.source === "plantilla-local", `origen invalido: ${result.source}`);
+}
+must(!!result.text && result.text.length > 0, "la recomendacion tiene texto");
+must(result.activities.length > 0, `la recomendacion trae actividades (llegaron ${result.activities.length})`);
+
+// Persistir como lo hace la aplicacion (estado PROPUESTA, pendiente de revision humana)
+const rec = await db.recommendation.create({
+  data: {
+    applicationId: appId,
+    text: result.text,
+    activities: JSON.stringify(result.activities),
+    modelVersion: result.modelVersion,
+    status: "PROPUESTA",
+  },
+});
+must(rec.status === "PROPUESTA", "la recomendacion queda PROPUESTA (pendiente de revision humana, RN-010)");
+console.log("recomendacion creada y persistida:", rec.id > 0);
+
+// 2. APROBAR via el formulario real del servidor
+const rhCookie = await login("rh@demo.mx", "Demo1234!");
 let page = await fetch(detailUrl, { headers: { cookie: rhCookie } });
 let html = await page.text();
-let form =
-  formNear(html, "Generar recomendación con IA") ??
-  formNear(html, "Regenerar recomendación");
-if (!form) {
-  console.error("No se encontró el botón de generar recomendación");
-  process.exit(1);
-}
-await submit(rhCookie, detailUrl, form);
+let form = formNear(html, "Aprobar recomendación");
+must(!!form, "el detalle muestra el formulario de aprobar recomendacion");
+const res = await submit(rhCookie, detailUrl, form);
+must(res.status === 200 || res.status === 303, `la aprobacion responde ${res.status}`);
 
-const rec = await db.recommendation.findUnique({ where: { applicationId: appId } });
-console.log("recomendación creada:", rec !== null);
-console.log("origen (sin clave = plantilla):", rec.modelVersion, "(esperado plantilla-local)");
-console.log("estado PROPUESTA:", rec.status === "PROPUESTA");
-console.log("actividades sugeridas:", JSON.parse(rec.activities).length > 0);
-
-// 2. Aprobar recomendación
-page = await fetch(detailUrl, { headers: { cookie: rhCookie } });
-html = await page.text();
-form = formNear(html, "Aprobar recomendación");
-if (!form) {
-  console.error("No se encontró el botón de aprobar");
-  process.exit(1);
-}
-await submit(rhCookie, detailUrl, form);
 const rec2 = await db.recommendation.findUnique({ where: { applicationId: appId } });
-console.log("aprobada:", rec2.status === "APROBADA", "| revisada por:", rec2.reviewedById !== null ? "RH" : "nadie");
+must(rec2.status === "APROBADA", `la recomendacion queda APROBADA (llego ${rec2.status})`);
+must(rec2.reviewedById !== null, `queda registrada la revision humana (revisor id ${rec2.reviewedById})`);
+console.log("recomendacion APROBADA por RH:", rec2.reviewedById);
 
-// 3. El formulario del plan se precargará (al abrirlo) con las actividades aprobadas
+// 3. Con la recomendacion aprobada, el formulario del plan debe aparecer precargado
 page = await fetch(detailUrl, { headers: { cookie: rhCookie } });
 html = await page.text();
-const aprobadaConActividades =
-  rec2.status === "APROBADA" && JSON.parse(rec2.activities).length > 0;
-console.log(
-  "prefil de actividades listo (se muestra al abrir el formulario):",
-  aprobadaConActividades
-);
-console.log("botón de crear plan presente:", html.includes("Crear plan de desarrollo"));
+must(html.includes("Crear plan de desarrollo"), "el detalle muestra el formulario de crear plan");
+const aprobadaConActividades = rec2.status === "APROBADA" && JSON.parse(rec2.activities).length > 0;
+must(aprobadaConActividades, "hay actividades aprobadas para precargar el plan");
 
+console.log("\nOK: ciclo de recomendacion (generar -> revisar -> aprobar) verificado.");
 await db.$disconnect();

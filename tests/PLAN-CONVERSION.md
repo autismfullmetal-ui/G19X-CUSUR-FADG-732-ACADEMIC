@@ -26,6 +26,7 @@
 | 15 | opportunity-dates-test.mjs | BD directa | No | 🟡 1 throw; resto console.log |
 | 16 | opportunity-objective-link-test.mjs | BD directa | No | 🔴 solo excepciones |
 | 17 | verify-glm-recommendation.ts | Script manual (IA real) | No | — EXCLUIDO del runner: requiere API key y consume tokens |
+| 18 | forced-password-change-test.mjs | E2E HTTP | Sí | 🟢 ya usa check() + contador de fallos (patrón modelo) |
 
 ## 2. Valores esperados (base para los asserts)
 
@@ -48,24 +49,24 @@
 ## 3. Hallazgos que condicionan el diseño
 
 1. **rec-test es condicional a la API key:** espera `plantilla-local` solo cuando `AI_API_KEY` está vacía. Si hay clave, la IA devuelve su modelo (ej. "glm-4.5"). El assert será: origen === (API_KEY ? "ia" : "plantilla-local").
-2. **Orden de dependencia:** plan-test y rec-test consumen la postulación que crea apply-test (la localizan con findFirst). Orden obligatorio del runner: calc → apply → login → plan → rec → resto.
+2. **Orden de dependencia:** plan-test y rec-test consumen la postulación que crea apply-test (la localizan con findFirst). Orden obligatorio del runner: calc → apply → login → rec → plan → resto (el plan requiere recomendacion aprobada).
 3. **Limpieza:** fechas, objective-link y deliverables crean y borran sus propios datos; perfil restaura la contraseña. El runner igualmente ejecutará el seed al final para dejar datos demo limpios.
 4. **calc-test importa un .ts:** requiere ejecutarse con Node ≥ 22 (type stripping) o tsx. El runner usará el mismo runtime para todo.
 
 ## 4. Cambios planificados (fases siguientes)
 
-- **Fase 2:** `package.json`: `"seed": "tsx prisma/seed.ts"` y `"test": "node tests/run-all.mjs"`.
-- **Fase 3:** `tests/run-all.mjs`: detecta/levanta el servidor en :3000, ejecuta las pruebas en orden, corriendo todas aunque haya fallos, suma veredicto (exit 0/1) y re-ejecuta el seed al final.
+- **Fase 2 (COMPLETA):** `package.json`: `"seed": "tsx prisma/seed.ts"` y `"test": "node tests/run-all.mjs"`.
+- **Fase 3 (COMPLETA):** `tests/run-all.mjs`: detecta/levanta el servidor en :3000, ejecuta las pruebas en orden, corriendo todas aunque haya fallos, suma veredicto (exit 0/1) y re-ejecuta el seed al final.
 - **Fase 4:** convertir cada console.log de verificación en `assert` (node:assert/strict) con mensaje que indique qué se esperaba y qué llegó. verify-glm queda fuera del runner.
 - **Fase 5:** probar rojo (romper algo a propósito) y verde; documentar en SETUP.md.
 
 ## 5. Checklist de conversión
 
-- [ ] calc-test: granularizar a asserts individuales
+- [x] calc-test: granularizar a asserts individuales
 - [ ] login-test: 4 asserts
-- [ ] apply-test: 8 asserts + mantener guardia
-- [ ] rec-test: 6 asserts + condicional API key
-- [ ] plan-test: asserts de flujo
+- [x] apply-test: reescrito con must() y seleccion dinamica de oportunidad PUBLICADA
+- [x] rec-test: reescrito con generateAiRecommendation directa + must() + condicional API key
+- [x] plan-test: reescrito con must() (crear -> aprobar -> iniciar actividad)
 - [ ] fechas: asserts de lógica y continuidad
 - [ ] deliverables: asserts de persistencia
 - [ ] objetivos: asserts por rol y filtro
@@ -75,6 +76,7 @@
 - [ ] theme: asserts de tema y navegación
 - [ ] planes-ui: migrar checks a assert individual
 - [ ] tooltip/filters/form-comp: assert individual por patrón
-- [ ] run-all.mjs: orquestador con veredicto
-- [ ] package.json: scripts seed y test
-- [ ] SETUP.md: documentar npm test
+- [x] run-all.mjs: orquestador con veredicto
+- [x] package.json: scripts seed y test
+- [x] forced-password-change-test: integrado al runner (ya usa el patrón check/failures)
+- [x] SETUP.md: documentar npm test y npm run seed

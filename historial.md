@@ -681,7 +681,7 @@
 
 ---
 
-## Hito 24: Eliminación de Emojis en Interfaz, Documentación y Pruebas (7 oct 2026, `8313ca2`)
+## Hito 24: Eliminación de Emojis en Interfaz, Documentación y Pruebas (7 oct 2026, `74f2b75`)
 * **Requerimiento:** Dar una presentación más sobria y profesional quitando todos los emojis del sistema.
 * **Solución Implementada:**
   * Retiro de emojis en 40 archivos: páginas de `src/app/(app)/` (auditoría, competencias, empleados, evaluaciones, importación, objetivos, oportunidades, perfil, planes y postulaciones), componentes (`AppSidebar`, `HeaderNotifications`, `PlanActivityCard`, `PlanesList`, `PeriodDateRangePicker`, formularios y dashboards por rol), `prisma/seed.ts` y documentación (`README.md`, `SETUP.md`, `contexto.md`, `historial.md`).
@@ -690,17 +690,17 @@
 
 ---
 
-## Hito 25: Permisos de Evaluación por Rol y Ámbito del Supervisor (14 oct 2026, `e1093bb`)
+## Hito 25: Permisos de Evaluación por Rol y Ámbito del Supervisor (14 oct 2026, `452039d`)
 * **Requerimiento (PRD 5.2):** RH debe poder registrar evaluaciones, y el supervisor solo debe evaluar a sus colaboradores directos.
 * **Solución Implementada:**
   * **[src/app/actions.ts](src/app/actions.ts):** `createEvaluation` acepta otra vez los roles `ADMIN`, `RH` y `SUPERVISOR`. Si quien evalúa es un supervisor, se verifica que `employee.supervisorId` sea igual a su propio `Employee.id`; si no coincide, redirige con `?error=nosubordinado`.
   * **[src/app/(app)/evaluaciones/page.tsx](src/app/(app)/evaluaciones/page.tsx):** `puedeEvaluar` incluye a RH. Para el supervisor, el selector de empleados se filtra con `supervisorId` y solo muestra a sus subordinados activos.
   * **[prisma/init.sql](prisma/init.sql):** se sincronizó con `schema.prisma` (`objectiveId` en `Opportunity`, `strategicObjectiveId` en `DevelopmentPlan` y `activities` en `Recommendation`).
-  * Los documentos de estudio personales (`CODIGO-EXPLICADO.md`, `DEFENSA.md`) salieron del repositorio (`e19a649`) y la carpeta `estudio/` se agregó a `.gitignore` (`ef23b9c`).
+  * Los documentos de estudio personales (`CODIGO-EXPLICADO.md`, `DEFENSA.md`) salieron del repositorio (`c8decbd`) y la carpeta `estudio/` se agregó a `.gitignore` (`fb37368`).
 
 ---
 
-## Hito 26: Transacción Atómica en el Alta de Empleados (14 oct 2026, `bdbf99f`)
+## Hito 26: Transacción Atómica en el Alta de Empleados (14 oct 2026, `70ccf93`)
 * **Problema detectado:** En `createEmployee`, si fallaba la creación del `Employee` después de haber creado el `User`, quedaba un usuario huérfano en la base de datos.
 * **Solución Implementada en [src/app/actions.ts](src/app/actions.ts):**
   * El flujo completo **usuario → empleado → evaluación inicial → calificaciones → niveles vigentes de competencias** corre dentro de `db.$transaction(async (tx) => { ... })`.
@@ -709,7 +709,7 @@
 
 ---
 
-## Hito 27: Sincronización de Documentación con el Código (16 oct 2026, `39f07e5`, `6fd068a`, `24d0f72`)
+## Hito 27: Sincronización de Documentación con el Código (16 oct 2026, `70e4398`, `d81579d`, `288b5aa`)
 * **[README.md](README.md):** se documentó el vínculo Objetivo → Convocatoria → Plan, el selector de período con calendario y la estructura completa del proyecto. La matriz de roles quedó alineada con los permisos reales (RH evalúa y el supervisor se limita a sus subordinados).
 * **[.env.example](.env.example):** coincide con la configuración GLM (endpoint Coding Plan, modelo y ranura del proveedor 2).
 * **[SETUP.md](SETUP.md):** se corrigieron las variables de entorno y la lista de pruebas existentes.
@@ -717,21 +717,21 @@
 ---
 
 ## Hito 28: Auditoría de Pruebas E2E y Documentación Formal del Proyecto (19 y 20 oct 2026)
-* **Auditoría de pruebas (`013a775`):** nuevo [tests/PLAN-CONVERSION.md](tests/PLAN-CONVERSION.md) con la fase 1 del plan de pruebas:
+* **Auditoría de pruebas (`d08c6df`):** nuevo [tests/PLAN-CONVERSION.md](tests/PLAN-CONVERSION.md) con la fase 1 del plan de pruebas:
   * Inventario de 17 pruebas clasificadas por tipo (unitaria, estática, E2E HTTP, BD directa), indicando si necesitan servidor y si hoy pueden fallar.
   * Hallazgo principal: la mayoría solo imprime resultados con `console.log` y no falla con un error claro.
   * Tabla de valores esperados para los futuros asserts (compatibilidad 75, brechas, códigos HTTP 302/303/200, estados de plan).
   * Objetivo: exponer `npm run seed` y `npm test`. `verify-glm-recommendation.ts` queda fuera del runner porque consume tokens de la IA real.
-* **PRD y MVP (`b91e459`):** se publicaron [docs/PRD.md](docs/PRD.md) y [docs/MVP.md](docs/MVP.md), con excepciones `!docs/PRD.md` y `!docs/MVP.md` en `.gitignore` (los demás PRD y `.docx`/`.pdf` siguen excluidos).
-* **Herramientas (`55a4b26`):** nuevo [HERRAMIENTAS.md](HERRAMIENTAS.md) con la IA usada como asistente de desarrollo y la integrada en la aplicación, el stack tecnológico, las herramientas de desarrollo, las pruebas y la documentación.
-* **Alineación final (`c47db10`):** `SETUP.md`, `contexto.md` y `README.md` quedaron coherentes con el código y el repositorio.
+* **PRD y MVP (`2ad4326`):** se publicaron [docs/PRD.md](docs/PRD.md) y [docs/MVP.md](docs/MVP.md), con excepciones `!docs/PRD.md` y `!docs/MVP.md` en `.gitignore` (los demás PRD y `.docx`/`.pdf` siguen excluidos).
+* **Herramientas (`7f4a556`):** nuevo [HERRAMIENTAS.md](HERRAMIENTAS.md) con la IA usada como asistente de desarrollo y la integrada en la aplicación, el stack tecnológico, las herramientas de desarrollo, las pruebas y la documentación.
+* **Alineación final (`7715e20`):** `SETUP.md`, `contexto.md` y `README.md` quedaron coherentes con el código y el repositorio.
 
 ---
 
 ## Hito 29: Enlaces Relativos en la Documentación (21 oct 2026)
 * **Problema detectado:** `contexto.md` (líneas 135 y 225) y `historial.md` tenían enlaces absolutos `file:///f:/TO_DO%20PROYECTO/pdp/...` que apuntaban al disco local del desarrollador y no funcionaban en GitHub ni en otros equipos.
 * **Solución Implementada:**
-  * Se reemplazaron por rutas relativas al repositorio (ej. `src/lib/ai.ts`, `src/app/globals.css`): 2 enlaces en `contexto.md` (`afcd8be`) y 100 en `historial.md`.
+  * Se reemplazaron por rutas relativas al repositorio (ej. `src/lib/ai.ts`, `src/app/globals.css`): 2 enlaces en `contexto.md` (`4327c9b`) y 100 en `historial.md`.
 
 ---
 

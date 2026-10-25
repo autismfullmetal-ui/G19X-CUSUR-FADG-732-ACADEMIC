@@ -1,91 +1,145 @@
-const base = "http://localhost:3000";
+// Prueba E2E del flujo de postulacion (RF-010..RF-013, RN-001).
+// Selecciona dinamicamente una oportunidad PUBLICADA (con brechas para el
+// empleado si existe), calcula la compatibilidad esperada con la misma
+// funcion que usa la aplicacion y verifica pantalla + base de datos.
+import { PrismaClient } from "@prisma/client";
+import { calcCompatibility } from "../src/lib/compatibility.ts";
 
-// Reiniciar estado: eliminar postulaciones previas de la oportunidad 1
-const { PrismaClient } = await import("@prisma/client");
-const db0 = new PrismaClient();
-await db0.gap.deleteMany({ where: { application: { opportunityId: 1 } } });
-await db0.application.deleteMany({ where: { opportunityId: 1 } });
-await db0.$disconnect();
+const base = "http://localhost:3000";
+const db = new PrismaClient();
+
+function must(cond, msg) {
+  if (!cond) {
+    console.error("FALLO:", msg);
+    process.exit(1);
+  }
+}
+
+function cookiesFrom(res) {
+  return res.headers.getSetCookie().map((c) => c.split(";")[0]).join("; ");
+}
 
 async function login(email, password) {
-  const res1 = await fetch(`${base}/api/auth/csrf`);
-  const { csrfToken } = await res1.json();
-  const cookie1 = res1.headers
-    .getSetCookie()
-    .map((c) => c.split(";")[0])
-    .join("; ");
-  const res2 = await fetch(`${base}/api/auth/callback/credentials`, {
+  const r1 = await fetch(`${base}/api/auth/csrf`);
+  const { csrfToken } = await r1.json();
+  const r2 = await fetch(`${base}/api/auth/callback/credentials`, {
     method: "POST",
-    headers: { "content-type": "application/x-www-form-urlencoded", cookie: cookie1 },
+    headers: { "content-type": "application/x-www-form-urlencoded", cookie: cookiesFrom(r1) },
     body: new URLSearchParams({ csrfToken, email, password }),
     redirect: "manual",
   });
-  return res2.headers
-    .getSetCookie()
-    .map((c) => c.split(";")[0])
-    .join("; ");
+  const cookie = cookiesFrom(r2);
+  return cookie.includes("session-token") ? cookie : null;
 }
 
-const cookie = await login("empleado@demo.mx", "Demo1234!");
+try {
+  // 1. Elegir oportunidad PUBLICADA (preferente: una con brechas para Elena)
+  const user = await db.user.findUnique({ where: { email: "empleado@demo.mx" } });
+  const employee = await db.employee.findUnique({ where: { userId: user.id } });
+  must(!!employee, "existe la ficha de empleado del usuario empleado@demo.mx");
 
-// Localizar el action id del formulario "Postularme"
-const page = await fetch(`${base}/oportunidades`, { headers: { cookie } });
-const html = await page.text();
-const before = html.slice(0, html.indexOf("Postularme") + 12);
-const ids = [...before.matchAll(/name="(\$ACTION_ID_[^"]+)"/g)].map((m) => m[1]);
-const actionId = ids.at(-1);
-if (!actionId) {
-  console.error("No se encontró el formulario de postulación (¿ya postulaste antes?)");
-  process.exit(1);
-}
-
-function postForm() {
-  const fd = new FormData();
-  fd.set(actionId, "");
-  fd.set("opportunityId", "1");
-  return fetch(`${base}/oportunidades`, {
-    method: "POST",
-    headers: { cookie, origin: base },
-    body: fd,
-    redirect: "manual",
+  const opps = await db.opportunity.findMany({
+    where: { status: "PUBLICADA" },
+    include: { requirements: { include: { competency: true } } },
+    orderBy: { id: "asc" },
   });
+  must(opps.length > 0, "hay oportunidades PUBLICADAS en la base de datos");
+
+  const levels = new Map(
+    (await db.employeeCompetency.findMany({ where: { employeeId: employee.id } }))
+      .map((ec) => [ec.competencyId, ec.level])
+  );
+
+  let chosen = null;
+  let expected = null;
+  for (const opp of opps) {
+    const reqs = opp.requirements.map((r) => ({
+      competencyId: r.competencyId,
+      requiredLevel: r.requiredLevel,
+      weight: r.weight,
+      mandatory: r.mandatory,
+    }));
+    const currents = opp.requirements.map((r) => ({
+      competencyId: r.competencyId,
+      level: levels.get(r.competencyId) ?? 0,
+    }));
+    const result = calcCompatibility(reqs, currents);
+    if (!chosen || (result.gaps.length > 0 && expected.gaps.length === 0)) {
+      chosen = opp;
+      expected = result;
+      if (result.gaps.length > 0) break;
+    }
+  }
+  console.log(`Oportunidad elegida: #${chosen.id} ${chosen.title}`);
+  console.log(`Compatibilidad esperada: ${expected.compatibility}% | Brechas esperadas: ${expected.gaps.length}`);
+
+  // 2. Limpiar postulaciones previas del empleado en ESA oportunidad
+  await db.gap.deleteMany({ where: { application: { opportunityId: chosen.id, employeeId: employee.id } } });
+  await db.application.deleteMany({ where: { opportunityId: chosen.id, employeeId: employee.id } });
+
+  // 3. Login y localizacion del formulario Postularme de ESA oportunidad
+  const cookie = await login("empleado@demo.mx", "Demo1234!");
+  must(!!cookie, "login del empleado con Demo1234!");
+
+  const page = await fetch(`${base}/oportunidades`, { headers: { cookie } });
+  const html = await page.text();
+  const escapedTitle = chosen.title.replaceAll("&", "&amp;");
+  let idx = html.indexOf(escapedTitle);
+  if (idx === -1) idx = html.indexOf(chosen.title);
+  must(idx !== -1, `la oportunidad "${chosen.title}" aparece en /oportunidades`);
+  const actionId = html.slice(idx, idx + 4000).match(/name="(\$ACTION_ID_[^"]+)"/)?.[1];
+  must(!!actionId, "existe formulario Postularme para la oportunidad elegida");
+
+  function postForm() {
+    const fd = new FormData();
+    fd.set(actionId, "");
+    fd.set("opportunityId", String(chosen.id));
+    return fetch(`${base}/oportunidades`, {
+      method: "POST",
+      headers: { cookie, origin: base },
+      body: fd,
+      redirect: "manual",
+    });
+  }
+
+  // 4. Postular
+  const res = await postForm();
+  console.log("postulacion status:", res.status, "(esperado 303)");
+  must(res.status === 303, "la postulacion responde 303");
+  const location = res.headers.get("location") ?? "";
+  must(location.includes("/postulaciones/"), `redirige al detalle de la postulacion (location=${location || "(vacio)"})`);
+
+  // 5. RN-001: la segunda postulacion a la misma oportunidad se bloquea
+  const res2 = await postForm();
+  const loc2 = res2.headers.get("location") ?? "";
+  must(loc2.includes("error="), `RN-001: la postulacion duplicada se bloquea (location=${loc2 || "(vacio)"})`);
+
+  // 6. Detalle de la postulacion
+  const appId = location.split("/postulaciones/")[1]?.split("?")[0];
+  must(!!appId, "se puede extraer el id de la postulacion de la redireccion");
+  const detail = await fetch(`${base}/postulaciones/${appId}`, { headers: { cookie } });
+  console.log("detalle status:", detail.status, "(esperado 200)");
+  must(detail.status === 200, "el detalle de la postulacion responde 200");
+  const detailHtml = await detail.text();
+  console.log("detalle muestra brechas:", detailHtml.includes("Brecha de"));
+
+  // 7. Verificacion en base de datos
+  const app = await db.application.findFirst({
+    where: { opportunityId: chosen.id, employeeId: employee.id },
+    include: { gaps: { include: { requirement: { include: { competency: true } } } } },
+    orderBy: { id: "desc" },
+  });
+  must(!!app, "la postulacion quedo registrada en la base de datos");
+  must(app.compatibility === expected.compatibility, `compatibilidad en BD = ${expected.compatibility} (llego ${app.compatibility})`);
+  must(app.gaps.length === expected.gaps.length, `brechas en BD = ${expected.gaps.length} (llegaron ${app.gaps.length})`);
+  for (const g of app.gaps) {
+    console.log(`  brecha: ${g.requirement.competency.name} ${g.currentLevel} -> ${g.requiredLevel}`);
+  }
+
+  console.log("\nOK: flujo de postulacion verificado de extremo a extremo.");
+} catch (err) {
+  console.error("ERROR:", err.message);
+  process.exit(1);
+} finally {
+  await db.$disconnect();
 }
-
-// Enviar el formulario (POST progresivo, multipart como el navegador)
-const res = await postForm();
-const location = res.headers.get("location") ?? "";
-console.log("postulación status:", res.status, "(esperado 303)");
-console.log("redirige a detalle:", location.includes("/postulaciones/"));
-
-// RN-001: segunda postulación debe rechazarse
-await fetch(`${base}/oportunidades`, { headers: { cookie } });
-const res2 = await postForm();
-const loc2 = res2.headers.get("location") ?? "";
-console.log("RN-001 duplicada bloqueada:", loc2.includes("error=duplicada"));
-
-// Detalle de la postulación con brechas
-const appId = location.split("/postulaciones/")[1];
-const detail = await fetch(`${base}/postulaciones/${appId}`, { headers: { cookie } });
-const detailHtml = await detail.text();
-console.log("detalle status:", detail.status, "(esperado 200)");
-console.log("muestra brecha:", detailHtml.includes("Brecha de"));
-console.log(
-  "muestra compatibilidad:",
-  /Compatibilidad:\s*(<!-- -->)?\d+(<!-- -->)?%/.test(detailHtml)
-);
-console.log("muestra sección IA:", detailHtml.includes("Recomendación de IA"));
-
-// Verificar estado en base de datos
-const app = await db0.application.findFirst({
-  where: { opportunityId: 1 },
-  include: { gaps: true },
-  orderBy: { id: "desc" },
-});
-console.log(
-  "BD — compatibilidad:",
-  app.compatibility,
- "(esperado 75) | brechas registradas:",
-  app.gaps.length,
-  "(esperado 2: Python y SQL)"
-);
-await db0.$disconnect();

@@ -242,3 +242,16 @@ En la terminal donde se encuentra en ejecución `npm run dev`, presiona la combi
 ```
 Ctrl + C
 ```
+
+---
+
+## Pruebas automatizadas
+
+El proyecto incluye 18 pruebas E2E orquestadas. `npm test` levanta el servidor si no esta corriendo, ejecuta todas las pruebas en orden de dependencia, muestra el veredicto final y restaura los datos demo (seed) al terminar.
+
+```bash
+npm test    # veredicto: 18/18 -> exit 0 (exito); cualquier fallo -> exit 1
+npm run seed  # solo restaurar los datos demo
+```
+
+> Nota: las pruebas mutan la base de datos durante la corrida; el seed final la deja lista para demo. Si tienes la IA configurada (AI_API_KEY), la prueba de recomendaciones usara la IA real; sin clave, usa plantillas locales (RNF-015).

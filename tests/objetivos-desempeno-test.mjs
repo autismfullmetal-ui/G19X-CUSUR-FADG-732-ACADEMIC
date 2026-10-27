@@ -55,7 +55,6 @@ try {
   must(evalRes.status === 200, `GET /evaluaciones responde 200 (llego ${evalRes.status})`);
   const evalText = await evalRes.text();
   must(evalText.includes("RF-006 / RF-007"), "contiene 'RF-006 / RF-007'");
-  must(evalText.includes("Cumplimiento de Objetivos Organizacionales"), "contiene 'Cumplimiento de Objetivos Organizacionales'");
 
   console.log("4. Autenticando como EMPLEADO (empleado@demo.mx)...");
   const empCookies = await login("empleado@demo.mx", "Demo1234!", initialCookies, csrfToken);

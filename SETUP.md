@@ -247,6 +247,17 @@ Ctrl + C
 
 ## Pruebas automatizadas
 
+### 5. Error de JWT / "no matching decryption secret"
+Borra las cookies de `localhost:3000` en el navegador (o usa ventana incógnito) y vuelve a entrar.
+
+### 6. Error de lockfile / "Access to the path is denied" en `.next`
+Cierra procesos de Node y elimina la carpeta `.next`:
+```bash
+taskkill /F /IM node.exe
+rmdir /s /q .next
+npm run dev
+```
+
 El proyecto incluye 18 pruebas E2E orquestadas. `npm test` levanta el servidor si no esta corriendo, ejecuta todas las pruebas en orden de dependencia, muestra el veredicto final y restaura los datos demo (seed) al terminar.
 
 ```bash

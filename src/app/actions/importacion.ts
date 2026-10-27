@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 import { db, ROLES } from "@/lib/db";
 import { logAudit } from "@/lib/audit";
 import { requireRole } from "@/lib/session";
-import { num, str } from "./_helpers";
+import { num, str, DEFAULT_PASSWORD } from "./_helpers";
 
 function parseCsv(text: string): string[][] {
   const lines = text.split(/\r?\n/).filter((l) => l.trim().length > 0);

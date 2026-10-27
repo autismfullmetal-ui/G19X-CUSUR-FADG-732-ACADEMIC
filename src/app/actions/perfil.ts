@@ -8,7 +8,7 @@ import { generateAiRecommendation } from "@/lib/ai";
 import { createNotification } from "@/lib/notifications";
 import { logAudit } from "@/lib/audit";
 import { requireRole } from "@/lib/session";
-import { num, str } from "./_helpers";
+import { num, str, DEFAULT_PASSWORD } from "./_helpers";
 
 export async function changePassword(formData: FormData) {
   const session = await auth();

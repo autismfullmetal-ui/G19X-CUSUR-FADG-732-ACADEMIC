@@ -97,12 +97,13 @@ function runTest(file) {
 }
 
 function runSeed(label) {
-  console.log(`\n> ${label}: ejecutando seed (node prisma/seed.ts)...`);
-  const r = spawnSync(process.execPath, [path.join("prisma", "seed")], {
+  console.log(`\n> ${label}: ejecutando seed (npm run seed)...`);
+  const r = spawnSync("npm", ["run", "seed"], {
     cwd: ROOT,
     stdio: "inherit",
+    shell: true,
   });
-  if (r.status !== 0) console.error("! El seed reporto problemas (exit " + r.status + ")");
+  if (r.status !== 0) console.error("! SEED REPORTO PROBLEMAS (exit " + r.status + ")");
 }
 
 // ---------- Programa principal ----------

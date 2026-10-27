@@ -31,7 +31,7 @@ try {
 
   must(rec.text.includes("2026-10-31"), "recomendación contiene plazo 2026-10-31");
   must(rec.activities.length >= 4, `actividades cronológicas >= 4 (llegaron ${rec.activities.length})`);
-  must(rec.activities.some((a) => a.descripcion.includes("Fase 1")), "contiene fases estructuradas (Fase 1)");
+  must(rec.activities.some((a) => a.fase?.includes("Fase 1")), "contiene fases estructuradas (Fase 1)");
 
   console.log("1. Recomendación contiene plazo: OK");
   console.log("2. Actividades cronológicas generadas: OK");

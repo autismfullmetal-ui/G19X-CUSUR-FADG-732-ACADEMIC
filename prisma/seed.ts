@@ -364,7 +364,7 @@ async function main() {
 
   const objCloud = await db.organizationalObjective.create({
     data: {
-      title: "Modernización de Infraestructura Cloud hacia Microservicios",
+      title: "Migración de Arquitectura a Microservicios",
       description: "Migrar servicios legacy a arquitectura en contenedores Docker con pipelines de despliegue continuo.",
       targetPeriod: "2026-10-01 al 2027-03-31",
       category: "INNOVACION",

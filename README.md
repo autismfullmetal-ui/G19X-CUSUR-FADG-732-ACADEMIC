@@ -128,7 +128,7 @@ pdp/
 │   │   ├── api/
 │   │   │   └── templates/         # Endpoints para descarga de plantillas CSV
 │   │   ├── login/                 # Pantalla de login glassmorphism con carrusel
-│   │   ├── actions.ts             # Server Actions (Lógica de negocio y mutaciones)
+│   │   ├── actions/                # Server Actions (Lógica de negocio y mutaciones)
 │   │   └── globals.css            # Tokens de estilo, tema Vino/Negro/Grafito
 │   ├── components/                # Formularios y componentes modulares
 │   │   ├── AppSidebar.tsx         # Barra de navegación lateral fija a la izquierda

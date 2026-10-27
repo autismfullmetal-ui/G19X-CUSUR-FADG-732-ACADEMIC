@@ -4,13 +4,9 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { db, ROLES } from "@/lib/db";
-import { auth } from "@/lib/auth";
-import { calcCompatibility } from "@/lib/compatibility";
-import { generateAiRecommendation } from "@/lib/ai";
-import { createNotification, notifyUsers } from "@/lib/notifications";
 import { logAudit } from "@/lib/audit";
 import { requireRole } from "@/lib/session";
-import { num, str, DEFAULT_PASSWORD } from "./_helpers";
+import { num, str } from "./_helpers";
 
 function parseCsv(text: string): string[][] {
   const lines = text.split(/\r?\n/).filter((l) => l.trim().length > 0);

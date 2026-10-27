@@ -5,7 +5,7 @@
 // del servidor (approveRecommendation).
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
-import { generateAiRecommendation } from "../src/lib/ai";
+import { generateAiRecommendation } from "../src/lib/ai.ts";
 
 const base = "http://localhost:3000";
 const db = new PrismaClient();

@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { templateRecommendation } from "../src/lib/ai";
+import { templateRecommendation } from "../src/lib/ai.ts";
 
 const db = new PrismaClient();
 

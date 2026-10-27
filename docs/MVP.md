@@ -76,7 +76,7 @@ con entregables → Revisión del supervisor → Re-evaluación → Brecha SUPER
 | Capa | Implementación |
 |------|----------------|
 | Frontend | Next.js 16 App Router + React 19 + TypeScript + Tailwind v4 (tema vino/negro/rojo) |
-| Lógica de negocio | Server Actions (`src/app/actions.ts`) con `requireRole()` en cada acción |
+| Lógica de negocio | Server Actions (`src/app/actions/`) con `requireRole()` en cada acción |
 | Datos | SQLite + Prisma ORM (17 entidades); init.sql + seed de demo |
 | Seguridad | Auth.js v5 (JWT firmado), bcrypt (costo 10), RBAC, auditoría |
 | IA | Fetch a API compatible OpenAI (GLM-4.5), JSON estructurado, timeout 90 s, fallback plantillas |

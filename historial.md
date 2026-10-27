@@ -188,6 +188,12 @@
 ## Hito 6: Asignación de Competencias Iniciales en el Alta de Empleados (RH/Admin)
 
 ### Requerimientos del Usuario:
+## Instalación limpia (clean clone)
+
+- Versión de Node: v24.21.0
+- Pasos seguidos: SETUP.md al pie de la letra (npm install, npx prisma db push, npm run seed, npm run dev).
+- Pruebas: npm test → 12/18 inicialmente; tras alinear seed/tests (Microservicios, Fase 1) y ajustar runSeed, quedaron 14/18? (ver último run).
+- Problemas encontrados y corregidos en SETUP.md: JWT (borrar cookies), lockfile/.next (taskkill + rmdir).
 * Al crear un nuevo empleado desde la sección de Recursos Humanos, además de los datos laborales existentes (nombre, apellidos, correo, departamento, puesto, supervisor), RH debe poder asignarle sus competencias iniciales, evitando que los nuevos empleados queden con un perfil de competencias vacío.
 
 ### Modificaciones Realizadas:

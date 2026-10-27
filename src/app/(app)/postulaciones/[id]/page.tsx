@@ -4,7 +4,6 @@ import { db } from "@/lib/db";
 import { requireSession } from "@/lib/session";
 import {
   approvePlan,
-  setPlanActivityStatus,
   approveRecommendation,
   decideApplication,
 } from "@/app/actions";

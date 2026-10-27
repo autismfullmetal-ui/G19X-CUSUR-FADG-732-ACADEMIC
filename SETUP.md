@@ -97,7 +97,7 @@ La aplicación utiliza SQLite (`prisma/dev.db`), por lo que no necesitas instala
 
 3. **Cargar los datos iniciales y usuarios de demostración (Seed):**
    ```bash
-   npx tsx prisma/seed.ts
+   npm run seed
    ```
 
 El script de semilla creará automáticamente:
@@ -228,7 +228,7 @@ npx prisma generate
 Sincroniza el esquema y vuelve a ejecutar la semilla:
 ```bash
 npx prisma db push
-npx tsx prisma/seed.ts
+npm run seed
 ```
 
 ### 3. El puerto 3000 se encuentra en uso

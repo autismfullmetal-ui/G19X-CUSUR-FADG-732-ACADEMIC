@@ -102,3 +102,5 @@ node prisma/apply-init.mjs
 npx tsx prisma/seed.ts
 npm run dev   # http://localhost:3000
 ```
+
+> Si ya tenías la base creada antes de `mustChangePassword`, ejecuta `npx prisma db push` y luego `npm run seed`.

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
+import { auth } from "@/lib/auth";
 
 export async function markNotificationAsRead(notificationId: number) {
   const session = await auth();

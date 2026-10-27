@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import bcrypt from "bcryptjs";
 import { db, ROLES } from "@/lib/db";
 import { logAudit } from "@/lib/audit";
 import { requireRole } from "@/lib/session";

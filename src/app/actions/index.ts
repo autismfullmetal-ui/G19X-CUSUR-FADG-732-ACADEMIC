@@ -1,5 +1,3 @@
-"use server";
-
 export * from "./empleados";
 export * from "./competencias";
 export * from "./evaluaciones";

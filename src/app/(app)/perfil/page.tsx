@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { db } from "@/lib/db";
 import { requireSession } from "@/lib/session";
 import { changePassword } from "@/app/actions";
@@ -20,7 +19,7 @@ export default async function PerfilPage({
   const { ok, error } = await searchParams;
   const userId = Number(session.user.id);
 
-  const [user, employee] = await Promise.all([
+  const [, employee] = await Promise.all([
     db.user.findUnique({
       where: { id: userId },
       select: { id: true, name: true, email: true, role: true },

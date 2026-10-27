@@ -1,4 +1,4 @@
-import { calcCompatibility } from "../src/lib/compatibility.ts";
+import { calcCompatibility } from "../src/lib/compatibility";
 
 function must(cond, msg) {
   if (!cond) {

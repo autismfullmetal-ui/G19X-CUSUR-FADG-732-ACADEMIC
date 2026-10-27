@@ -3,7 +3,7 @@
 // empleado si existe), calcula la compatibilidad esperada con la misma
 // funcion que usa la aplicacion y verifica pantalla + base de datos.
 import { PrismaClient } from "@prisma/client";
-import { calcCompatibility } from "../src/lib/compatibility.ts";
+import { calcCompatibility } from "../src/lib/compatibility";
 
 const base = "http://localhost:3000";
 const db = new PrismaClient();

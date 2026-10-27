@@ -98,7 +98,7 @@ function runTest(file) {
 
 function runSeed(label) {
   console.log(`\n> ${label}: ejecutando seed (node prisma/seed.ts)...`);
-  const r = spawnSync(process.execPath, [path.join("prisma", "seed.ts")], {
+  const r = spawnSync(process.execPath, [path.join("prisma", "seed")], {
     cwd: ROOT,
     stdio: "inherit",
   });

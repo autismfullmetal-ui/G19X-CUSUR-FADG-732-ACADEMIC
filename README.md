@@ -187,3 +187,12 @@ Todas las cuentas vienen preconfiguradas con la contraseña universal: **`Demo12
 
 Para consultar las instrucciones detalladas de instalación, comandos de migración de base de datos y configuración del motor de IA, consulta la **[Guía de Instalación (SETUP.md)](SETUP.md)**.
 
+
+## Cambios recientes (limpieza de imports)
+
+- Limpieza de imports no usados en layout, perfil, postulaciones, LoginBackgroundSlideshow y actions/*.
+- Restaurados imports usados (bcrypt, auth, calcCompatibility, generateAiRecommendation, createNotification/notifyUsers).
+- Eliminado "use server" de actions/index.ts.
+- Corregido import de seed.ts (.ts extension).
+- Agregado engines en package.json y .nvmrc (Node >=24.21.0).
+- Alineados tests con seed (Microservicios, Fase 1) y runSeed usa npm run seed.

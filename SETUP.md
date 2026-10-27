@@ -8,7 +8,7 @@ Esta guía proporciona el paso a paso detallado para inicializar, configurar y e
 
 Antes de comenzar, asegúrate de tener instalado en tu sistema:
 
-* **Node.js 20 o superior** (Recomendado Node.js 22 LTS) → [nodejs.org](https://nodejs.org)
+* **Node.js 24.21.0 o superior** (Recomendado Node.js 24 LTS) → [nodejs.org](https://nodejs.org)
 * **npm 10 o superior** (Incluido con Node.js)
 * **Git** (para clonar el repositorio) → [git-scm.com](https://git-scm.com)
 

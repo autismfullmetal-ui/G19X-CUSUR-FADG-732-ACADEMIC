@@ -51,7 +51,8 @@ npm install
 Copia la plantilla `.env.example` para crear tu archivo `.env` local:
 
 ```bash
-cp .env.example .env
+copy .env.example .env   # Windows
+# cp .env.example .env    # macOS/Linux
 ```
 
 La plantilla contiene estas variables; coloca tus claves en `AI_API_KEY` (y opcionalmente `AI_API_KEY_2`):
@@ -245,6 +246,12 @@ Ctrl + C
 
 ---
 
+### 7. Base creada antes de `mustChangePassword`
+Si tu base ya existía antes de agregar el campo, ejecuta:
+```bash
+npx prisma db push
+npm run seed
+```
 ## Pruebas automatizadas
 
 ### 5. Error de JWT / "no matching decryption secret"

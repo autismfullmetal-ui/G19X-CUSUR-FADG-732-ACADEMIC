@@ -8,7 +8,7 @@ Esta guía proporciona el paso a paso detallado para inicializar, configurar y e
 
 Antes de comenzar, asegúrate de tener instalado en tu sistema:
 
-* **Node.js 24.21.0 o superior** (Recomendado Node.js 24 LTS) → [nodejs.org](https://nodejs.org) — las pruebas de `tests/` importan archivos `.ts` directamente (type stripping), lo que solo funciona en Node 24+.
+* **Node.js 24.21.0 o superior** (Recomendado Node.js 24 LTS) → [nodejs.org](https://nodejs.org) — las pruebas de `tests/` importan archivos `.ts` directamente (type stripping), lo que solo funciona en Node 24+. El repo incluye `.nvmrc`; usa `nvm use` si tienes nvm.
 * **npm 10 o superior** (Incluido con Node.js)
 * **Git** (para clonar el repositorio) → [git-scm.com](https://git-scm.com)
 
@@ -255,6 +255,12 @@ Borra las cookies de `localhost:3000` en el navegador (o usa ventana incógnito)
 Cierra procesos de Node y elimina la carpeta `.next`:
 
 ### 7. Base creada antes de `mustChangePassword`
+
+### 8. Pruebas fallan con \"The table main.X does not exist\"
+Ejecuta `npx prisma db push` y luego `npm run seed`.
+
+### 9. `tsx` no se reconoce
+Ejecuta `npm install` y `npx prisma generate`.
 Si tu base ya existía antes de agregar el campo, ejecuta:
 ```bash
 npx prisma db push

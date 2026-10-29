@@ -98,9 +98,10 @@ Ver `SETUP.md` en la raíz del proyecto. Resumen:
 
 ```bash
 npm install
-node prisma/apply-init.mjs
-npx tsx prisma/seed.ts
+npx prisma db push
+npm run seed
 npm run dev   # http://localhost:3000
+npm test      # 18/18
 ```
 
 > Si ya tenías la base creada antes de `mustChangePassword`, ejecuta `npx prisma db push` y luego `npm run seed`.

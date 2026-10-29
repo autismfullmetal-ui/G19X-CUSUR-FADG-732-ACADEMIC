@@ -246,12 +246,6 @@ Ctrl + C
 
 ---
 
-### 7. Base creada antes de `mustChangePassword`
-Si tu base ya existía antes de agregar el campo, ejecuta:
-```bash
-npx prisma db push
-npm run seed
-```
 ## Pruebas automatizadas
 
 ### 5. Error de JWT / "no matching decryption secret"
@@ -259,6 +253,13 @@ Borra las cookies de `localhost:3000` en el navegador (o usa ventana incógnito)
 
 ### 6. Error de lockfile / "Access to the path is denied" en `.next`
 Cierra procesos de Node y elimina la carpeta `.next`:
+
+### 7. Base creada antes de `mustChangePassword`
+Si tu base ya existía antes de agregar el campo, ejecuta:
+```bash
+npx prisma db push
+npm run seed
+```
 ```bash
 taskkill /F /IM node.exe
 rmdir /s /q .next

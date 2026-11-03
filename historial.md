@@ -802,5 +802,5 @@
 
 - Versión de Node: v24.21.0
 - Pasos seguidos: SETUP.md al pie de la letra (npm install, npx prisma db push, npm run seed, npm run dev).
-- Pruebas: npm test → 8/18 (clon sin db push); pendiente re-run tras db push.
+- Pruebas: npm test → 18/18 (exit 0) — VEREDICTO: EXITO (exit 0). Fecha: 11/2/2026.
 - Problemas encontrados y corregidos en SETUP.md: JWT (borrar cookies), lockfile/.next (taskkill + rmdir).

@@ -11,6 +11,17 @@ import PlanForm from "@/components/PlanForm";
 import PlanActivityCard from "@/components/PlanActivityCard";
 import GenerateRecommendationButton from "@/components/GenerateRecommendationButton";
 
+type ActivityItem = {
+  fase?: string;
+  titulo?: string;
+  descripcion?: string;
+  herramientas?: string;
+  entregable?: string;
+  criterio?: string;
+  orden?: number;
+};
+
+
 export default async function PostulacionDetailPage({
   params,
   searchParams,
@@ -53,13 +64,13 @@ export default async function PostulacionDetailPage({
   const esPropietario = app.employee.userId === Number(session.user.id);
 
   let actividadesSugeridas: string | undefined;
-  let rawActivitiesArray: unknown[] = [];
+  let rawActivitiesArray: ActivityItem[] = [];
   if (app.recommendation?.activities) {
     try {
-      rawActivitiesArray = JSON.parse(app.recommendation.activities);
+      rawActivitiesArray = JSON.parse(app.recommendation.activities) as ActivityItem[];
       if (Array.isArray(rawActivitiesArray)) {
         actividadesSugeridas = rawActivitiesArray
-          .map((a: Record<string, unknown>) => {
+          .map((a: ActivityItem) => {
             const prefix = a.fase ? `[${a.fase}] ` : "";
             const title = a.titulo ? `${a.titulo}: ` : "";
             const desc = a.descripcion || "";
@@ -354,8 +365,8 @@ export default async function PostulacionDetailPage({
                 </div>
                 <div className="grid grid-cols-1 gap-3.5">
                   {rawActivitiesArray
-                    .sort((a: Record<string, unknown>, b: Record<string, unknown>) => (Number(a.orden ?? 0) - Number(b.orden ?? 0)))
-                    .map((act: Record<string, unknown>, idx: number) => (
+                    .sort((a: ActivityItem, b: ActivityItem) => (a.orden ?? 0) - (b.orden ?? 0))
+                    .map((act: ActivityItem, idx: number) => (
                       <div
                         key={act.orden ?? idx}
                         className="rounded-xl border border-zinc-800/80 bg-[#121217] p-4 transition-all hover:border-red-900/50 hover:bg-[#15151c] shadow-xs"

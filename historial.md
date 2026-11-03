@@ -790,6 +790,7 @@
 ### Tests
 - 11 tests convertidos a asserts granulares (`must(cond, msg)` + `try/catch` + `process.exit(1)`).
 - `forced-password-change-test.mjs` ya usaba el patrón check/failures (modelo) y está integrado al runner.
+- Lint (clean clone): `npm run lint` → 18 errores, 9 warnings. Fecha: 11/2/2026. (pendiente de corrección)
 
 ### Commits
 - `734d8cb` — feat: centralizar revision mustChangePassword en requireSession/requireRole

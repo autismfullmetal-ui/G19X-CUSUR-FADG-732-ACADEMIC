@@ -53,13 +53,13 @@ export default async function PostulacionDetailPage({
   const esPropietario = app.employee.userId === Number(session.user.id);
 
   let actividadesSugeridas: string | undefined;
-  let rawActivitiesArray: any[] = [];
+  let rawActivitiesArray: unknown[] = [];
   if (app.recommendation?.activities) {
     try {
       rawActivitiesArray = JSON.parse(app.recommendation.activities);
       if (Array.isArray(rawActivitiesArray)) {
         actividadesSugeridas = rawActivitiesArray
-          .map((a: any) => {
+          .map((a: Record<string, unknown>) => {
             const prefix = a.fase ? `[${a.fase}] ` : "";
             const title = a.titulo ? `${a.titulo}: ` : "";
             const desc = a.descripcion || "";
@@ -354,8 +354,8 @@ export default async function PostulacionDetailPage({
                 </div>
                 <div className="grid grid-cols-1 gap-3.5">
                   {rawActivitiesArray
-                    .sort((a: any, b: any) => (a.orden ?? 0) - (b.orden ?? 0))
-                    .map((act: any, idx: number) => (
+                    .sort((a: Record<string, unknown>, b: Record<string, unknown>) => (Number(a.orden ?? 0) - Number(b.orden ?? 0)))
+                    .map((act: Record<string, unknown>, idx: number) => (
                       <div
                         key={act.orden ?? idx}
                         className="rounded-xl border border-zinc-800/80 bg-[#121217] p-4 transition-all hover:border-red-900/50 hover:bg-[#15151c] shadow-xs"

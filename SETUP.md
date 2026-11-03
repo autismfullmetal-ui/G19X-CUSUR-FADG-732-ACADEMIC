@@ -246,31 +246,33 @@ Ctrl + C
 
 ---
 
-## Pruebas automatizadas
-
 ### 5. Error de JWT / "no matching decryption secret"
 Borra las cookies de `localhost:3000` en el navegador (o usa ventana incógnito) y vuelve a entrar.
 
 ### 6. Error de lockfile / "Access to the path is denied" en `.next`
 Cierra procesos de Node y elimina la carpeta `.next`:
+```bash
+taskkill /F /IM node.exe
+rmdir /s /q .next
+npm run dev
+```
 
 ### 7. Base creada antes de `mustChangePassword`
+Si tu base ya existía antes de agregar el campo, ejecuta:
+```bash
+npx prisma db push
+npm run seed
+```
+
+---
+
+## Pruebas automatizadas
 
 ### 8. Pruebas fallan con \"The table main.X does not exist\"
 Ejecuta `npx prisma db push` y luego `npm run seed`.
 
 ### 9. `tsx` no se reconoce
 Ejecuta `npm install` y `npx prisma generate`.
-Si tu base ya existía antes de agregar el campo, ejecuta:
-```bash
-npx prisma db push
-npm run seed
-```
-```bash
-taskkill /F /IM node.exe
-rmdir /s /q .next
-npm run dev
-```
 
 El proyecto incluye 18 pruebas E2E orquestadas. `npm test` levanta el servidor si no esta corriendo, ejecuta todas las pruebas en orden de dependencia, muestra el veredicto final y restaura los datos demo (seed) al terminar.
 

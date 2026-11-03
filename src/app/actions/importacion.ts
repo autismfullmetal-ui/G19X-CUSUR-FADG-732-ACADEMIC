@@ -70,7 +70,7 @@ export async function importEmployeesCsv(formData: FormData) {
     const deptName = colIndex.department !== -1 ? row[colIndex.department] || "General" : "General";
     const posTitle = colIndex.position !== -1 ? row[colIndex.position] || "Colaborador" : "Colaborador";
     const roleRaw = (colIndex.role !== -1 ? row[colIndex.role] : "EMPLEADO")?.toUpperCase().trim();
-    const role = [ROLES.ADMIN, ROLES.RH, ROLES.SUPERVISOR, ROLES.EMPLEADO].includes(roleRaw as any)
+    const role = [ROLES.ADMIN, ROLES.RH, ROLES.SUPERVISOR, ROLES.EMPLEADO].includes(roleRaw as string)
       ? roleRaw
       : ROLES.EMPLEADO;
     const supEmail = colIndex.supervisorEmail !== -1 ? (row[colIndex.supervisorEmail] || "").toLowerCase().trim() : "";

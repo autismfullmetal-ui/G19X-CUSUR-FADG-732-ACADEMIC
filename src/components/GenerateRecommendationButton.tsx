@@ -22,9 +22,9 @@ export default function GenerateRecommendationButton({
     startTransition(async () => {
       try {
         await generateRecommendation(formData);
-      } catch (err: any) {
+      } catch (err: unknown) {
         // NEXT_REDIRECT is thrown by redirect(), which is normal in Next.js Server Actions
-        if (err?.message?.includes("NEXT_REDIRECT")) {
+        if ((err as Error)?.message?.includes("NEXT_REDIRECT")) {
           return;
         }
         console.error("Error al generar recomendación:", err);

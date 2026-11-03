@@ -114,7 +114,7 @@ async function main() {
   const posData = await db.position.create({
     data: { title: "Analista de Datos y BI" },
   });
-  const posScrum = await db.position.create({
+  await db.position.create({
     data: { title: "Scrum Master & Agile Lead" },
   });
   const posCoord = await db.position.create({
@@ -142,7 +142,7 @@ async function main() {
   });
 
   // Rosa Huerta: RH
-  const empRosa = await db.employee.create({
+  await db.employee.create({
     data: {
       firstName: "Rosa",
       lastName: "Huerta",
@@ -312,7 +312,7 @@ async function main() {
   }
 
   // Elena: Fuerte en Python (3) y SQL (3), pero baja en Scrum (1) y Liderazgo (2)
-  const evalElena = await seedEmployeeEval(empElena, supervisorUser.id, [
+  await seedEmployeeEval(empElena, supervisorUser.id, [
     { competencyId: cPython.id, level: 3, comment: "Buen manejo en desarrollo web" },
     { competencyId: cSQL.id, level: 3, comment: "Consultas y esquemas funcionales" },
     { competencyId: cScrum.id, level: 1, comment: "Participa en dailies pero no domina facilitación formal" },
@@ -592,7 +592,7 @@ async function main() {
   });
 
   // Plan creado y en progreso para Carlos
-  const planCarlos = await db.developmentPlan.create({
+  await db.developmentPlan.create({
     data: {
       employeeId: empCarlos.id,
       applicationId: appCarlos.id,

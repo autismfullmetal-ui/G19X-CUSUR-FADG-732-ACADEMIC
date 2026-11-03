@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import {
   BarChart,
@@ -16,7 +16,7 @@ import {
 } from "recharts";
 
 type AdminRhDashboardProps = {
-  userName: string;
+  userName?: string;
   role: string;
   metrics: {
     totalEmployees: number;
@@ -50,7 +50,6 @@ type AdminRhDashboardProps = {
 const PLAN_COLORS = ["#3b82f6", "#8b5cf6", "#10b981", "#94a3b8"];
 
 export default function AdminRhDashboard({
-  userName,
   role,
   metrics,
   demandChartData,
@@ -58,10 +57,7 @@ export default function AdminRhDashboard({
   gapsByCompetencyData,
   recentApplications,
 }: AdminRhDashboardProps) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const [mounted] = useState(true);
 
   return (
     <div className="space-y-6">

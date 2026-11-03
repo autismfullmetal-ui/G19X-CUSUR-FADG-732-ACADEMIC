@@ -20,7 +20,7 @@ export default async function ObjetivosPage({
   const puedeGestionar = ["ADMIN", "RH"].includes(session.user.role);
   const { dept, status, ok } = await searchParams;
 
-  const whereClause: any = {};
+  const whereClause: Record<string, unknown> = {};
   if (dept && dept !== "todos") {
     whereClause.departmentId = Number(dept);
   }

@@ -343,9 +343,9 @@ export async function generateAiRecommendation(
         modelVersion: primary.model,
         source: "ia",
       };
-    } catch (err: any) {
-      lastError = err;
-      console.warn(`[IA] Proveedor 1 (${primary.model}) falló: ${err?.message || err}.`);
+    } catch (err: unknown) {
+      lastError = err as Error;
+      console.warn(`[IA] Proveedor 1 (${primary.model}) falló: ${(err as Error)?.message || err}.`);
     }
   }
 
@@ -360,9 +360,9 @@ export async function generateAiRecommendation(
         modelVersion: `${secondary.model} (respaldo)`,
         source: "ia",
       };
-    } catch (err: any) {
-      console.error(`[IA Error] Proveedor 2 (${secondary.model}) falló: ${err?.message || err}.`);
-      lastError = err;
+    } catch (err: unknown) {
+      console.error(`[IA Error] Proveedor 2 (${secondary.model}) falló: ${(err as Error)?.message || err}.`);
+      lastError = err as Error;
     }
   }
 

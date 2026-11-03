@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { createPortal } from "react-dom";
 
 interface CompetencyBadgeTooltipProps {
@@ -248,17 +248,13 @@ export function CompetencyBadgeTooltip({
   className,
 }: CompetencyBadgeTooltipProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [mounted] = useState(true);
   const [coords, setCoords] = useState<{ left: number; top: number; placement: "top" | "bottom" }>({
     left: 0,
     top: 0,
     placement: "top",
   });
   const triggerRef = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const updatePosition = () => {
     if (!triggerRef.current) return;

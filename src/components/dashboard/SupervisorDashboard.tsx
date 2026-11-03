@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import {
   BarChart,
@@ -16,7 +16,7 @@ import {
 } from "recharts";
 
 type SupervisorDashboardProps = {
-  userName: string;
+  userName?: string;
   teamMetrics: {
     totalTeamMembers: number;
     pendingReviewsCount: number;
@@ -46,16 +46,12 @@ type SupervisorDashboardProps = {
 };
 
 export default function SupervisorDashboard({
-  userName,
   teamMetrics,
   teamMembers,
   pendingDeliverables,
   gapDistributionData,
 }: SupervisorDashboardProps) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const [mounted] = useState(true);
 
   const progressChartData = teamMembers.map((m) => ({
     name: m.name.split(" ")[0] || m.name,

@@ -21,11 +21,8 @@ export default function HeaderNotifications({
 }) {
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState(initialNotifications);
+  const [now] = useState(() => Date.now());
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setNotifications(initialNotifications);
-  }, [initialNotifications]);
 
   // Cerrar al hacer clic fuera
   useEffect(() => {
@@ -60,7 +57,7 @@ export default function HeaderNotifications({
 
   const formatTimeAgo = (dateInput: string | Date) => {
     const date = new Date(dateInput);
-    const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+    const seconds = Math.floor((now - date.getTime()) / 1000);
     if (seconds < 60) return "Ahora mismo";
     const minutes = Math.floor(seconds / 60);
     if (minutes < 60) return `Hace ${minutes} m`;

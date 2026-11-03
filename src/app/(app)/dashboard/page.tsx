@@ -194,7 +194,6 @@ export default async function DashboardPage() {
     const teamGapsAbiertas = teamGaps.filter((g) => g.status !== "SUPERADA").length;
 
     // Calcular progreso por colaborador
-    let totalProgressSum = 0;
     const processedTeamMembers = teamMembers.map((m) => {
       const activePlan = m.plans[0];
       let planProgress = 0;
@@ -202,7 +201,6 @@ export default async function DashboardPage() {
         const completed = activePlan.activities.filter((a) => a.status === "COMPLETADA").length;
         planProgress = Math.round((completed / activePlan.activities.length) * 100);
       }
-      totalProgressSum += planProgress;
 
       return {
         id: m.id,
@@ -214,6 +212,7 @@ export default async function DashboardPage() {
         competenciesCount: m.competencies.length,
       };
     });
+    const totalProgressSum = processedTeamMembers.reduce((sum, m) => sum + m.planProgress, 0);
 
     const teamAvgPlanProgress =
       teamMembers.length > 0 ? Math.round(totalProgressSum / teamMembers.length) : 0;

@@ -69,17 +69,6 @@ export default function EmpleadoForm({
     ]);
   };
 
-  // Agregar una fila vacía para que el usuario elija en la tabla
-  const addBlankRow = () => {
-    setRows((curr) => [
-      ...curr,
-      {
-        key: counter++,
-        competencyId: "", // Vacía: NO auto-selecciona Comunicación ni ninguna otra
-        level: "3",
-      },
-    ]);
-  };
 
   const addAllCompetencies = () => {
     setRows(

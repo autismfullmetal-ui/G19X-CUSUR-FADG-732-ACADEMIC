@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import {
   BarChart,
@@ -62,10 +62,7 @@ export default function EmployeeDashboard({
   recentApplications,
   availableOpportunities,
 }: EmployeeDashboardProps) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const [mounted] = useState(true);
 
   return (
     <div className="space-y-6">

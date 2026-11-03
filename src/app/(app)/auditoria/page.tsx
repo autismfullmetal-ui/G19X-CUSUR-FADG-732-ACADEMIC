@@ -47,7 +47,7 @@ export default async function AuditoriaPage({
 
   const { entity, action, q } = await searchParams;
 
-  const whereClause: any = {};
+  const whereClause: Record<string, unknown> = {};
   if (entity) {
     whereClause.entity = entity;
   }

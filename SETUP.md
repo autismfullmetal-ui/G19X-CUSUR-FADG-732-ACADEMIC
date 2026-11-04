@@ -251,22 +251,51 @@ Borra las cookies de `localhost:3000` en el navegador (o usa ventana incógnito)
 
 ### 6. Error de lockfile / "Access to the path is denied" en `.next`
 Cierra procesos de Node y elimina la carpeta `.next`:
-```bash
 taskkill /F /IM node.exe
 rmdir /s /q .next
 npm run dev
-```
 
 ### 7. Base creada antes de `mustChangePassword`
 Si tu base ya existía antes de agregar el campo, ejecuta:
-```bash
 npx prisma db push
 npm run seed
-```
 
 ---
 
-## Pruebas automatizadas
+## Ejecución de Pruebas Automatizadas
+
+El proyecto cuenta con scripts de prueba automatizados en `tests/`. Varios de ellos hacen peticiones a `http://localhost:3000`, así que mantén `npm run dev` corriendo en otra terminal mientras los ejecutas.
+
+```bash
+# Validar compilación de TypeScript (0 errores)
+# Nota: en un clon nuevo ejecuta primero `npm run dev` (o `npx next typegen`)
+# para que Next.js genere los tipos globales como `LayoutProps`.
+npx tsc --noEmit
+
+# Probar la barra lateral y el tema oscuro
+node tests/theme-and-sidebar-test.mjs
+
+# Probar fechas de oportunidades y vigencia (RF-011)
+node tests/opportunity-dates-test.mjs
+
+# Probar el vínculo Objetivo -> Convocatoria -> Plan
+node tests/opportunity-objective-link-test.mjs
+
+# Probar entregables de Fase 4, revisión y evaluación post-capacitación (RF-020, RF-021)
+node tests/deliverables-and-evaluation-test.mjs
+
+# Probar bitácora de auditoría y su restricción por rol (RF-026)
+node tests/auditoria-test.mjs
+
+# Probar objetivos organizacionales y desempeño (RF-007)
+node tests/objetivos-desempeno-test.mjs
+
+# Probar carga e importación masiva por CSV (RF-027)
+node tests/importacion-csv-test.mjs
+
+# Probar perfil personal y cambio de contraseñas (RF-028)
+node tests/perfil-password-test.mjs
+```
 
 ### 8. Pruebas fallan con \"The table main.X does not exist\"
 Ejecuta `npx prisma db push` y luego `npm run seed`.

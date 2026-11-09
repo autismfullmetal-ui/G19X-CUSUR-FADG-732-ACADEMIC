@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 import { db, ROLES } from "@/lib/db";
 import { logAudit } from "@/lib/audit";
 import { requireRole } from "@/lib/session";
-import { DEFAULT_PASSWORD } from "./_helpers";
+import { generateTempPassword } from "./_helpers";
 
 function parseCsv(text: string): string[][] {
   const lines = text.split(/\r?\n/).filter((l) => l.trim().length > 0);
@@ -58,7 +58,7 @@ export async function importEmployeesCsv(formData: FormData) {
     redirect("/importacion?error=cabeceras_invalidas");
   }
 
-  const passHash = bcrypt.hashSync(DEFAULT_PASSWORD, 10);
+  // passHash se genera por usuario
   let createdCount = 0;
   let skippedCount = 0;
 
@@ -107,7 +107,7 @@ export async function importEmployeesCsv(formData: FormData) {
       data: {
         email,
         name: `${firstName} ${lastName}`.trim(),
-        passwordHash: passHash,
+        passwordHash: bcrypt.hashSync(generateTempPassword(), 10),
         mustChangePassword: true,
         role,
       },

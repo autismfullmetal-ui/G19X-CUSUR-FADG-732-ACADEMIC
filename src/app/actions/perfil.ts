@@ -8,7 +8,7 @@ import { auth } from "@/lib/auth";
 import { createNotification } from "@/lib/notifications";
 import { logAudit } from "@/lib/audit";
 import { requireRole } from "@/lib/session";
-import { num, str, DEFAULT_PASSWORD } from "./_helpers";
+import { num, str, DEFAULT_PASSWORD, generateTempPassword } from "./_helpers";
 
 export async function changePassword(formData: FormData) {
   const session = await auth();
@@ -103,10 +103,11 @@ export async function adminResetPassword(formData: FormData) {
     redirect("/empleados?error=usuario_no_encontrado");
   }
 
-  const defaultHash = bcrypt.hashSync(DEFAULT_PASSWORD, 10);
+  const tempPassword = generateTempPassword();
+  const tempHash = bcrypt.hashSync(tempPassword, 10);
   await db.user.update({
     where: { id: userToReset.id },
-    data: { passwordHash: defaultHash, mustChangePassword: true },
+    data: { passwordHash: tempHash, mustChangePassword: true },
   });
 
   // Notificar al usuario
@@ -129,6 +130,6 @@ export async function adminResetPassword(formData: FormData) {
 
   revalidatePath("/empleados");
   revalidatePath("/perfil");
-  redirect("/empleados?ok=password_reset");
+  redirect(`/empleados?ok=password_reset&tempPass=${encodeURIComponent(tempPassword)}&tempUser=${encodeURIComponent(userToReset.email)}`);
 }
 

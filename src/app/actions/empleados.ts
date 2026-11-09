@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 import { db, ROLES } from "@/lib/db";
 import { logAudit } from "@/lib/audit";
 import { requireRole } from "@/lib/session";
-import { num, str, DEFAULT_PASSWORD } from "./_helpers";
+import { num, str, generateTempPassword } from "./_helpers";
 
 export async function createEmployee(formData: FormData) {
   const session = await requireRole([ROLES.ADMIN, ROLES.RH]);
@@ -35,6 +35,9 @@ export async function createEmployee(formData: FormData) {
 
   const evaluatorId = session?.user?.id ? Number(session.user.id) : null;
 
+  // Clave temporal aleatoria por persona (solo si se crea usuario nuevo)
+  let tempPassword: string | null = null;
+
   // Transacción: usuario + empleado + evaluación inicial + calificaciones
   // se aplican como una sola unidad atómica (o todo o nada).
   let employee;
@@ -43,11 +46,12 @@ export async function createEmployee(formData: FormData) {
       const existingUser = await tx.user.findUnique({ where: { email } });
       let userId: number | null = existingUser?.id ?? null;
       if (!userId) {
+        tempPassword = generateTempPassword();
         const user = await tx.user.create({
           data: {
             email,
-            passwordHash: bcrypt.hashSync(DEFAULT_PASSWORD, 10),
-            // La clave temporal es compartida: se exige cambiarla al primer ingreso
+            passwordHash: bcrypt.hashSync(tempPassword, 10),
+            // La clave temporal es única: se exige cambiarla al primer ingreso
             mustChangePassword: true,
             name: `${firstName} ${lastName}`.trim(),
             role: ROLES.EMPLEADO,
@@ -123,6 +127,9 @@ export async function createEmployee(formData: FormData) {
 
   revalidatePath("/empleados");
   revalidatePath("/evaluaciones");
+  if (tempPassword) {
+    redirect(`/empleados?ok=1&tempPass=${encodeURIComponent(tempPassword)}&tempEmail=${encodeURIComponent(email)}`);
+  }
   redirect("/empleados?ok=1");
 }
 

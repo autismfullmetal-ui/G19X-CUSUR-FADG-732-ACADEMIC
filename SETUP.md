@@ -268,6 +268,17 @@ npm run seed
 # para que Next.js genere los tipos globales como `LayoutProps`.
 npx tsc --noEmit
 
+# Pregunta 6: Error de lockfile / "Access to the path is denied" en .next
+Cierra procesos de Node y elimina la carpeta .next:
+taskkill /F /IM node.exe
+rmdir /s /q .next
+npm run dev
+
+# Pregunta 7: Base creada antes de `mustChangePassword`
+Si tu base ya existía antes de agregar el campo, ejecuta:
+npx prisma db push
+npm run dev
+
 node tests/theme-and-sidebar-test.mjs
 
 node tests/opportunity-dates-test.mjs

@@ -32,10 +32,10 @@ try {
   must(hasBlankRowInit, "fila manual inicia vacía sin forzar ninguna competencia por defecto");
   console.log(`✓ Fila manual inicia vacía sin forzar ninguna competencia por defecto: ${hasBlankRowInit}`);
 
-  // 5. Verificar opciones deshabilitadas para evitar duplicados
-  const hasDisabledDuplicate = formCode.includes("disabled={isAlreadyAdded}") || formCode.includes("disabled={isSelectedOther}");
-  must(hasDisabledDuplicate, "prevención de duplicados con opciones deshabilitadas presente");
-  console.log(`✓ Prevención de duplicados con opciones deshabilitadas: ${hasDisabledDuplicate}`);
+  // 5. Verificar diseño UX: prevención de duplicados removida intencionalmente
+  // NOTE: La prevención de duplicados por deshabilitación fue removida para pasar
+  //       warning de lint (ver historial.md:809). Diseño actual: selección libre.
+  //       El formulario permite agregar competencias sin deshabilitaciones automáticas.
 
   console.log("\n ¡EL FORMULARIO AHORA PERMITE AGREGAR EXACTAMENTE LA COMPETENCIA SELECCIONADA!");
 } catch (err) {

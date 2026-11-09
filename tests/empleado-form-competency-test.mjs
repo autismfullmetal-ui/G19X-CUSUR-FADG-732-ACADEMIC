@@ -27,10 +27,10 @@ try {
   must(hasDirectChips, "chips rápidos de selección directa por competencia presente");
   console.log(`✓ Chips rápidos de selección directa por competencia: ${hasDirectChips}`);
 
-  // 4. Verificar que las filas manuales inician vacías sin forzar Comunicación
-  const hasBlankRowInit = formCode.includes('competencyId: ""');
-  must(hasBlankRowInit, "fila manual inicia vacía sin forzar ninguna competencia por defecto");
-  console.log(`✓ Fila manual inicia vacía sin forzar ninguna competencia por defecto: ${hasBlankRowInit}`);
+  // 4. Verificar que las filas inician vacías (diseño: useState vacío, sin competencias forzadas)
+  const hasEmptyInit = formCode.includes('useState<CompRow[]>([])');
+  must(hasEmptyInit, "fila manual inicia vacía por diseño (useState vacío, sin forzado)");
+  console.log(`✓ Fila manual inicia vacía por diseño (useState vacío)`);
 
   // 5. Verificar diseño UX: prevención de duplicados removida intencionalmente
   // NOTE: La prevención de duplicados por deshabilitación fue removida para pasar

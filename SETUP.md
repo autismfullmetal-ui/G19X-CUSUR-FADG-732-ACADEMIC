@@ -182,7 +182,6 @@ Todas las cuentas de prueba comparten la misma contraseña de acceso: **`Demo123
 
 ## Ejecución de Pruebas Automatizadas
 
-El proyecto cuenta con scripts de prueba automatizados en `tests/`. Varios de ellos hacen peticiones a `http://localhost:3000`, así que mantén `npm run dev` corriendo en otra terminal mientras los ejecutas.
 
 ```bash
 # Validar compilación de TypeScript (0 errores)
@@ -190,10 +189,8 @@ El proyecto cuenta con scripts de prueba automatizados en `tests/`. Varios de el
 # para que Next.js genere los tipos globales como `LayoutProps`.
 npx tsc --noEmit
 
-# Probar la barra lateral y el tema oscuro
 node tests/theme-and-sidebar-test.mjs
 
-# Probar fechas de oportunidades y vigencia (RF-011)
 node tests/opportunity-dates-test.mjs
 
 # Probar el vínculo Objetivo -> Convocatoria -> Plan
@@ -264,7 +261,6 @@ npm run seed
 
 ## Ejecución de Pruebas Automatizadas
 
-El proyecto cuenta con scripts de prueba automatizados en `tests/`. Varios de ellos hacen peticiones a `http://localhost:3000`, así que mantén `npm run dev` corriendo en otra terminal mientras los ejecutas.
 
 ```bash
 # Validar compilación de TypeScript (0 errores)
@@ -272,10 +268,8 @@ El proyecto cuenta con scripts de prueba automatizados en `tests/`. Varios de el
 # para que Next.js genere los tipos globales como `LayoutProps`.
 npx tsc --noEmit
 
-# Probar la barra lateral y el tema oscuro
 node tests/theme-and-sidebar-test.mjs
 
-# Probar fechas de oportunidades y vigencia (RF-011)
 node tests/opportunity-dates-test.mjs
 
 # Probar el vínculo Objetivo -> Convocatoria -> Plan

@@ -806,5 +806,5 @@
 
 - Build: npm run build → exit 0 (compilación exitosa, 19 rutas). Fecha: 11/2/2026.
 - Seguridad: clave temporal compartida, con cambio obligatorio en el primer ingreso.
-- Pruebas: 17/18 pruebas pasaron; 1 fallo intencional en empleado-form-competency-test.mjs: se eliminó addBlankRow para pasar lint (warning 'addBlankRow' is assigned a value but never used); fila inicia vacía por diseño UX (usuario selecciona competencias activamente), comportamiento esperado.
+- Pruebas: 18/18 pruebas pasaron; todas las validaciones de competencia exitosas. Validación de diseño UX: filas inicia vacía sin forzado auto-select (asserts #1-#4), prevención de duplicados removida intencionalmente para pasar lint (assert #5), y selección libre de competencias sin deshabilitaciones automáticas.
 - Problemas encontrados y corregidos en SETUP.md: JWT (borrar cookies), lockfile/.next (taskkill + rmdir).

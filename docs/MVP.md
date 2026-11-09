@@ -101,7 +101,7 @@ npm install
 npx prisma db push
 npm run seed
 npm run dev   # http://localhost:3000
-npm test      # 17/18
+npm test      # 18/18
 ```
 
 > Si ya tenías la base creada antes de `mustChangePassword`, ejecuta `npx prisma db push` y luego `npm run seed`.

@@ -80,7 +80,7 @@ con entregables → Revisión del supervisor → Re-evaluación → Brecha SUPER
 | Datos | SQLite + Prisma ORM (17 entidades); init.sql + seed de demo |
 | Seguridad | Auth.js v5 (JWT firmado), bcrypt (costo 10), RBAC, auditoría |
 | IA | Fetch a API compatible OpenAI (GLM-4.5), JSON estructurado, timeout 90 s, fallback plantillas |
-| Calidad | 17–18 tests E2E (`tests/*.mjs`), TypeScript 0 errores (`tsc --noEmit`) |
+| Calidad | 18/18 tests E2E (`tests/*.mjs`), TypeScript 0 errores (`tsc --noEmit`) |
 
 **Métricas del código:** ~10,088 líneas en `src/` (47 archivos), +1,392 líneas de tests.
 

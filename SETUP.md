@@ -308,7 +308,7 @@ Ejecuta `npx prisma db push` y luego `npm run seed`.
 ### 9. `tsx` no se reconoce
 Ejecuta `npm install` y `npx prisma generate`.
 
-El proyecto incluye 18 pruebas E2E orquestadas. `npm test` levanta el servidor si no esta corriendo, ejecuta todas las pruebas en orden de dependencia, muestra el veredicto final y restaura los datos demo (seed) al terminar.
+El proyecto incluye 18/18 tests E2E orquestadas. `npm test` levanta el servidor si no esta corriendo, ejecuta todas las pruebas en orden de dependencia, muestra el veredicto final y restaura los datos demo (seed) al terminar.
 
 ```bash
 npm test    # veredicto: 18/18 -> exit 0 (exito); cualquier fallo -> exit 1

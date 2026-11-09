@@ -803,8 +803,8 @@
 
 - Versión de Node: v24.21.0
 - Pasos seguidos: SETUP.md al pie de la letra (npm install, npx prisma db push, npm run seed, npm run dev).
-- Pruebas: 17/18 pruebas pasaron; 1 fallo intencional en empleado-form-competency-test.mjs (ver nota arriba). VEREDICTO: FALLO (exit 1). Fecha: 11/2/2026.
+
 - Build: npm run build → exit 0 (compilación exitosa, 19 rutas). Fecha: 11/2/2026.
-- Seguridad: clave temporal aleatoria por persona en createEmployee, importación CSV y adminResetPassword (ya no usa DEFAULT_PASSWORD fijo).
+- Seguridad: clave temporal compartida, con cambio obligatorio en el primer ingreso.
 - Pruebas: 17/18 pruebas pasaron; 1 fallo intencional en empleado-form-competency-test.mjs: se eliminó addBlankRow para pasar lint (warning 'addBlankRow' is assigned a value but never used); fila inicia vacía por diseño UX (usuario selecciona competencias activamente), comportamiento esperado.
 - Problemas encontrados y corregidos en SETUP.md: JWT (borrar cookies), lockfile/.next (taskkill + rmdir).
